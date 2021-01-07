@@ -1,0 +1,16 @@
+name: ${project.name}
+description: ${project.description}
+author: Hadde
+version: ${project.version}
+main: ${project.groupId}.${project.artifactId}.${project.name}
+website: ${project.url}
+api-version: 1.13
+depend:
+  - EldoUtilities
+
+commands:
+  pickmeup:
+    description: main command of pick me up
+    usage: trust the tab completion
+    aliases:
+      - pmu

@@ -1,0 +1,10 @@
+version: 1
+lanugage: en_US
+allowedMobTypes:
+  - CHICKEN
+  - WOLF
+  - RABBIT
+worlds:
+  - world
+blacklist: false
+allowStacking: false

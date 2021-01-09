@@ -28,6 +28,10 @@ public class Configuration extends EldoConfig {
         return getConfig().getString("language", "en_US");
     }
 
+    public boolean isUpdateCheck(){
+        return getConfig().getBoolean("updateCheck", true);
+    }
+
     public boolean allowStacking() {
         return getConfig().getBoolean("allowStacking");
     }

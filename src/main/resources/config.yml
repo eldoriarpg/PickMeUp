@@ -1,4 +1,5 @@
 version: 1
+autoUpdate: true
 lanugage: en_US
 allowedMobTypes:
   - CHICKEN

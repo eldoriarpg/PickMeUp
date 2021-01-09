@@ -3,9 +3,12 @@ package de.eldoria.pickmeup;
 import de.eldoria.eldoutilities.localization.ILocalizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
+import de.eldoria.eldoutilities.updater.Updater;
+import de.eldoria.eldoutilities.updater.butlerupdater.ButlerUpdateData;
 import de.eldoria.pickmeup.commands.PickMeUpCommand;
 import de.eldoria.pickmeup.config.Configuration;
 import de.eldoria.pickmeup.listener.CarryListener;
+import de.eldoria.pickmeup.util.Permissions;
 
 import java.util.logging.Logger;
 
@@ -22,6 +25,8 @@ public class PickMeUp extends EldoPlugin {
             MessageSender.create(this, "§6[PMU]", '2', 'c');
             registerListener(new CarryListener(configuration));
             registerCommand("pickmeup", new PickMeUpCommand(this));
+            Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
+                    false, 11, ButlerUpdateData.HOST));
             initialized = true;
         } else {
             configuration.reload();

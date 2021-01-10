@@ -1,5 +1,6 @@
 package de.eldoria.pickmeup;
 
+import de.eldoria.eldoutilities.bstats.Metrics;
 import de.eldoria.eldoutilities.localization.ILocalizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
@@ -27,6 +28,10 @@ public class PickMeUp extends EldoPlugin {
             registerCommand("pickmeup", new PickMeUpCommand(this));
             Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
                     false, 11, ButlerUpdateData.HOST));
+            Metrics metrics = new Metrics(this, 9960);
+            if(metrics.isEnabled()){
+                getLogger().info("§2Metrics enabled. Thank you <3");
+            }
             initialized = true;
         } else {
             configuration.reload();

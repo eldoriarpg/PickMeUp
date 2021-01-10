@@ -24,11 +24,10 @@ import java.util.UUID;
 
 public class CarryListener implements Listener {
     private final Configuration config;
-    private MessageSender messageSender;
     private final ThrowBarHandler throwBarHandler;
     private final Set<UUID> blocked = new HashSet<>();
-
     private final Map<UUID, MountState> mountStates = new HashMap<>();
+    private MessageSender messageSender;
 
     public CarryListener(Configuration config, ThrowBarHandler handler) {
         this.throwBarHandler = handler;

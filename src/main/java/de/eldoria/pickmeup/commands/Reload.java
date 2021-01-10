@@ -1,8 +1,8 @@
 package de.eldoria.pickmeup.commands;
 
 import de.eldoria.eldoutilities.simplecommands.EldoCommand;
-import de.eldoria.pickmeup.util.Permissions;
 import de.eldoria.pickmeup.PickMeUp;
+import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;

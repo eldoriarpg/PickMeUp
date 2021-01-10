@@ -35,7 +35,7 @@ public class Configuration extends EldoConfig {
         return getConfig().getString("language", "en_US");
     }
 
-    public boolean isUpdateCheck(){
+    public boolean isUpdateCheck() {
         return getConfig().getBoolean("updateCheck", true);
     }
 

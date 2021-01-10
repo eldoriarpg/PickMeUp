@@ -19,6 +19,10 @@ public class PickMeUp extends EldoPlugin {
     private boolean initialized;
     private Configuration configuration;
 
+    public static Logger logger() {
+        return getInstance(PickMeUp.class).getLogger();
+    }
+
     @Override
     public void onEnable() {
         if (!initialized) {
@@ -45,9 +49,5 @@ public class PickMeUp extends EldoPlugin {
     public void onReload() {
         onDisable();
         onEnable();
-    }
-
-    public static Logger logger() {
-        return getInstance(PickMeUp.class).getLogger();
     }
 }

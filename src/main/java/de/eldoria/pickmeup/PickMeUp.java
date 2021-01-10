@@ -9,6 +9,7 @@ import de.eldoria.eldoutilities.updater.butlerupdater.ButlerUpdateData;
 import de.eldoria.pickmeup.commands.PickMeUpCommand;
 import de.eldoria.pickmeup.config.Configuration;
 import de.eldoria.pickmeup.listener.CarryListener;
+import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
 import de.eldoria.pickmeup.util.Permissions;
 
 import java.util.logging.Logger;
@@ -24,12 +25,14 @@ public class PickMeUp extends EldoPlugin {
             configuration = new Configuration(this);
             ILocalizer.create(this, "en_US", "de_DE");
             MessageSender.create(this, "§6[PMU]", '2', 'c');
-            registerListener(new CarryListener(configuration));
+            ThrowBarHandler throwBarHandler = new ThrowBarHandler();
+            throwBarHandler.runTaskTimer(this, 1, 1);
+            registerListener(new CarryListener(configuration, throwBarHandler));
             registerCommand("pickmeup", new PickMeUpCommand(this));
             Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
                     false, 11, ButlerUpdateData.HOST));
             Metrics metrics = new Metrics(this, 9960);
-            if(metrics.isEnabled()){
+            if (metrics.isEnabled()) {
                 getLogger().info("§2Metrics enabled. Thank you <3");
             }
             initialized = true;

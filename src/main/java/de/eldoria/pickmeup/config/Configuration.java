@@ -5,6 +5,7 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Configuration extends EldoConfig {
@@ -18,6 +19,12 @@ public class Configuration extends EldoConfig {
             return !worlds.contains(world.getName());
         }
         return worlds.contains(world.getName());
+    }
+
+    @Override
+    protected void reloadConfigs() {
+        getConfig().addDefault("allowedMobTypes", Arrays.asList("CHICKEN", "RABBIT", "CAT", "WOLF", "FOX"));
+        getConfig().addDefault("blacklist", false);
     }
 
     public boolean canPickUpMob(EntityType type) {
@@ -34,5 +41,9 @@ public class Configuration extends EldoConfig {
 
     public boolean allowStacking() {
         return getConfig().getBoolean("allowStacking");
+    }
+
+    public double getThrowForce() {
+        return getConfig().getDouble("throwForce", 2);
     }
 }

@@ -43,7 +43,7 @@ public class CarryListener implements Listener {
         if (mountState == MountState.SNEAK_THROW) {
             if (event.getPlayer().getPassengers().contains(event.getRightClicked())
                     && event.getPlayer().getEquipment().getItemInMainHand().getType() == Material.AIR) {
-                unmountall(event.getPlayer());
+                unmountAll(event.getPlayer());
                 throwBarHandler.getAndRemove(event.getPlayer());
                 mountStates.remove(event.getPlayer().getUniqueId());
                 blocked.add(event.getRightClicked().getUniqueId());
@@ -80,7 +80,7 @@ public class CarryListener implements Listener {
     public void onSneak(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
         if (!mountStates.containsKey(player.getUniqueId())) {
-            unmountall(player);
+            unmountAll(player);
             return;
         }
 
@@ -93,22 +93,31 @@ public class CarryListener implements Listener {
 
         if (event.isSneaking() && mountState == MountState.WALKING) {
             mountStates.put(player.getUniqueId(), MountState.SNEAK_THROW);
-            throwBarHandler.register(player);
+            EldoUtilities.getDelayedActions().schedule(() -> {
+                        if (player.isSneaking()) {
+                            throwBarHandler.register(player);
+                        }
+                    }
+                    , 10);
             return;
         }
 
         if (!event.isSneaking() && mountState == MountState.SNEAK_THROW) {
-            double force = throwBarHandler.getAndRemove(player);
-            Vector viewVec = player.getEyeLocation().getDirection().setY(0).normalize().setY(0.5).multiply(force * config.getThrowForce());
-            for (Entity passenger : player.getPassengers()) {
-                player.removePassenger(passenger);
-                passenger.setVelocity(viewVec);
+            if (!throwBarHandler.isRegistered(player)) {
+                unmountAll(player);
+            } else {
+                double force = throwBarHandler.getAndRemove(player);
+                Vector viewVec = player.getEyeLocation().getDirection().setY(0).normalize().setY(0.5).multiply(force * config.getThrowForce());
+                for (Entity passenger : player.getPassengers()) {
+                    player.removePassenger(passenger);
+                    passenger.setVelocity(viewVec);
+                }
             }
             mountStates.remove(player.getUniqueId());
         }
     }
 
-    private void unmountall(Player player) {
+    private void unmountAll(Player player) {
         for (Entity passenger : player.getPassengers()) {
             player.removePassenger(passenger);
         }

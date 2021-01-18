@@ -34,7 +34,7 @@ public class PickMeUp extends EldoPlugin {
             registerListener(new CarryListener(configuration, throwBarHandler));
             registerCommand("pickmeup", new PickMeUpCommand(this));
             Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
-                    false, 11, ButlerUpdateData.HOST));
+                    false, 21, ButlerUpdateData.HOST));
             Metrics metrics = new Metrics(this, 9960);
             if (metrics.isEnabled()) {
                 getLogger().info("§2Metrics enabled. Thank you <3");

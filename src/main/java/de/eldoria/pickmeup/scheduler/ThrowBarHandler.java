@@ -72,4 +72,8 @@ public class ThrowBarHandler extends BukkitRunnable {
         }
         return 0;
     }
+
+    public boolean isRegistered(Player player) {
+        return currentValue.containsKey(player);
+    }
 }

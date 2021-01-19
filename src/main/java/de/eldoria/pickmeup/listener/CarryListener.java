@@ -14,6 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -24,12 +25,14 @@ import java.util.UUID;
 
 public class CarryListener implements Listener {
     private final Configuration config;
+    private final Plugin plugin;
     private final ThrowBarHandler throwBarHandler;
     private final Set<UUID> blocked = new HashSet<>();
     private final Map<UUID, MountState> mountStates = new HashMap<>();
     private MessageSender messageSender;
 
-    public CarryListener(Configuration config, ThrowBarHandler handler) {
+    public CarryListener(Plugin plugin, Configuration config, ThrowBarHandler handler) {
+        this.plugin = plugin;
         this.throwBarHandler = handler;
         this.config = config;
         MessageSender pluginMessageSender = MessageSender.getPluginMessageSender(PickMeUp.class);
@@ -111,6 +114,10 @@ public class CarryListener implements Listener {
                 for (Entity passenger : player.getPassengers()) {
                     player.removePassenger(passenger);
                     passenger.setVelocity(viewVec);
+                    plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector().toString()
+                            + " | Force: " + force
+                            + " | ThrowForce: " + config.getThrowForce()
+                            + " | ViewVec: " + viewVec.toString());
                 }
             }
             mountStates.remove(player.getUniqueId());

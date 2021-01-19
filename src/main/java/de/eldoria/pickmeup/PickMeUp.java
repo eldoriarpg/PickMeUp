@@ -31,7 +31,7 @@ public class PickMeUp extends EldoPlugin {
             MessageSender.create(this, "§6[PMU]", '2', 'c');
             ThrowBarHandler throwBarHandler = new ThrowBarHandler();
             throwBarHandler.runTaskTimer(this, 1, 1);
-            registerListener(new CarryListener(configuration, throwBarHandler));
+            registerListener(new CarryListener(this, configuration, throwBarHandler));
             registerCommand("pickmeup", new PickMeUpCommand(this));
             Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
                     false, 21, ButlerUpdateData.HOST));

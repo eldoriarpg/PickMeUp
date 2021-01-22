@@ -5,8 +5,10 @@ import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.pickmeup.PickMeUp;
 import de.eldoria.pickmeup.config.Configuration;
 import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
+import de.eldoria.pickmeup.scheduler.TrailHandler;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,11 +31,13 @@ public class CarryListener implements Listener {
     private final ThrowBarHandler throwBarHandler;
     private final Set<UUID> blocked = new HashSet<>();
     private final Map<UUID, MountState> mountStates = new HashMap<>();
+    private final TrailHandler trailHandler;
     private MessageSender messageSender;
 
-    public CarryListener(Plugin plugin, Configuration config, ThrowBarHandler handler) {
+    public CarryListener(Plugin plugin, Configuration config) {
         this.plugin = plugin;
-        this.throwBarHandler = handler;
+        this.throwBarHandler = new ThrowBarHandler(plugin);
+        this.trailHandler = new TrailHandler(plugin);
         this.config = config;
         MessageSender pluginMessageSender = MessageSender.getPluginMessageSender(PickMeUp.class);
     }
@@ -108,14 +112,16 @@ public class CarryListener implements Listener {
                 unmountAll(player);
             } else {
                 double force = throwBarHandler.getAndRemove(player);
-                Vector viewVec = player.getEyeLocation().getDirection().normalize().multiply(force * config.getCarrySettings().getThrowForce());
+                Vector throwVec = player.getEyeLocation().getDirection().normalize().multiply(force * config.getCarrySettings().getThrowForce());
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
                 for (Entity passenger : player.getPassengers()) {
+                    trailHandler.startTrail(passenger);
                     player.removePassenger(passenger);
-                    passenger.setVelocity(viewVec);
+                    passenger.setVelocity(throwVec);
                     plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector().toString()
                             + " | Force: " + force
                             + " | ThrowForce: " + config.getCarrySettings().getThrowForce()
-                            + " | ViewVec: " + viewVec.toString());
+                            + " | ViewVec: " + throwVec.toString());
                 }
             }
             mountStates.remove(player.getUniqueId());

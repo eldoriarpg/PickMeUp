@@ -36,8 +36,7 @@ public class PickMeUp extends EldoPlugin {
             configuration = new Configuration(this);
             ILocalizer.create(this, "en_US", "de_DE");
             MessageSender.create(this, "§6[PMU]");
-            ThrowBarHandler throwBarHandler = new ThrowBarHandler(this);
-            registerListener(new CarryListener(this, configuration, throwBarHandler));
+            registerListener(new CarryListener(this, configuration));
             registerCommand("pickmeup", new PickMeUpCommand(this));
             Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD,
                     configuration.getGeneralSettings().isUpdateCheck(),

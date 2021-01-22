@@ -28,12 +28,13 @@ public class PickMeUp extends EldoPlugin {
         if (!initialized) {
             configuration = new Configuration(this);
             ILocalizer.create(this, "en_US", "de_DE");
-            MessageSender.create(this, "§6[PMU]", '2', 'c');
+            MessageSender.create(this, "§6[PMU]");
             ThrowBarHandler throwBarHandler = new ThrowBarHandler();
             throwBarHandler.runTaskTimer(this, 1, 1);
             registerListener(new CarryListener(this, configuration, throwBarHandler));
             registerCommand("pickmeup", new PickMeUpCommand(this));
-            Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD, configuration.isUpdateCheck(),
+            Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD,
+                    configuration.getGeneralSettings().isUpdateCheck(),
                     false, 21, ButlerUpdateData.HOST));
             Metrics metrics = new Metrics(this, 9960);
             if (metrics.isEnabled()) {
@@ -43,7 +44,12 @@ public class PickMeUp extends EldoPlugin {
         } else {
             configuration.reload();
         }
-        ILocalizer.getPluginLocalizer(this).setLocale(configuration.getLanguage());
+        ILocalizer.getPluginLocalizer(this).setLocale(configuration.getGeneralSettings().getLanguage());
+    }
+
+    @Override
+    public List<Class<? extends ConfigurationSerializable>> getConfigSerialization() {
+        return Arrays.asList(CarrySettings.class, GeneralSettings.class, MobSettings.class, WorldSettings.class);
     }
 
     public void onReload() {

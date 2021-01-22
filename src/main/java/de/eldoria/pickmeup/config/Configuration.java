@@ -1,49 +1,33 @@
 package de.eldoria.pickmeup.config;
 
 import de.eldoria.eldoutilities.configuration.EldoConfig;
-import org.bukkit.World;
-import org.bukkit.entity.EntityType;
+import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
-import java.util.List;
-
+@Getter
 public class Configuration extends EldoConfig {
+    private GeneralSettings generalSettings;
+    private CarrySettings carrySettings;
+    private MobSettings mobSettings;
+    private WorldSettings worldSettings;
+
     public Configuration(Plugin plugin) {
         super(plugin);
     }
 
-    public boolean isWorldActive(World world) {
-        List<String> worlds = getConfig().getStringList("worlds");
-        if (getConfig().getBoolean("blacklist", false)) {
-            return !worlds.contains(world.getName());
-        }
-        return worlds.contains(world.getName());
+    @Override
+    protected void reloadConfigs() {
+        generalSettings = getConfig().getObject("generalSettings", GeneralSettings.class, new GeneralSettings());
+        carrySettings = getConfig().getObject("carrySettings", CarrySettings.class, new CarrySettings());
+        mobSettings = getConfig().getObject("mobSettings", MobSettings.class, new MobSettings());
+        worldSettings = getConfig().getObject("worldSettings", WorldSettings.class, new WorldSettings());
     }
 
     @Override
-    protected void reloadConfigs() {
-        getConfig().addDefault("allowedMobTypes", Arrays.asList("CHICKEN", "RABBIT", "CAT", "WOLF", "FOX"));
-        getConfig().addDefault("blacklist", false);
-    }
-
-    public boolean canPickUpMob(EntityType type) {
-        return getConfig().getStringList("allowedMobTypes").contains(type.name());
-    }
-
-    public String getLanguage() {
-        return getConfig().getString("language", "en_US");
-    }
-
-    public boolean isUpdateCheck() {
-        return getConfig().getBoolean("updateCheck", true);
-    }
-
-    public boolean allowStacking() {
-        return getConfig().getBoolean("allowStacking");
-    }
-
-    public double getThrowForce() {
-        return getConfig().getDouble("throwForce", 2);
+    protected void saveConfigs() {
+        getConfig().set("generalSettings", generalSettings);
+        getConfig().set("carrySettings", carrySettings);
+        getConfig().set("mobSettings", mobSettings);
+        getConfig().set("worldSettings", worldSettings);
     }
 }

@@ -40,6 +40,8 @@ public class CarryListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityInteract(PlayerInteractAtEntityEvent event) {
+        if (!config.getWorldSettings().allowInWorld(event.getPlayer().getWorld())) return;
+
         if (blocked.contains(event.getRightClicked().getUniqueId())) return;
 
         MountState mountState = mountStates.get(event.getPlayer().getUniqueId());
@@ -59,15 +61,11 @@ public class CarryListener implements Listener {
 
         Player player = event.getPlayer();
         if (player.getEquipment().getItemInMainHand().getType() != Material.AIR) return;
-        if (!config.canPickUpMob(event.getRightClicked().getType())) return;
+        if (!config.getMobSettings().canBePickedUp(event.getPlayer(), event.getRightClicked().getType())) return;
         if (!player.getPassengers().isEmpty()) return;
         if (!player.isSneaking()) return;
-        if (!player.hasPermission(Permissions.getPickUpPermission(event.getRightClicked().getType()))) {
-            messageSender.sendLocalizedError(player, "noperm");
-            return;
-        }
 
-        if (!event.getRightClicked().getPassengers().isEmpty() && !config.allowStacking()) {
+        if (!event.getRightClicked().getPassengers().isEmpty() && !config.getCarrySettings().isAllowStacking()) {
             if (!player.hasPermission(Permissions.BYPASS_NOSTACK)) {
                 messageSender.sendLocalizedError(player, "nostack");
                 return;
@@ -116,7 +114,7 @@ public class CarryListener implements Listener {
                     passenger.setVelocity(viewVec);
                     plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector().toString()
                             + " | Force: " + force
-                            + " | ThrowForce: " + config.getThrowForce()
+                            + " | ThrowForce: " + config.getCarrySettings().getThrowForce()
                             + " | ViewVec: " + viewVec.toString());
                 }
             }

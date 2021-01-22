@@ -108,7 +108,7 @@ public class CarryListener implements Listener {
                 unmountAll(player);
             } else {
                 double force = throwBarHandler.getAndRemove(player);
-                Vector viewVec = player.getEyeLocation().getDirection().setY(0).normalize().setY(0.5).multiply(force * config.getThrowForce());
+                Vector viewVec = player.getEyeLocation().getDirection().normalize().multiply(force * config.getCarrySettings().getThrowForce());
                 for (Entity passenger : player.getPassengers()) {
                     player.removePassenger(passenger);
                     passenger.setVelocity(viewVec);

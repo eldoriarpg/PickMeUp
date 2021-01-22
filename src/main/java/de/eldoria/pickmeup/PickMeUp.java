@@ -7,11 +7,18 @@ import de.eldoria.eldoutilities.plugin.EldoPlugin;
 import de.eldoria.eldoutilities.updater.Updater;
 import de.eldoria.eldoutilities.updater.butlerupdater.ButlerUpdateData;
 import de.eldoria.pickmeup.commands.PickMeUpCommand;
+import de.eldoria.pickmeup.config.CarrySettings;
 import de.eldoria.pickmeup.config.Configuration;
+import de.eldoria.pickmeup.config.GeneralSettings;
+import de.eldoria.pickmeup.config.MobSettings;
+import de.eldoria.pickmeup.config.WorldSettings;
 import de.eldoria.pickmeup.listener.CarryListener;
 import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
 import de.eldoria.pickmeup.util.Permissions;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class PickMeUp extends EldoPlugin {
@@ -29,8 +36,7 @@ public class PickMeUp extends EldoPlugin {
             configuration = new Configuration(this);
             ILocalizer.create(this, "en_US", "de_DE");
             MessageSender.create(this, "§6[PMU]");
-            ThrowBarHandler throwBarHandler = new ThrowBarHandler();
-            throwBarHandler.runTaskTimer(this, 1, 1);
+            ThrowBarHandler throwBarHandler = new ThrowBarHandler(this);
             registerListener(new CarryListener(this, configuration, throwBarHandler));
             registerCommand("pickmeup", new PickMeUpCommand(this));
             Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD,

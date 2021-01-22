@@ -6,7 +6,7 @@
 
     <groupId>de.eldoria</groupId>
     <artifactId>pickmeup</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <name>PickMeUp</name>
     <description>Pick up other Entities.</description>
     <url>https://www.spigotmc.org/members/585216/</url>

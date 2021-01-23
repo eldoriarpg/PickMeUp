@@ -8,7 +8,9 @@ import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
 import de.eldoria.pickmeup.scheduler.TrailHandler;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +21,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -115,7 +118,9 @@ public class CarryListener implements Listener {
                 Vector throwVec = player.getEyeLocation().getDirection().normalize().multiply(force * config.getCarrySettings().getThrowForce());
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
                 for (Entity passenger : player.getPassengers()) {
-                    trailHandler.startTrail(passenger);
+                    EldoUtilities.getDelayedActions().schedule(() -> {
+                        trailHandler.startTrail(passenger);
+                    }, 5);
                     player.removePassenger(passenger);
                     passenger.setVelocity(throwVec);
                     plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector().toString()

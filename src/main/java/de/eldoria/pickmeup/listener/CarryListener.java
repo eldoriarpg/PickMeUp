@@ -8,9 +8,7 @@ import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
 import de.eldoria.pickmeup.scheduler.TrailHandler;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +19,6 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

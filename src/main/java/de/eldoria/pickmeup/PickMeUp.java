@@ -13,7 +13,6 @@ import de.eldoria.pickmeup.config.GeneralSettings;
 import de.eldoria.pickmeup.config.MobSettings;
 import de.eldoria.pickmeup.config.WorldSettings;
 import de.eldoria.pickmeup.listener.CarryListener;
-import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 

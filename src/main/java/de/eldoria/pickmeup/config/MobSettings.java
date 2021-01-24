@@ -18,7 +18,7 @@ import java.util.Map;
 @Data
 public class MobSettings implements ConfigurationSerializable {
     private static final transient List<EntityType> DEFAULT_MOBS;
-    private List<EntityType> allowedMobs;
+    private List<EntityType> allowedMobs = DEFAULT_MOBS;
     private boolean requirePermission = false;
     private boolean blacklist = false;
 

@@ -25,12 +25,8 @@ public class PickMeUp extends EldoPlugin {
     private boolean initialized;
     private Configuration configuration;
 
-    public static Logger logger() {
-        return getInstance(PickMeUp.class).getLogger();
-    }
-
     @Override
-    public void onEnable() {
+    public void onPluginEnable() {
         if (!initialized) {
             configuration = new Configuration(this);
             ILocalizer.create(this, "en_US", "de_DE");

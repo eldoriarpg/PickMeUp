@@ -117,7 +117,7 @@ public class CarryListener implements Listener {
                 for (Entity passenger : player.getPassengers()) {
                     EldoUtilities.getDelayedActions().schedule(() -> {
                         trailHandler.startTrail(passenger);
-                    }, 5);
+                    }, 2);
                     player.removePassenger(passenger);
                     passenger.setVelocity(throwVec);
                     plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector().toString()

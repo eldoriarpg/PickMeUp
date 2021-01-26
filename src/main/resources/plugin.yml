@@ -5,8 +5,6 @@ version: ${project.version}
 main: ${project.groupId}.${project.artifactId}.${project.name}
 website: ${project.url}
 api-version: 1.13
-depend:
-  - EldoUtilities
 
 commands:
   pickmeup:

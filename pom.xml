@@ -6,7 +6,7 @@
 
     <groupId>de.eldoria</groupId>
     <artifactId>pickmeup</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>PickMeUp</name>
     <description>Pick up other Entities.</description>
     <url>https://www.spigotmc.org/members/585216/</url>
@@ -16,7 +16,7 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
         <java.version>8</java.version>
         <shade.base>de.eldoria.${project.artifactId}</shade.base>
-        <eldoutil.version>1.4.2</eldoutil.version>
+        <eldoutil.version>1.6.9</eldoutil.version>
         <javadoc.version>3.2.0</javadoc.version>
         <source.version>3.2.1</source.version>
     </properties>
@@ -39,6 +39,28 @@
                 <configuration>
                     <outputDirectory>..\minecraft Testserver\1.16.5\plugins</outputDirectory>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <relocations>
+                        <relocation>
+                            <pattern>de.eldoria.eldoutilities</pattern>
+                            <shadedPattern>${shade.base}.eldoutilities</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- Javadocs and sources -->
             <plugin>
@@ -96,10 +118,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.eldoria</groupId>
-            <artifactId>EldoUtilities</artifactId>
+            <groupId>de.eldoria.EldoUtilities</groupId>
+            <artifactId>EldoUtilitiesCore</artifactId>
             <version>${eldoutil.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bstats</groupId>
+                    <artifactId>bstats-bukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

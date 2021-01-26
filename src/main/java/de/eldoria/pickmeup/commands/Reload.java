@@ -18,7 +18,7 @@ public class Reload extends EldoCommand {
         if (denyAccess(sender, Permissions.RELOAD)) {
             return true;
         }
-        PickMeUp.getInstance(PickMeUp.class).onEnable();
+        getPlugin().onEnable();
         messageSender().sendLocalizedMessage(sender, "reload.success");
         PickMeUp.logger().info("PickMeUp reloaded!");
         return true;

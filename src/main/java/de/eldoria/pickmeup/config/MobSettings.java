@@ -27,13 +27,10 @@ public class MobSettings implements ConfigurationSerializable {
             add(EntityType.PIG);
             add(EntityType.CHICKEN);
             add(EntityType.RABBIT);
-            add(EntityType.RABBIT);
             add(EntityType.WOLF);
-            add(EntityType.CAT);
             add(EntityType.BOAT);
             add(EntityType.SHEEP);
             add(EntityType.PARROT);
-            add(EntityType.FOX);
         }};
     }
 

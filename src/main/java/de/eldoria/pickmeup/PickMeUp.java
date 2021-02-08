@@ -18,7 +18,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class PickMeUp extends EldoPlugin {
 
@@ -29,7 +28,7 @@ public class PickMeUp extends EldoPlugin {
     public void onPluginEnable() {
         if (!initialized) {
             configuration = new Configuration(this);
-            ILocalizer.create(this, "en_US", "de_DE");
+            ILocalizer.create(this, "en_US", "de_DE", "zh_CN");
             MessageSender.create(this, "§6[PMU]");
             registerListener(new CarryListener(this, configuration));
             registerCommand("pickmeup", new PickMeUpCommand(this));

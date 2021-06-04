@@ -9,8 +9,8 @@ import java.util.Map;
 
 @SerializableAs("pickMeUpGeneralSettings")
 public class GeneralSettings implements ConfigurationSerializable {
-    private String language = "en_US";
-    private boolean updateCheck = true;
+    private final String language = "en_US";
+    private final boolean updateCheck = true;
 
     public GeneralSettings(Map<String, Object> objectMap) {
         SerializationUtil.mapOnObject(objectMap, this);

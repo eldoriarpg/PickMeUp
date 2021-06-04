@@ -9,8 +9,8 @@ import java.util.Map;
 
 @SerializableAs("pickMeUpCarrySettings")
 public class CarrySettings implements ConfigurationSerializable {
-    private double throwForce = 2.0;
-    private boolean allowStacking = false;
+    private final double throwForce = 2.0;
+    private final boolean allowStacking;
 
     public CarrySettings(Map<String, Object> objectMap) {
         SerializationUtil.mapOnObject(objectMap, this);

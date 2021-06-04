@@ -12,9 +12,9 @@ import java.util.Map;
 
 @SerializableAs("pickMeUpWorldSettings")
 public class WorldSettings implements ConfigurationSerializable {
-    private boolean restrictWorlds = false;
-    private boolean blacklist = false;
-    private List<String> worlds = new ArrayList<String>() {{
+    private final boolean restrictWorlds;
+    private final boolean blacklist;
+    private final List<String> worlds = new ArrayList<String>() {{
         add("world");
     }};
 

@@ -39,7 +39,7 @@ publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
         groupId = project.group as String?
-        artifactId = project.name
+        artifactId = project.name.toLowerCase()
         version = publishData.getVersion()
     }
 

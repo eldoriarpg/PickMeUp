@@ -1,8 +1,8 @@
 package de.eldoria.pickmeup.scheduler;
 
 import de.eldoria.eldoutilities.crossversion.ServerVersion;
+import de.eldoria.eldoutilities.crossversion.builder.VersionFunctionBuilder;
 import de.eldoria.eldoutilities.crossversion.function.VersionFunction;
-import de.eldoria.eldoutilities.crossversion.functionbuilder.VersionFunctionBuilder;
 import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.messages.MessageType;

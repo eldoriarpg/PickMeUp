@@ -1,6 +1,6 @@
 package de.eldoria.pickmeup;
 
-import de.eldoria.eldoutilities.bstats.Metrics;
+import de.eldoria.eldoutilities.bstats.EldoMetrics;
 import de.eldoria.eldoutilities.localization.ILocalizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
@@ -32,10 +32,10 @@ public class PickMeUp extends EldoPlugin {
             MessageSender.create(this, "§6[PMU]");
             registerListener(new CarryListener(this, configuration));
             registerCommand("pickmeup", new PickMeUpCommand(this));
-            Updater.Butler(new ButlerUpdateData(this, Permissions.RELOAD,
-                    configuration.getGeneralSettings().isUpdateCheck(),
+            Updater.butler(new ButlerUpdateData(this, Permissions.RELOAD,
+                    configuration.generalSettings().isUpdateCheck(),
                     false, 21, ButlerUpdateData.HOST));
-            Metrics metrics = new Metrics(this, 9960);
+            EldoMetrics metrics = new EldoMetrics(this, 9960);
             if (metrics.isEnabled()) {
                 getLogger().info("§2Metrics enabled. Thank you <3");
             }
@@ -43,7 +43,7 @@ public class PickMeUp extends EldoPlugin {
         } else {
             configuration.reload();
         }
-        ILocalizer.getPluginLocalizer(this).setLocale(configuration.getGeneralSettings().getLanguage());
+        ILocalizer.getPluginLocalizer(this).setLocale(configuration.generalSettings().language());
     }
 
     @Override

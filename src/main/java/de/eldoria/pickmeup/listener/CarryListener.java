@@ -44,7 +44,7 @@ public class CarryListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityInteract(PlayerInteractAtEntityEvent event) {
-        if (!config.getWorldSettings().allowInWorld(event.getPlayer().getWorld())) return;
+        if (!config.worldSettings().allowInWorld(event.getPlayer().getWorld())) return;
 
         if (blocked.contains(event.getRightClicked().getUniqueId())) return;
 
@@ -65,11 +65,11 @@ public class CarryListener implements Listener {
 
         Player player = event.getPlayer();
         if (player.getEquipment().getItemInMainHand().getType() != Material.AIR) return;
-        if (!config.getMobSettings().canBePickedUp(event.getPlayer(), event.getRightClicked().getType())) return;
+        if (!config.mobSettings().canBePickedUp(event.getPlayer(), event.getRightClicked().getType())) return;
         if (!player.getPassengers().isEmpty()) return;
         if (!player.isSneaking()) return;
 
-        if (!event.getRightClicked().getPassengers().isEmpty() && !config.getCarrySettings().isAllowStacking()) {
+        if (!event.getRightClicked().getPassengers().isEmpty() && !config.carrySettings().isAllowStacking()) {
             if (!player.hasPermission(Permissions.BYPASS_NOSTACK)) {
                 messageSender.sendLocalizedError(player, "nostack");
                 return;
@@ -112,18 +112,16 @@ public class CarryListener implements Listener {
                 unmountAll(player);
             } else {
                 double force = throwBarHandler.getAndRemove(player);
-                Vector throwVec = player.getEyeLocation().getDirection().normalize().multiply(force * config.getCarrySettings().getThrowForce());
+                Vector throwVec = player.getEyeLocation().getDirection().normalize().multiply(force * config.carrySettings().throwForce());
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
                 for (Entity passenger : player.getPassengers()) {
-                    EldoUtilities.getDelayedActions().schedule(() -> {
-                        trailHandler.startTrail(passenger);
-                    }, 2);
+                    EldoUtilities.getDelayedActions().schedule(() -> trailHandler.startTrail(passenger), 2);
                     player.removePassenger(passenger);
                     passenger.setVelocity(throwVec);
-                    plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector().toString()
+                    plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector()
                             + " | Force: " + force
-                            + " | ThrowForce: " + config.getCarrySettings().getThrowForce()
-                            + " | ViewVec: " + throwVec.toString());
+                            + " | ThrowForce: " + config.carrySettings().throwForce()
+                            + " | ViewVec: " + throwVec);
                 }
             }
             mountStates.remove(player.getUniqueId());

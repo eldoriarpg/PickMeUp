@@ -1,9 +1,9 @@
-name: ${project.name}
-description: ${project.description}
+name: ${pluginname}
+description: ${description}
 author: Hadde
-version: ${project.version}
-main: ${project.groupId}.${project.artifactId}.${project.name}
-website: ${project.url}
+version: ${version}
+main: de.eldoria.pickmeup.PickMeUp
+website: ${url}
 api-version: 1.13
 
 commands:

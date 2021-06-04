@@ -11,11 +11,14 @@ repositories {
 
 dependencies {
     implementation("de.eldoria:eldo-util:1.9.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
-    testImplementation("org.mockito:mockito-core:3.5.13")
     compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:1.5.25")
     compileOnly("org.jetbrains:annotations:16.0.2")
+
+    testImplementation(platform("org.junit:junit-bom:5.7.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
+    testImplementation("com.github.seeseemelk", "MockBukkit-v1.16", "1.0.0")
 }
 
 group = "de.eldoria"

@@ -1,7 +1,6 @@
 package de.eldoria.pickmeup.config;
 
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
-import lombok.Data;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 @SerializableAs("pickMeUpGeneralSettings")
-@Data
 public class GeneralSettings implements ConfigurationSerializable {
     private String language = "en_US";
     private boolean updateCheck = true;
@@ -20,6 +18,14 @@ public class GeneralSettings implements ConfigurationSerializable {
 
     public GeneralSettings() {
 
+    }
+
+    public String language() {
+        return language;
+    }
+
+    public boolean isUpdateCheck() {
+        return updateCheck;
     }
 
     @Override

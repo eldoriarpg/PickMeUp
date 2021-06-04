@@ -1,10 +1,8 @@
 package de.eldoria.pickmeup.config;
 
 import de.eldoria.eldoutilities.configuration.EldoConfig;
-import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 
-@Getter
 public class Configuration extends EldoConfig {
     private GeneralSettings generalSettings;
     private CarrySettings carrySettings;
@@ -29,5 +27,21 @@ public class Configuration extends EldoConfig {
         getConfig().set("carrySettings", carrySettings);
         getConfig().set("mobSettings", mobSettings);
         getConfig().set("worldSettings", worldSettings);
+    }
+
+    public GeneralSettings generalSettings() {
+        return generalSettings;
+    }
+
+    public CarrySettings carrySettings() {
+        return carrySettings;
+    }
+
+    public MobSettings mobSettings() {
+        return mobSettings;
+    }
+
+    public WorldSettings worldSettings() {
+        return worldSettings;
     }
 }

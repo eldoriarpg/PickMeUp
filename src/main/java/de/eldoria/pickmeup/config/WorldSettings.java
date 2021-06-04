@@ -1,7 +1,7 @@
 package de.eldoria.pickmeup.config;
 
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
-import lombok.Data;
+import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -12,16 +12,18 @@ import java.util.List;
 import java.util.Map;
 
 @SerializableAs("pickMeUpWorldSettings")
-@Data
 public class WorldSettings implements ConfigurationSerializable {
-    private boolean restrictWorlds = false;
-    private boolean blacklist = false;
+    private boolean restrictWorlds;
+    private boolean blacklist;
     private List<String> worlds = new ArrayList<String>() {{
         add("world");
     }};
 
     public WorldSettings(Map<String, Object> objectMap) {
-        SerializationUtil.mapOnObject(objectMap, this);
+        TypeResolvingMap map = SerializationUtil.mapOf(objectMap);
+        restrictWorlds = map.getValueOrDefault("restrictWorlds", restrictWorlds);
+        blacklist = map.getValueOrDefault("blacklist", blacklist);
+        worlds = map.getValueOrDefault("worlds", worlds);
     }
 
     public WorldSettings() {

@@ -28,7 +28,7 @@ public class TrailHandler extends SelfSchedulingWorker<Entity, Set<Entity>> {
         }
 
         Vector offset = entity.getVelocity().normalize().multiply(1);
-        entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation().clone().subtract(offset), 2);
+        entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation().clone().subtract(offset).add(0, 0.25, 0), 2);
     }
 
     public void startTrail(Entity entity) {

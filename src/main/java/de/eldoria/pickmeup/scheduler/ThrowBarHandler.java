@@ -1,8 +1,8 @@
 package de.eldoria.pickmeup.scheduler;
 
 import de.eldoria.eldoutilities.crossversion.ServerVersion;
+import de.eldoria.eldoutilities.crossversion.builder.VersionFunctionBuilder;
 import de.eldoria.eldoutilities.crossversion.function.VersionFunction;
-import de.eldoria.eldoutilities.crossversion.functionbuilder.VersionFunctionBuilder;
 import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.messages.MessageType;
@@ -26,9 +26,6 @@ public class ThrowBarHandler extends ReschedulingTask {
     private static final String[] GRADIENT = {"0000fc", "0022d9", "0045b6", "006893", "008b70", "00ad4e", "00d02b", "00f308", "1afc00", "3dfc00", "60fd00", "83fd00", "a7fd00", "cafe00", "edfe00", "fef600", "fee400", "fdd200", "fdc100", "fdaf00", "fc9d00", "fc8c00", "fc7a00", "fc6900", "fc5700", "fd4600", "fd3400", "fe2300", "fe1100", "ff0000"};
     private static final int[] INT_GRADIENT = {0x0000fc, 0x0022d9, 0x0045b6, 0x006893, 0x008b70, 0x00ad4e, 0x00d02b, 0x00f308, 0x1afc00, 0x3dfc00, 0x60fd00, 0x83fd00, 0xa7fd00, 0xcafe00, 0xedfe00, 0xfef600, 0xfee400, 0xfdd200, 0xfdc100, 0xfdaf00, 0xfc9d00, 0xfc8c00, 0xfc7a00, 0xfc6900, 0xfc5700, 0xfd4600, 0xfd3400, 0xfe2300, 0xfe1100, 0xff0000};
     private static final List<String> FULL_BAR;
-    private final Map<Player, AtomicInteger> currentValues = new HashMap<>();
-    private final MessageSender sender;
-    private int idleTicks = 0;
 
     static {
         FULL_BAR = new LinkedList<>();
@@ -43,6 +40,10 @@ public class ThrowBarHandler extends ReschedulingTask {
             FULL_BAR.add(colorMapper.apply("#" + color) + BAR_FRAGMENT);
         }
     }
+
+    private final Map<Player, AtomicInteger> currentValues = new HashMap<>();
+    private final MessageSender sender;
+    private int idleTicks;
 
     public ThrowBarHandler(Plugin plugin) {
         super(plugin);

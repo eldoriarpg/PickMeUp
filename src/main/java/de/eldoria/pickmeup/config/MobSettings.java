@@ -3,7 +3,6 @@ package de.eldoria.pickmeup.config;
 import de.eldoria.eldoutilities.serialization.SerializationUtil;
 import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
 import de.eldoria.pickmeup.util.Permissions;
-import lombok.Data;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.EntityType;
@@ -15,12 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 @SerializableAs("pickMeUpMobSettings")
-@Data
 public class MobSettings implements ConfigurationSerializable {
     private static final transient List<EntityType> DEFAULT_MOBS;
-    private List<EntityType> allowedMobs = DEFAULT_MOBS;
-    private boolean requirePermission = false;
-    private boolean blacklist = false;
 
     static {
         DEFAULT_MOBS = new ArrayList<EntityType>() {{
@@ -33,6 +28,10 @@ public class MobSettings implements ConfigurationSerializable {
             add(EntityType.PARROT);
         }};
     }
+
+    private List<EntityType> allowedMobs = DEFAULT_MOBS;
+    private boolean requirePermission;
+    private boolean blacklist;
 
     public MobSettings(Map<String, Object> objectMap) {
         TypeResolvingMap map = SerializationUtil.mapOf(objectMap);

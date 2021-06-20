@@ -32,14 +32,14 @@ public class CarryListener implements Listener {
     private final Set<UUID> blocked = new HashSet<>();
     private final Map<UUID, MountState> mountStates = new HashMap<>();
     private final TrailHandler trailHandler;
-    private MessageSender messageSender;
+    private final MessageSender messageSender;
 
     public CarryListener(Plugin plugin, Configuration config) {
         this.plugin = plugin;
         this.throwBarHandler = new ThrowBarHandler(plugin);
         this.trailHandler = new TrailHandler(plugin);
         this.config = config;
-        MessageSender pluginMessageSender = MessageSender.getPluginMessageSender(PickMeUp.class);
+        messageSender = MessageSender.getPluginMessageSender(PickMeUp.class);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

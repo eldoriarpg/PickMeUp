@@ -20,16 +20,16 @@ public class GeneralSettings implements ConfigurationSerializable {
 
     }
 
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        return SerializationUtil.objectToMap(this);
+    }
+
     public String language() {
         return language;
     }
 
     public boolean isUpdateCheck() {
         return updateCheck;
-    }
-
-    @Override
-    public @NotNull Map<String, Object> serialize() {
-        return SerializationUtil.objectToMap(this);
     }
 }

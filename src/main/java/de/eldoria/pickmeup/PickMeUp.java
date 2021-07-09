@@ -13,6 +13,7 @@ import de.eldoria.pickmeup.config.GeneralSettings;
 import de.eldoria.pickmeup.config.MobSettings;
 import de.eldoria.pickmeup.config.WorldSettings;
 import de.eldoria.pickmeup.listener.CarryListener;
+import de.eldoria.pickmeup.services.ProtectionService;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
@@ -28,9 +29,10 @@ public class PickMeUp extends EldoPlugin {
     public void onPluginEnable() {
         if (!initialized) {
             configuration = new Configuration(this);
+            ProtectionService protectionService = ProtectionService.of(this);
             ILocalizer.create(this, "en_US", "de_DE", "zh_CN");
             MessageSender.create(this, "§6[PMU]");
-            registerListener(new CarryListener(this, configuration));
+            registerListener(new CarryListener(this, configuration, protectionService));
             registerCommand("pickmeup", new PickMeUpCommand(this));
             Updater.butler(new ButlerUpdateData(this, Permissions.RELOAD,
                     configuration.generalSettings().isUpdateCheck(),

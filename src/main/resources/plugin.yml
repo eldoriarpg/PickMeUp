@@ -5,6 +5,8 @@ version: ${version}
 main: de.eldoria.pickmeup.PickMeUp
 website: ${url}
 api-version: 1.13
+softdepend:
+  - BentoBox
 
 commands:
   pickmeup:

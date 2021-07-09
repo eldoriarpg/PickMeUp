@@ -6,6 +6,7 @@ import de.eldoria.pickmeup.PickMeUp;
 import de.eldoria.pickmeup.config.Configuration;
 import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
 import de.eldoria.pickmeup.scheduler.TrailHandler;
+import de.eldoria.pickmeup.services.ProtectionService;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -27,6 +28,7 @@ import java.util.UUID;
 
 public class CarryListener implements Listener {
     private final Configuration config;
+    private ProtectionService protectionService;
     private final Plugin plugin;
     private final ThrowBarHandler throwBarHandler;
     private final Set<UUID> blocked = new HashSet<>();
@@ -34,17 +36,20 @@ public class CarryListener implements Listener {
     private final TrailHandler trailHandler;
     private final MessageSender messageSender;
 
-    public CarryListener(Plugin plugin, Configuration config) {
+    public CarryListener(Plugin plugin, Configuration config, ProtectionService protectionService) {
         this.plugin = plugin;
         this.throwBarHandler = new ThrowBarHandler(plugin);
         this.trailHandler = new TrailHandler(plugin);
         this.config = config;
+        this.protectionService = protectionService;
         messageSender = MessageSender.getPluginMessageSender(PickMeUp.class);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityInteract(PlayerInteractAtEntityEvent event) {
         if (!config.worldSettings().allowInWorld(event.getPlayer().getWorld())) return;
+
+        if (!protectionService.canInteract(event.getPlayer(), event.getRightClicked().getLocation())) return;
 
         if (blocked.contains(event.getRightClicked().getUniqueId())) return;
 

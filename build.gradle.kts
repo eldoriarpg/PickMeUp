@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation("de.eldoria:eldo-util:1.9.2-DEV")
+    implementation("de.eldoria", "eldo-util", "1.9.6-DEV")
     compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:1.5.25")
     compileOnly("org.jetbrains:annotations:16.0.2")
@@ -23,7 +23,7 @@ dependencies {
 }
 
 group = "de.eldoria"
-version = "1.3.3"
+version = "1.3.4"
 description = "Pick up other Entities."
 val url = "https://www.spigotmc.org/resources/88151/"
 var mainPackage = "pickmeup"

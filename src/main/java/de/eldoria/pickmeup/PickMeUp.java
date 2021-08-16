@@ -26,7 +26,7 @@ public class PickMeUp extends EldoPlugin {
     private Configuration configuration;
 
     @Override
-    public void onPluginEnable() {
+    public void onPluginEnable(boolean reload) {
         if (!initialized) {
             configuration = new Configuration(this);
             ProtectionService protectionService = ProtectionService.of(this);

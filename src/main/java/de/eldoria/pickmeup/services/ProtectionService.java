@@ -2,6 +2,7 @@ package de.eldoria.pickmeup.services;
 
 import de.eldoria.pickmeup.services.hooks.protection.AProtectionHook;
 import de.eldoria.pickmeup.services.hooks.protection.BentoBoxHook;
+import de.eldoria.pickmeup.services.hooks.protection.GriefPreventionHook;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -43,6 +44,6 @@ public class ProtectionService {
     }
 
     private static AProtectionHook[] hooks() {
-        return new AProtectionHook[]{new BentoBoxHook()};
+        return new AProtectionHook[]{new BentoBoxHook(), new GriefPreventionHook()};
     }
 }

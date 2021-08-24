@@ -1,10 +1,10 @@
 package de.eldoria.pickmeup.services;
 
-import de.eldoria.pickmeup.services.hooks.protection.AProtectionHook;
 import de.eldoria.pickmeup.services.hooks.protection.BentoBoxHook;
 import de.eldoria.pickmeup.services.hooks.protection.GriefPreventionHook;
+import de.eldoria.pickmeup.services.hooks.protection.IProtectionHook;
 import de.eldoria.pickmeup.services.hooks.protection.PlotSquaredHook;
-import de.eldoria.pickmeup.services.hooks.protection.RedprotectHook;
+import de.eldoria.pickmeup.services.hooks.protection.RedProtectHook;
 import de.eldoria.pickmeup.services.hooks.protection.TownyHook;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ProtectionService {
     private final Plugin plugin;
-    private final List<AProtectionHook> hooks = new ArrayList<>();
+    private final List<IProtectionHook> hooks = new ArrayList<>();
 
     public ProtectionService(Plugin plugin) {
         this.plugin = plugin;
@@ -30,7 +30,7 @@ public class ProtectionService {
     }
 
     private void init() {
-        plugin.getLogger().info("Seting up protection hooks");
+        plugin.getLogger().info("Setting up protection hooks");
         PluginManager pm = plugin.getServer().getPluginManager();
         Arrays.stream(hooks())
                 .filter(hook -> {
@@ -48,13 +48,13 @@ public class ProtectionService {
     }
 
     public boolean canInteract(Player player, Location location) {
-        for (AProtectionHook hook : hooks) {
+        for (IProtectionHook hook : hooks) {
             if (!hook.canInteract(player, location)) return false;
         }
         return true;
     }
 
-    private static AProtectionHook[] hooks() {
-        return new AProtectionHook[]{new BentoBoxHook(), new GriefPreventionHook(), new PlotSquaredHook(), new TownyHook(), new RedprotectHook()};
+    private static IProtectionHook[] hooks() {
+        return new IProtectionHook[]{new BentoBoxHook(), new GriefPreventionHook(), new PlotSquaredHook(), new TownyHook(), new RedProtectHook()};
     }
 }

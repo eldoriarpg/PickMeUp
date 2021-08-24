@@ -7,10 +7,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class RedprotectHook extends AProtectionHook {
+public class RedProtectHook extends AProtectionHook {
     private RedProtectAPI redProtectAPI;
 
-    public RedprotectHook() {
+    public RedProtectHook() {
         super("RedProtect");
     }
 

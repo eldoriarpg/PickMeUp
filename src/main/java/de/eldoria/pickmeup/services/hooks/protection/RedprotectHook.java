@@ -11,7 +11,7 @@ public class RedprotectHook extends AProtectionHook {
     private RedProtectAPI redProtectAPI;
 
     public RedprotectHook() {
-        super("Towny");
+        super("RedProtect");
     }
 
     @Override

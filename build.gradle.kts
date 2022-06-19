@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     java
     `maven-publish`
     id("de.chojo.publishdata") version "1.0.4"
@@ -24,6 +24,8 @@ dependencies {
     implementation("com.plotsquared", "PlotSquared-Core", "6.9.0") {
         exclude("com.intellectualsites.paster")
         exclude("net.kyori")
+        exclude("org.apache.logging.log4j")
+
     }
     compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.9.0") { isTransitive = false } // PlotSquared Bukkit API
 
@@ -98,11 +100,7 @@ tasks {
     }
 
     shadowJar {
-<<<<<<< HEAD
         relocate("de.eldoria.eldoutilities", shadebase + "eldoutilities")
-=======
-        relocate("de.eldoria.eldoutilities", shadebade + "eldoutilities")
->>>>>>> 9e159f5 (Add protection hook for redprotect)
         mergeServiceFiles()
         minimize()
     }
@@ -112,6 +110,7 @@ tasks {
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
         }
     }
+
     register<Copy>("copyToServer") {
         val path = project.property("targetDir") ?: "";
         if (path.toString().isEmpty()) {
@@ -121,11 +120,13 @@ tasks {
         from(shadowJar)
         destinationDir = File(path.toString())
     }
+
+    build {
+        dependsOn(shadowJar)
+    }
 }
 
 bukkit {
-    name = "PickMeUp"
-    description = "Pick up other Entities."
     authors = listOf("RainbowDashLabs")
     main = "de.eldoria.pickmeup.PickMeUp"
     website = "https://www.spigotmc.org/resources/88151/"

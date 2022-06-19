@@ -46,7 +46,7 @@ dependencies {
 }
 
 group = "de.eldoria"
-version = "1.3.6"
+version = "1.3.7"
 var mainPackage = "pickmeup"
 val shadebase = group as String? + "." + mainPackage + "."
 
@@ -131,7 +131,7 @@ bukkit {
     main = "de.eldoria.pickmeup.PickMeUp"
     website = "https://www.spigotmc.org/resources/88151/"
     apiVersion = "1.13"
-    softDepend = listOf("BentoBox")
+    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny")
     commands {
         register("pickmeup") {
             description = "Main command of pick me up"

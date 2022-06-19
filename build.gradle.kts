@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     java
     `maven-publish`
     id("de.chojo.publishdata") version "1.0.4"
@@ -10,12 +10,12 @@ repositories {
     mavenCentral()
     maven("https://eldonexus.de/repository/maven-public")
     maven("https://eldonexus.de/repository/maven-proxies")
+    maven("https://raw.githubusercontent.com/FabioZumbi12/RedProtect/mvn-repo/")
 }
 
 dependencies {
     implementation("de.eldoria", "eldo-util", "1.13.9")
-    //compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
-    compileOnly("org.spigotmc", "spigot-api", "1.19-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.mojang", "authlib", "1.5.25")
     compileOnly("org.jetbrains", "annotations", "16.0.2")
     compileOnly("world.bentobox", "bentobox", "1.16.2-SNAPSHOT")
@@ -24,6 +24,8 @@ dependencies {
     implementation("com.plotsquared", "PlotSquared-Core", "6.9.0") {
         exclude("com.intellectualsites.paster")
         exclude("net.kyori")
+        exclude("org.apache.logging.log4j")
+
     }
     compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.9.0") { isTransitive = false } // PlotSquared Bukkit API
 
@@ -38,14 +40,13 @@ dependencies {
     }
 
     testImplementation(platform("org.junit:junit-bom:5.7.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter", "junit-jupiter")
     testImplementation("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     testImplementation("com.github.seeseemelk", "MockBukkit-v1.16", "1.0.0")
 }
 
 group = "de.eldoria"
 version = "1.3.6"
-val url = ""
 var mainPackage = "pickmeup"
 val shadebase = group as String? + "." + mainPackage + "."
 
@@ -106,17 +107,10 @@ tasks {
 
     processResources {
         from(sourceSets.main.get().resources.srcDirs) {
-            filesMatching("plugin.yml") {
-                expand(
-                    "version" to publishData.getVersion(true),
-                    "pluginname" to project.name,
-                    "description" to project.description,
-                    "url" to url
-                )
-            }
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
         }
     }
+
     register<Copy>("copyToServer") {
         val path = project.property("targetDir") ?: "";
         if (path.toString().isEmpty()) {
@@ -126,11 +120,13 @@ tasks {
         from(shadowJar)
         destinationDir = File(path.toString())
     }
+
+    build {
+        dependsOn(shadowJar)
+    }
 }
 
 bukkit {
-    name = "PickMeUp"
-    description = "Pick up other Entities."
     authors = listOf("RainbowDashLabs")
     main = "de.eldoria.pickmeup.PickMeUp"
     website = "https://www.spigotmc.org/resources/88151/"

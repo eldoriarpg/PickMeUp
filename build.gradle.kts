@@ -21,7 +21,7 @@ dependencies {
     compileOnly("world.bentobox", "bentobox", "1.16.2-SNAPSHOT")
     compileOnly("com.github.TechFortress", "GriefPrevention", "16.17.1")
     compileOnly("com.github.TownyAdvanced", "Towny", "0.97.1.0")
-    implementation("com.plotsquared", "PlotSquared-Core", "6.9.0") {
+    compileOnly("com.plotsquared", "PlotSquared-Core", "6.9.0") {
         exclude("com.intellectualsites.paster")
         exclude("net.kyori")
         exclude("org.apache.logging.log4j")
@@ -46,7 +46,7 @@ dependencies {
 }
 
 group = "de.eldoria"
-version = "1.3.6"
+version = "1.3.7"
 var mainPackage = "pickmeup"
 val shadebase = group as String? + "." + mainPackage + "."
 
@@ -131,7 +131,7 @@ bukkit {
     main = "de.eldoria.pickmeup.PickMeUp"
     website = "https://www.spigotmc.org/resources/88151/"
     apiVersion = "1.13"
-    softDepend = listOf("BentoBox")
+    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny")
     commands {
         register("pickmeup") {
             description = "Main command of pick me up"

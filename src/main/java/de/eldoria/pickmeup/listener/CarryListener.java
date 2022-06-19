@@ -2,6 +2,7 @@ package de.eldoria.pickmeup.listener;
 
 import de.eldoria.eldoutilities.core.EldoUtilities;
 import de.eldoria.eldoutilities.messages.MessageSender;
+import de.eldoria.eldoutilities.scheduling.DelayedActions;
 import de.eldoria.pickmeup.PickMeUp;
 import de.eldoria.pickmeup.config.Configuration;
 import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
@@ -35,6 +36,7 @@ public class CarryListener implements Listener {
     private final Map<UUID, MountState> mountStates = new HashMap<>();
     private final TrailHandler trailHandler;
     private final MessageSender messageSender;
+    private final DelayedActions delayedActions;
 
     public CarryListener(Plugin plugin, Configuration config, ProtectionService protectionService) {
         this.plugin = plugin;
@@ -43,6 +45,7 @@ public class CarryListener implements Listener {
         this.config = config;
         this.protectionService = protectionService;
         messageSender = MessageSender.getPluginMessageSender(PickMeUp.class);
+        delayedActions = DelayedActions.start(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -61,7 +64,7 @@ public class CarryListener implements Listener {
                 throwBarHandler.getAndRemove(event.getPlayer());
                 mountStates.remove(event.getPlayer().getUniqueId());
                 blocked.add(event.getRightClicked().getUniqueId());
-                EldoUtilities.getDelayedActions().schedule(() -> blocked.remove(event.getRightClicked().getUniqueId()), 20);
+                delayedActions.schedule(() -> blocked.remove(event.getRightClicked().getUniqueId()), 20);
                 event.setCancelled(true);
                 return;
             }
@@ -103,7 +106,7 @@ public class CarryListener implements Listener {
 
         if (event.isSneaking() && mountState == MountState.WALKING) {
             mountStates.put(player.getUniqueId(), MountState.SNEAK_THROW);
-            EldoUtilities.getDelayedActions().schedule(() -> {
+            delayedActions.schedule(() -> {
                         if (player.isSneaking()) {
                             throwBarHandler.register(player);
                         }
@@ -120,7 +123,7 @@ public class CarryListener implements Listener {
                 Vector throwVec = player.getEyeLocation().getDirection().normalize().multiply(force * config.carrySettings().throwForce());
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
                 for (Entity passenger : player.getPassengers()) {
-                    EldoUtilities.getDelayedActions().schedule(() -> trailHandler.startTrail(passenger), 2);
+                    delayedActions.schedule(() -> trailHandler.startTrail(passenger), 2);
                     player.removePassenger(passenger);
                     passenger.setVelocity(throwVec);
                     plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector()

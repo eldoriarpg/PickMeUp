@@ -1,24 +1,20 @@
+# Remove config
+/config/
+
 .gradle
+gradle.properties
 **/build/
 !src/**/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
 
-<<<<<<< HEAD
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
-=======
-# we use gradle!
-.gradle
-**/build/
-!src/**/build/
->>>>>>> 6ea9db7 (Fix and update gradle)
 
 # Cache of project
 .gradletasknamecache
 
-<<<<<<< HEAD
 # User-specific stuff
 .idea/
 *.iml
@@ -26,43 +22,14 @@ gradle-app.setting
 # CMake
 cmake-build-*/
 
-# Hewo Mac users. this is for you <3
-.DS_Store
-=======
-# CMake
-cmake-build-*/
-
-# Mongo Explorer plugin
-.idea/**/mongoSettings.xml
-
-# File-based project format
-*.iws
-
-# IntelliJ
-out/
-
-# mpeltonen/sbt-idea plugin
-.idea_modules/
-
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Cursive Clojure plugin
-.idea/replstate.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-
-# Editor-based Rest Client
-.idea/httpRequests
-
-# Android studio 3.1+ serialized cache file
-.idea/caches/build_file_checksums.ser
-
-# Intellij
-.idea/
-*.iml
->>>>>>> 6ea9db7 (Fix and update gradle)
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar

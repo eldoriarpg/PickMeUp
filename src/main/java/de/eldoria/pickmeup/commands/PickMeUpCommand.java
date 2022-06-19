@@ -1,16 +1,19 @@
 package de.eldoria.pickmeup.commands;
 
+import de.eldoria.eldoutilities.commands.command.AdvancedCommand;
+import de.eldoria.eldoutilities.commands.command.CommandMeta;
+import de.eldoria.eldoutilities.commands.defaultcommands.DefaultAbout;
+import de.eldoria.eldoutilities.commands.defaultcommands.DefaultDebug;
 import de.eldoria.eldoutilities.simplecommands.EldoCommand;
-import de.eldoria.eldoutilities.simplecommands.commands.DefaultAbout;
-import de.eldoria.eldoutilities.simplecommands.commands.DefaultDebug;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.plugin.Plugin;
 
-public class PickMeUpCommand extends EldoCommand {
+public class PickMeUpCommand extends AdvancedCommand {
     public PickMeUpCommand(Plugin plugin) {
-        super(plugin);
-        registerCommand("debug", new DefaultDebug(plugin, Permissions.RELOAD));
-        registerCommand("reload", new Reload(plugin));
-        registerCommand("about", new DefaultAbout(plugin));
+        super(plugin, CommandMeta.builder("pickmeup")
+                .withSubCommand(new DefaultDebug(plugin, Permissions.RELOAD))
+                .withSubCommand(new Reload(plugin))
+                .withSubCommand(new DefaultAbout(plugin))
+                .build());
     }
 }

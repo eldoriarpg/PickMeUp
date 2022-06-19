@@ -1,47 +1,71 @@
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     java
     `maven-publish`
+    id("de.chojo.publishdata") version "1.0.4"
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
 }
 
 repositories {
+    mavenCentral()
     maven("https://eldonexus.de/repository/maven-public")
     maven("https://eldonexus.de/repository/maven-proxies")
+    maven("https://raw.githubusercontent.com/FabioZumbi12/RedProtect/mvn-repo/")
 }
 
 dependencies {
-    implementation("de.eldoria", "eldo-util", "1.9.6-DEV")
-    compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
-    compileOnly("com.mojang:authlib:1.5.25")
-    compileOnly("org.jetbrains:annotations:16.0.2")
-    compileOnly("world.bentobox:bentobox:1.16.2-SNAPSHOT")
+    implementation("de.eldoria", "eldo-util", "1.13.9")
+    compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
+    compileOnly("com.mojang", "authlib", "1.5.25")
+    compileOnly("org.jetbrains", "annotations", "16.0.2")
+    compileOnly("world.bentobox", "bentobox", "1.16.2-SNAPSHOT")
+    compileOnly("com.github.TechFortress", "GriefPrevention", "16.17.1")
+    compileOnly("com.github.TownyAdvanced", "Towny", "0.97.1.0")
+    implementation("com.plotsquared", "PlotSquared-Core", "6.9.0") {
+        exclude("com.intellectualsites.paster")
+        exclude("net.kyori")
+        exclude("org.apache.logging.log4j")
+
+    }
+    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.9.0") { isTransitive = false } // PlotSquared Bukkit API
+
+    compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Spigot", "8.0.0-SNAPSHOT") {
+        exclude("com.github.MilkBowl")
+        exclude("com.github.TheBusyBiscuit")
+        exclude("com.gmail.nossr50.mcMMO")
+        exclude("net.ess3")
+        exclude("org.spigotmc")
+        exclude("org.spongepowered")
+        exclude("com.typesafe")
+    }
 
     testImplementation(platform("org.junit:junit-bom:5.7.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter", "junit-jupiter")
     testImplementation("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     testImplementation("com.github.seeseemelk", "MockBukkit-v1.16", "1.0.0")
 }
 
 group = "de.eldoria"
-version = "1.3.4"
-description = "Pick up other Entities."
-val url = "https://www.spigotmc.org/resources/88151/"
+version = "1.3.6"
 var mainPackage = "pickmeup"
-val shadebade = group as String? + "." + mainPackage + "."
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+val shadebase = group as String? + "." + mainPackage + "."
 
 java {
     withSourcesJar()
     withJavadocJar()
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+publishData {
+    useEldoNexusRepos()
+    publishComponent("java")
 }
 
 publishing {
-    val publishData = PublishData(project)
     publications.create<MavenPublication>("maven") {
-        from(components["java"])
-        groupId = project.group as String?
-        artifactId = project.name.toLowerCase()
-        version = publishData.getVersion()
+        publishData.configurePublication(this)
     }
 
     repositories {
@@ -64,7 +88,7 @@ tasks {
         options.encoding = "UTF-8"
     }
 
-    compileTestJava{
+    compileTestJava {
         options.encoding = "UTF-8"
     }
 
@@ -75,59 +99,44 @@ tasks {
         }
     }
 
-    shadowJar{
-        relocate("de.eldoria.eldoutilities", shadebade + "eldoutilities")
+    shadowJar {
+        relocate("de.eldoria.eldoutilities", shadebase + "eldoutilities")
         mergeServiceFiles()
         minimize()
     }
 
     processResources {
         from(sourceSets.main.get().resources.srcDirs) {
-            filesMatching("plugin.yml") {
-                expand(
-                    "version" to PublishData(project).getVersion(true),
-                    "pluginname" to project.name,
-                    "description" to project.description,
-                    "url" to url
-                )
-            }
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
         }
     }
-}
 
-class PublishData(private val project: Project) {
-    private var type: Type = getReleaseType()
-    private var hashLength: Int = 7
-
-    private fun getReleaseType(): Type {
-        val branch = getCheckedOutBranch()
-        return when {
-            branch.contentEquals("master") -> Type.RELEASE
-            branch.startsWith("dev") -> Type.DEV
-            else -> Type.SNAPSHOT
+    register<Copy>("copyToServer") {
+        val path = project.property("targetDir") ?: "";
+        if (path.toString().isEmpty()) {
+            println("targetDir is not set in gradle properties")
+            return@register
         }
+        from(shadowJar)
+        destinationDir = File(path.toString())
     }
 
-    private fun getCheckedOutGitCommitHash(): String = System.getenv("GITHUB_SHA")?.substring(0, hashLength) ?: "local"
+    build {
+        dependsOn(shadowJar)
+    }
+}
 
-    private fun getCheckedOutBranch(): String = System.getenv("GITHUB_REF")?.replace("refs/heads/", "") ?: "local"
-
-    fun getVersion(): String = getVersion(false)
-
-    fun getVersion(appendCommit: Boolean): String =
-        type.append(getVersionString(), appendCommit, getCheckedOutGitCommitHash())
-
-    private fun getVersionString(): String = (project.version as String).replace("-SNAPSHOT", "").replace("-DEV", "")
-
-    fun getRepository(): String = type.repo
-
-    enum class Type(private val append: String, val repo: String, private val addCommit: Boolean) {
-        RELEASE("", "https://eldonexus.de/repository/maven-releases/", false),
-        DEV("-DEV", "https://eldonexus.de/repository/maven-dev/", true),
-        SNAPSHOT("-SNAPSHOT", "https://eldonexus.de/repository/maven-snapshots/", true);
-
-        fun append(name: String, appendCommit: Boolean, commitHash: String): String =
-            name.plus(append).plus(if (appendCommit && addCommit) "-".plus(commitHash) else "")
+bukkit {
+    authors = listOf("RainbowDashLabs")
+    main = "de.eldoria.pickmeup.PickMeUp"
+    website = "https://www.spigotmc.org/resources/88151/"
+    apiVersion = "1.13"
+    softDepend = listOf("BentoBox")
+    commands {
+        register("pickmeup") {
+            description = "Main command of pick me up"
+            usage = "Trust the tab completion"
+            aliases = listOf("pmu")
+        }
     }
 }

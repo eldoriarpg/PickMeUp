@@ -11,7 +11,7 @@ import java.util.Map;
 @SerializableAs("pickMeUpCarrySettings")
 public class CarrySettings implements ConfigurationSerializable {
     private double throwForce = 2.0;
-    private long throwDelay = 10L;
+    private int throwDelay = 10;
     private boolean allowStacking = true;
     private int maximumStacking = 0;
     private int maximumSelfCarry = 1;

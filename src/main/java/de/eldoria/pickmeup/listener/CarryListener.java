@@ -1,6 +1,5 @@
 package de.eldoria.pickmeup.listener;
 
-import de.eldoria.eldoutilities.core.EldoUtilities;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.scheduling.DelayedActions;
 import de.eldoria.pickmeup.PickMeUp;
@@ -9,13 +8,16 @@ import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
 import de.eldoria.pickmeup.scheduler.TrailHandler;
 import de.eldoria.pickmeup.services.ProtectionService;
 import de.eldoria.pickmeup.util.Permissions;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
@@ -50,34 +52,47 @@ public class CarryListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityInteract(PlayerInteractAtEntityEvent event) {
-        if (!config.worldSettings().allowInWorld(event.getPlayer().getWorld())) return;
+        entityCarryInteraction(event.getPlayer(), event.getRightClicked(), event);
+    }
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onEntityInteract(EntityDamageByEntityEvent event) {
+        if(event.getDamager() instanceof Player player)
+            entityCarryInteraction(player, event.getEntity(), event);
+    }
 
-        if (!protectionService.canInteract(event.getPlayer(), event.getRightClicked().getLocation())) return;
+    void entityCarryInteraction(Player player, Entity entity, Cancellable cancellable){
+        if (!config.worldSettings().allowInWorld(player.getWorld())) return;
 
-        if (blocked.contains(event.getRightClicked().getUniqueId())) return;
+        if (!protectionService.canInteract(player, entity.getLocation())) return;
 
-        MountState mountState = mountStates.get(event.getPlayer().getUniqueId());
+        if (blocked.contains(entity.getUniqueId())) return;
+
+        MountState mountState = mountStates.get(player.getUniqueId());
         if (mountState == MountState.SNEAK_THROW) {
-            if (event.getPlayer().getPassengers().contains(event.getRightClicked())
-                    && event.getPlayer().getEquipment().getItemInMainHand().getType() == Material.AIR) {
-                unmountAll(event.getPlayer());
-                throwBarHandler.getAndRemove(event.getPlayer());
-                mountStates.remove(event.getPlayer().getUniqueId());
-                blocked.add(event.getRightClicked().getUniqueId());
-                delayedActions.schedule(() -> blocked.remove(event.getRightClicked().getUniqueId()), 20);
-                event.setCancelled(true);
+            if (player.getPassengers().contains(entity)
+                    && player.getEquipment().getItemInMainHand().getType() == Material.AIR) {
+
+                unmountAll(player);
+
+                throwBarHandler.getAndRemove(player);
+
+                mountStates.remove(player.getUniqueId());
+
+                blocked.add(entity.getUniqueId());
+
+                delayedActions.schedule(() -> blocked.remove(entity.getUniqueId()), 20);
+
+                cancellable.setCancelled(true);
                 return;
             }
         }
 
-
-        Player player = event.getPlayer();
         if (player.getEquipment().getItemInMainHand().getType() != Material.AIR) return;
-        if (!config.mobSettings().canBePickedUp(event.getPlayer(), event.getRightClicked().getType())) return;
+        if (!config.mobSettings().canBePickedUp(player, entity.getType())) return;
         if (!player.getPassengers().isEmpty()) return;
         if (!player.isSneaking()) return;
 
-        if (!event.getRightClicked().getPassengers().isEmpty() && !config.carrySettings().isAllowStacking()) {
+        if (!entity.getPassengers().isEmpty() && !config.carrySettings().isAllowStacking()) {
             if (!player.hasPermission(Permissions.BYPASS_NOSTACK)) {
                 messageSender.sendLocalizedError(player, "nostack");
                 return;
@@ -85,8 +100,8 @@ public class CarryListener implements Listener {
         }
 
         mountStates.put(player.getUniqueId(), MountState.SNEAK_MOUNT);
-        player.addPassenger(event.getRightClicked());
-        event.setCancelled(true);
+        player.addPassenger(entity);
+        cancellable.setCancelled(true);
     }
 
     @EventHandler
@@ -106,12 +121,12 @@ public class CarryListener implements Listener {
 
         if (event.isSneaking() && mountState == MountState.WALKING) {
             mountStates.put(player.getUniqueId(), MountState.SNEAK_THROW);
-            delayedActions.schedule(() -> {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
+                    () -> {
                         if (player.isSneaking()) {
                             throwBarHandler.register(player);
                         }
-                    }
-                    , 10);
+                    }, 10);
             return;
         }
 

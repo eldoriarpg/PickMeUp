@@ -24,6 +24,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.*;
 
@@ -77,8 +78,6 @@ public class CarryListener implements Listener {
                 //Dismount all entities
                 unmountAll(player);
 
-                removePlayerData(player);
-
                 //Block the entity from being picked again, to avoid spam picking
                 blocked.add(entity.getUniqueId());
                 delayedActions.schedule(() -> blocked.remove(entity.getUniqueId()), 20);
@@ -88,11 +87,17 @@ public class CarryListener implements Listener {
             }
         }
 
+        // If the player doesn't have the hand empty, leave
         if (player.getEquipment().getItemInMainHand().getType() != Material.AIR) return;
+
         if (!config.mobSettings().canBePickedUp(player, entity.getType())) return;
+
         if (player.getPassengers().size() >= config.carrySettings().maximumSelfCarry()
                 && !player.hasPermission(Permissions.BYPASS_MAXSELFCARRY)) return;
+
+        //If the player is not sneaking leave
         if (!player.isSneaking()) return;
+
 
         if (!entity.getPassengers().isEmpty() && !config.carrySettings().isAllowStacking()) {
             if (!player.hasPermission(Permissions.BYPASS_NOSTACK)) {
@@ -162,16 +167,13 @@ public class CarryListener implements Listener {
                             + " | ViewVec: " + throwVec);
                 }
             }
-
-            //Remove all the leftover player data
-            removePlayerData(player);
         }
     }
 
     @EventHandler
-    public void onPlayerDisconnect(PlayerQuitEvent event){
-        //Remove the data if the player disconnects
-        removePlayerData(event.getPlayer());
+    public void onEntityDismount(EntityDismountEvent event){
+        if(event.getDismounted() instanceof Player player)
+            removePlayerData(player);
     }
 
     private void unmountAll(Player player) {
@@ -184,7 +186,7 @@ public class CarryListener implements Listener {
         //If there is a pending task, cancel it
         Optional.ofNullable(throwTasks.remove(player.getUniqueId()))
                 .ifPresent(task -> {
-                    if (task.isCancelled()) task.cancel();
+                    if (!task.isCancelled()) task.cancel();
                 });
         mountStates.remove(player.getUniqueId());
         throwBarHandler.getAndRemove(player);

@@ -11,6 +11,7 @@ import java.util.Map;
 @SerializableAs("pickMeUpCarrySettings")
 public class CarrySettings implements ConfigurationSerializable {
     private double throwForce = 2.0;
+    private long throwDelay = 10L;
     private boolean allowStacking = true;
     private int maximumStacking = 0;
     private int maximumSelfCarry = 1;
@@ -18,6 +19,7 @@ public class CarrySettings implements ConfigurationSerializable {
     public CarrySettings(Map<String, Object> objectMap) {
         TypeResolvingMap map = SerializationUtil.mapOf(objectMap);
         throwForce = map.getValueOrDefault("throwForce", throwForce);
+        throwDelay = map.getValueOrDefault("throwDelay", throwDelay);
         allowStacking = map.getValueOrDefault("allowStacking", allowStacking);
         maximumStacking = map.getValueOrDefault("maximumStacking", maximumStacking);
         maximumSelfCarry = map.getValueOrDefault("maximumSelfCarry", maximumSelfCarry);
@@ -32,6 +34,10 @@ public class CarrySettings implements ConfigurationSerializable {
 
     public double throwForce() {
         return throwForce;
+    }
+
+    public long getThrowDelay() {
+        return throwDelay;
     }
 
     public boolean isAllowStacking() {

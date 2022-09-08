@@ -89,7 +89,8 @@ public class CarryListener implements Listener {
 
         if (player.getEquipment().getItemInMainHand().getType() != Material.AIR) return;
         if (!config.mobSettings().canBePickedUp(player, entity.getType())) return;
-        if (!player.getPassengers().isEmpty()) return;
+        if (player.getPassengers().size() >= config.carrySettings().getMaximumSelfCarry()
+                && !player.hasPermission(Permissions.BYPASS_MAXSELFCARRY)) return;
         if (!player.isSneaking()) return;
 
         if (!entity.getPassengers().isEmpty() && !config.carrySettings().isAllowStacking()) {
@@ -98,6 +99,11 @@ public class CarryListener implements Listener {
                 return;
             }
         }
+
+        if(config.carrySettings().getMaximumStacking() != 0 &&
+                entity.getPassengers().size() + player.getPassengers().size() + 1 >= config.carrySettings().getMaximumStacking()
+                && !player.hasPermission(Permissions.BYPASS_MAXSTACK))
+            return;
 
         mountStates.put(player.getUniqueId(), MountState.SNEAK_MOUNT);
         player.addPassenger(entity);

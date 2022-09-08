@@ -12,7 +12,7 @@ import java.util.Map;
 public class CarrySettings implements ConfigurationSerializable {
     private double throwForce = 2.0;
     private int throwDelay = 10;
-    private boolean allowStacking = true;
+    private boolean allowStacking = false;
     private int maximumStacking = 0;
     private int maximumSelfCarry = 1;
 
@@ -36,7 +36,7 @@ public class CarrySettings implements ConfigurationSerializable {
         return throwForce;
     }
 
-    public long getThrowDelay() {
+    public long throwDelay() {
         return throwDelay;
     }
 
@@ -44,10 +44,10 @@ public class CarrySettings implements ConfigurationSerializable {
         return allowStacking;
     }
 
-    public int getMaximumStacking() {
+    public int maximumStacking() {
         return maximumStacking;
     }
-    public int getMaximumSelfCarry() {
+    public int maximumSelfCarry() {
         return maximumSelfCarry;
     }
 }

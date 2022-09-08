@@ -25,11 +25,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class CarryListener implements Listener {
     private final Configuration config;
@@ -65,7 +61,7 @@ public class CarryListener implements Listener {
             entityCarryInteraction(player, event.getEntity(), event);
     }
 
-    void entityCarryInteraction(Player player, Entity entity, Cancellable cancellable){
+    private void entityCarryInteraction(Player player, Entity entity, Cancellable cancellable){
         if (!config.worldSettings().allowInWorld(player.getWorld())) return;
 
         if (!protectionService.canInteract(player, entity.getLocation())) return;
@@ -94,7 +90,7 @@ public class CarryListener implements Listener {
 
         if (player.getEquipment().getItemInMainHand().getType() != Material.AIR) return;
         if (!config.mobSettings().canBePickedUp(player, entity.getType())) return;
-        if (player.getPassengers().size() >= config.carrySettings().getMaximumSelfCarry()
+        if (player.getPassengers().size() >= config.carrySettings().maximumSelfCarry()
                 && !player.hasPermission(Permissions.BYPASS_MAXSELFCARRY)) return;
         if (!player.isSneaking()) return;
 
@@ -105,8 +101,8 @@ public class CarryListener implements Listener {
             }
         }
 
-        if(config.carrySettings().getMaximumStacking() != 0 &&
-                entity.getPassengers().size() + player.getPassengers().size() + 1 >= config.carrySettings().getMaximumStacking()
+        if(config.carrySettings().maximumStacking() != 0 &&
+                entity.getPassengers().size() + player.getPassengers().size() + 1 >= config.carrySettings().maximumStacking()
                 && !player.hasPermission(Permissions.BYPASS_MAXSTACK))
             return;
 
@@ -143,7 +139,7 @@ public class CarryListener implements Listener {
                                 if (player.isSneaking()) {
                                     throwBarHandler.register(player);
                                 }
-                            }, config.carrySettings().getThrowDelay()));
+                            }, config.carrySettings().throwDelay()));
             return;
         }
 
@@ -186,11 +182,11 @@ public class CarryListener implements Listener {
 
     private void removePlayerData(Player player){
         //If there is a pending task, cancel it
-        if(throwTasks.containsKey(player.getUniqueId())
-                && !throwTasks.get(player.getUniqueId()).isCancelled())
-            throwTasks.get(player.getUniqueId()).cancel();
+        Optional.ofNullable(throwTasks.remove(player.getUniqueId()))
+                .ifPresent(task -> {
+                    if (task.isCancelled()) task.cancel();
+                });
         mountStates.remove(player.getUniqueId());
-        throwTasks.remove(player.getUniqueId());
         throwBarHandler.getAndRemove(player);
     }
 

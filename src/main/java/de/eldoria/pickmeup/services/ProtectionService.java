@@ -1,6 +1,12 @@
 package de.eldoria.pickmeup.services;
 
-import de.eldoria.pickmeup.services.hooks.protection.*;
+import de.eldoria.pickmeup.services.hooks.protection.BentoBoxHook;
+import de.eldoria.pickmeup.services.hooks.protection.GriefPreventionHook;
+import de.eldoria.pickmeup.services.hooks.protection.IProtectionHook;
+import de.eldoria.pickmeup.services.hooks.protection.PlotSquaredHook;
+import de.eldoria.pickmeup.services.hooks.protection.RedProtectHook;
+import de.eldoria.pickmeup.services.hooks.protection.TownyHook;
+import de.eldoria.pickmeup.services.hooks.protection.SaberFactionsHook;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -30,7 +36,6 @@ public class ProtectionService {
         Arrays.stream(hooks())
                 .filter(hook -> {
                     if (pm.isPluginEnabled(hook.pluginName())) {
-                        plugin.getLogger().info(hook.pluginName() + " found! Enabling protection hook.");
                         return true;
                     }
                     plugin.getLogger().info(hook.pluginName() + " not found. Skipping protection hook.");

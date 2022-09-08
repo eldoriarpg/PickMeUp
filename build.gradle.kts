@@ -9,7 +9,6 @@ plugins {
 repositories {
     mavenCentral()
     jcenter()
-    //maven(file("${projectDir}/dependencies/fanciful-0.4.0-SNAPSHOT.jar"))
     maven ("https://rayzr.dev/repo/")
     maven("https://jitpack.io")
     maven("https://eldonexus.de/repository/maven-public")
@@ -19,16 +18,15 @@ repositories {
 
 dependencies {
     implementation("de.eldoria", "eldo-util", "1.13.9")
-    //implementation(file("${projectDir}/dependencies/fanciful-0.4.0-SNAPSHOT.jar"))
-    //compileOnly("mkremins", "fanciful", "0.4.0-SNAPSHOT")
-    compileOnly("com.jagrosh", "jda-utilities", "2.1")
-    compileOnly("net.dv8tion", "JDA", "5.0.0-alpha.18")
-    compileOnly("me.rayzr522", "jsonmessage", "1.3.0")
 
     compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.mojang", "authlib", "1.5.25")
     compileOnly("org.jetbrains", "annotations", "16.0.2")
-    compileOnly("com.github.SaberLLC", "Saber-Factions", "2.4.0-RC")
+    compileOnly("me.rayzr522", "jsonmessage", "1.3.0")
+    compileOnly("com.github.SaberLLC", "Saber-Factions", "2.4.0-RC"){
+        exclude("net.dv8tion.JDA")
+        exclude("com.jagrosh.jda-utilities")
+    }
     compileOnly("world.bentobox", "bentobox", "1.16.2-SNAPSHOT")
     compileOnly("com.github.TechFortress", "GriefPrevention", "16.17.1")
     compileOnly("com.github.TownyAdvanced", "Towny", "0.97.1.0")
@@ -57,7 +55,7 @@ dependencies {
 }
 
 group = "de.eldoria"
-version = "1.3.8"
+version = "1.3.7"
 var mainPackage = "pickmeup"
 val shadebase = group as String? + "." + mainPackage + "."
 
@@ -122,7 +120,7 @@ tasks {
         }
     }
 
-    /*register<Copy>("copyToServer") {
+    register<Copy>("copyToServer") {
         val path = project.property("targetDir") ?: "";
         if (path.toString().isEmpty()) {
             println("targetDir is not set in gradle properties")
@@ -130,7 +128,7 @@ tasks {
         }
         from(shadowJar)
         destinationDir = File(path.toString())
-    }*/
+    }
 
     build {
         dependsOn(shadowJar)

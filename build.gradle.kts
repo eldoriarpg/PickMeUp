@@ -23,7 +23,7 @@ dependencies {
     compileOnly("com.mojang", "authlib", "1.5.25")
     compileOnly("org.jetbrains", "annotations", "16.0.2")
     compileOnly("me.rayzr522", "jsonmessage", "1.3.0")
-    compileOnly("com.github.SaberLLC", "Saber-Factions", "2.4.0-RC"){
+    compileOnly("com.github.SaberLLC", "Saber-Factions", "2.9.1-RC"){
         exclude("net.dv8tion.JDA")
         exclude("com.jagrosh.jda-utilities")
     }

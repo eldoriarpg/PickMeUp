@@ -15,6 +15,7 @@ import de.eldoria.pickmeup.config.WorldSettings;
 import de.eldoria.pickmeup.listener.CarryListener;
 import de.eldoria.pickmeup.services.ProtectionService;
 import de.eldoria.pickmeup.util.Permissions;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.Arrays;
@@ -24,6 +25,11 @@ public class PickMeUp extends EldoPlugin {
 
     private boolean initialized;
     private Configuration configuration;
+    private static PickMeUp instance;
+
+    public PickMeUp(){
+        instance = this;
+    }
 
     @Override
     public void onPluginEnable(boolean reload) {
@@ -57,4 +63,8 @@ public class PickMeUp extends EldoPlugin {
         onDisable();
         onEnable();
     }
+    public static PickMeUp instance(){
+        return instance;
+    }
+
 }

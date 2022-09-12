@@ -34,8 +34,7 @@ public class CarryListener implements Listener {
     private final ThrowBarHandler throwBarHandler;
     private final Set<UUID> blocked = new HashSet<>();
 
-    private final Map<UUID, MountState> mountStates = new HashMap<>();
-    private final Map<UUID, BukkitTask> throwTasks = new HashMap<>();
+    private final Map<UUID, MountHandler> mountHandlers = new HashMap<>();
 
     private final TrailHandler trailHandler;
     private final MessageSender messageSender;
@@ -71,9 +70,11 @@ public class CarryListener implements Listener {
         // If the player doesn't have the hand empty, leave
         if (Objects.requireNonNull(player.getEquipment()).getItemInMainHand().getType() != Material.AIR) return;
 
-        MountState mountState = mountStates.get(player.getUniqueId());
+        MountHandler mountHandler = mountHandlers.get(player.getUniqueId());
         //If the player is on the SNEAK_THROW state and interacts with the entity that is carrying with an empty hand
-        if (mountState == MountState.SNEAK_THROW && player.getPassengers().contains(entity)) {
+        if (mountHandler != null
+                && mountHandler.state == MountState.SNEAK_THROW
+                && player.getPassengers().contains(entity)) {
 
                 //Dismount all entities
                 unmountAll(player);
@@ -109,7 +110,7 @@ public class CarryListener implements Listener {
             return;
 
         //Put the player state as SNEAK_MOUNT since the player just mounted an entity
-        mountStates.put(player.getUniqueId(), MountState.SNEAK_MOUNT);
+        mountHandlers.put(player.getUniqueId(), new MountHandler(MountState.SNEAK_MOUNT));
         player.addPassenger(entity);
         cancellable.setCancelled(true);
     }
@@ -118,35 +119,35 @@ public class CarryListener implements Listener {
     public void onSneak(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
         //If there is no mountState for the player, just dismount everything
-        if (!mountStates.containsKey(player.getUniqueId())) {
+        if (!mountHandlers.containsKey(player.getUniqueId())) {
             unmountAll(player);
             return;
         }
 
-        MountState mountState = mountStates.get(player.getUniqueId());
+        MountHandler mountHandler = mountHandlers.get(player.getUniqueId());
 
         //If the player stopped sneaking and was SNEAK_MOUNT, change the state to WALKING
-        if (!event.isSneaking() && mountState == MountState.SNEAK_MOUNT) {
-            mountStates.put(player.getUniqueId(), MountState.WALKING);
+        if (!event.isSneaking() && mountHandler.state == MountState.SNEAK_MOUNT) {
+            mountHandler.state = MountState.WALKING;
             return;
         }
 
         //If the player is begun sneaking with the WALKING state we start the throw delayedTask and set state to SNEAK_THROW
-        if (event.isSneaking() && mountState == MountState.WALKING) {
-            mountStates.put(player.getUniqueId(), MountState.SNEAK_THROW);
-            throwTasks.put(player.getUniqueId(),
+        if (event.isSneaking() && mountHandler.state == MountState.WALKING) {
+            mountHandler.state = MountState.SNEAK_THROW;
+            mountHandler.throwTask =
                     Bukkit.getScheduler().runTaskLater(plugin,
                             () -> {
                                 //If the player is still sneaking after the delay
                                 if (player.isSneaking()) {
                                     throwBarHandler.register(player);
                                 }
-                            }, config.carrySettings().throwDelay()));
+                            }, config.carrySettings().throwDelay());
             return;
         }
 
         //If the player stopped sneaking with the SNEAK_THROW state
-        if (!event.isSneaking() && mountState == MountState.SNEAK_THROW) {
+        if (!event.isSneaking() && mountHandler.state == MountState.SNEAK_THROW) {
             //If the player is not registered on the throwBarHandler then we simply dismount the entities
             if (!throwBarHandler.isRegistered(player)) {
                 unmountAll(player);
@@ -181,15 +182,25 @@ public class CarryListener implements Listener {
 
     private void removePlayerData(Player player){
         //If there is a pending task, cancel it
-        Optional.ofNullable(throwTasks.remove(player.getUniqueId()))
-                .ifPresent(task -> {
-                    if (!task.isCancelled()) task.cancel();
-                });
-        mountStates.remove(player.getUniqueId());
+        Optional.ofNullable(mountHandlers.remove(player.getUniqueId()))
+                .ifPresent(MountHandler::dispose);
         throwBarHandler.getAndRemove(player);
     }
 
     private enum MountState {
         SNEAK_MOUNT, WALKING, SNEAK_THROW
+    }
+
+    private class MountHandler{
+        public MountState state;
+        public BukkitTask throwTask;
+
+        public MountHandler(MountState state){
+            this.state = state;
+        }
+
+        public void dispose(){
+            if (!throwTask.isCancelled()) throwTask.cancel();
+        }
     }
 }

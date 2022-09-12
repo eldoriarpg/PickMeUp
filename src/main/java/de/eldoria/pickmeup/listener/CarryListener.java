@@ -19,7 +19,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -30,7 +29,7 @@ import java.util.*;
 
 public class CarryListener implements Listener {
     private final Configuration config;
-    private ProtectionService protectionService;
+    private final ProtectionService protectionService;
     private final Plugin plugin;
     private final ThrowBarHandler throwBarHandler;
     private final Set<UUID> blocked = new HashSet<>();
@@ -69,11 +68,12 @@ public class CarryListener implements Listener {
 
         if (blocked.contains(entity.getUniqueId())) return;
 
+        // If the player doesn't have the hand empty, leave
+        if (Objects.requireNonNull(player.getEquipment()).getItemInMainHand().getType() != Material.AIR) return;
+
         MountState mountState = mountStates.get(player.getUniqueId());
         //If the player is on the SNEAK_THROW state and interacts with the entity that is carrying with an empty hand
-        if (mountState == MountState.SNEAK_THROW) {
-            if (player.getPassengers().contains(entity)
-                    && player.getEquipment().getItemInMainHand().getType() == Material.AIR) {
+        if (mountState == MountState.SNEAK_THROW && player.getPassengers().contains(entity)) {
 
                 //Dismount all entities
                 unmountAll(player);
@@ -84,19 +84,16 @@ public class CarryListener implements Listener {
 
                 cancellable.setCancelled(true);
                 return;
-            }
         }
 
-        // If the player doesn't have the hand empty, leave
-        if (player.getEquipment().getItemInMainHand().getType() != Material.AIR) return;
+        //If the player is not sneaking leave
+        if (!player.isSneaking()) return;
 
+        //Check if the settings/perms allow the player to pick up this entity
         if (!config.mobSettings().canBePickedUp(player, entity.getType())) return;
 
         if (player.getPassengers().size() >= config.carrySettings().maximumSelfCarry()
                 && !player.hasPermission(Permissions.BYPASS_MAXSELFCARRY)) return;
-
-        //If the player is not sneaking leave
-        if (!player.isSneaking()) return;
 
 
         if (!entity.getPassengers().isEmpty() && !config.carrySettings().isAllowStacking()) {

@@ -26,9 +26,11 @@ public class PickMeUp extends EldoPlugin {
     private boolean initialized;
     private Configuration configuration;
     private static PickMeUp instance;
+    private static NamespacedKey offsetterIdentifierKey;
 
     public PickMeUp(){
         instance = this;
+        offsetterIdentifierKey = new NamespacedKey(this, "IsOffsetter");
     }
 
     @Override
@@ -65,6 +67,9 @@ public class PickMeUp extends EldoPlugin {
     }
     public static PickMeUp instance(){
         return instance;
+    }
+    public static NamespacedKey offsetterIdentifierKey(){
+        return offsetterIdentifierKey;
     }
 
 }

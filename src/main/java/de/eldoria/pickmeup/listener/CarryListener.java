@@ -248,8 +248,7 @@ public class CarryListener implements Listener {
         public void dispose(){
             cleanTasks();
 
-            if (offsetter == null)
-                return;
+            if (offsetter == null) return;
 
             for (Entity passenger :
                     offsetter.getPassengers()) {
@@ -284,9 +283,7 @@ public class CarryListener implements Listener {
         }
 
         public List<Entity> getDirectPassengers(){
-            Entity mountable = getMountable();
-
-            return mountable.getPassengers();
+            return getMountable().getPassengers();
         }
 
         public List<Entity> getAllPassengers(boolean filterOffsetters){
@@ -300,7 +297,7 @@ public class CarryListener implements Listener {
             if (offsetter != null && !offsetter.isDead())
                 return;
 
-            ArmorStand armorStand = (ArmorStand) owner.getWorld().spawnEntity(owner.getLocation(), EntityType.ARMOR_STAND);
+            ArmorStand armorStand = owner.getWorld().spawn(owner.getLocation(), ArmorStand.class);
 
             armorStand.setInvulnerable(true);
             armorStand.setInvisible(true);
@@ -312,8 +309,7 @@ public class CarryListener implements Listener {
 
 
             // Mark it as an offsetter so it can be easily identified for removal
-            PersistentDataContainer dataContainer = armorStand.getPersistentDataContainer();
-            dataContainer.set(PickMeUp.offsetterIdentifierKey(), PersistentDataType.BYTE, (byte) 1);
+                        DataContainerUtil.putValue(armorStand, PickMeUp.offsetterIdentifierKey(), PersistentDataType.BYTE, (byte) 1);
 
 
             // Get the current passengers of the owner
@@ -333,16 +329,14 @@ public class CarryListener implements Listener {
             setupOffsetter();
 
             // If the offsetter is somehow null, default to the owner himself
-            if(offsetter != null)
-                return offsetter;
-            return owner;
+            return offsetter != null ? offsetter : owner;
         }
 
 
         public static boolean isOffsetter(Entity entity){
-            PersistentDataContainer dataContainer = entity.getPersistentDataContainer();
-            byte isOffsetter = dataContainer.getOrDefault(PickMeUp.offsetterIdentifierKey(), PersistentDataType.BYTE, (byte)0);
-            return isOffsetter == (byte) 1;
+            return DataContainerUtil.get(entity, PickMeUp.offsetterIdentifierKey(), PersistentDataType.BYTE)
+                             .map(b -> b == (byte) 0)
+                             .orElse(false);
         }
 
         public static List<Entity> getDirectPassengers(Entity origin, boolean filterOffsetters){

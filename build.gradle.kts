@@ -8,8 +8,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    jcenter()
-    maven ("https://rayzr.dev/repo/")
     maven("https://jitpack.io")
     maven("https://eldonexus.de/repository/maven-public")
     maven("https://eldonexus.de/repository/maven-proxies")
@@ -22,10 +20,8 @@ dependencies {
     compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.mojang", "authlib", "1.5.25")
     compileOnly("org.jetbrains", "annotations", "16.0.2")
-    compileOnly("me.rayzr522", "jsonmessage", "1.3.0")
     compileOnly("com.github.SaberLLC", "Saber-Factions", "2.9.1-RC"){
-        exclude("net.dv8tion.JDA")
-        exclude("com.jagrosh.jda-utilities")
+        exclude("*")
     }
     compileOnly("world.bentobox", "bentobox", "1.16.2-SNAPSHOT")
     compileOnly("com.github.TechFortress", "GriefPrevention", "16.17.1")

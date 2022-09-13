@@ -296,8 +296,8 @@ public class CarryListener implements Listener {
 
             ArmorStand armorStand = (ArmorStand) owner.getWorld().spawnEntity(owner.getLocation(), EntityType.ARMOR_STAND);
 
-            //armorStand.setInvulnerable(true);
-            //armorStand.setInvisible(true);
+            armorStand.setInvulnerable(true);
+            armorStand.setInvisible(true);
             //armorStand.setMarker(true);
             armorStand.setSmall(true);
             armorStand.setBasePlate(false);

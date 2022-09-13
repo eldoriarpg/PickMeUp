@@ -75,7 +75,7 @@ public class CarryListener implements Listener {
         // If the player doesn't have the hand empty, leave
         if (Objects.requireNonNull(player.getEquipment()).getItemInMainHand().getType() != Material.AIR) return;
 
-        MountHandler mountHandler = mountHandlers.get(player.getUniqueId());
+        //MountHandler mountHandler = mountHandlers.get(player.getUniqueId());
         /*//If the player interacts with the entity that is carrying with an empty hand
         if (mountHandler != null
                 && mountHandler.state == MountState.SNEAK_THROW
@@ -191,7 +191,7 @@ public class CarryListener implements Listener {
         if(event.getDismounted() instanceof Player player)
             Optional.ofNullable(mountHandlers.get(player.getUniqueId()))
                     .ifPresentOrElse(handler -> {
-                        if(handler.getDirectPassengers().isEmpty())
+                        if(handler.getDirectPassengers().size() - 1 <= 0)
                             removePlayerData(player);
                     },
                             () ->{
@@ -271,10 +271,10 @@ public class CarryListener implements Listener {
         public boolean removePassenger(Entity passenger){
             Entity mountable = getMountable();
 
-            if(mountable.getUniqueId() == passenger.getUniqueId())
-                return false;
+            boolean result = false;
 
-            boolean result = mountable.removePassenger(passenger);
+            if(mountable.getUniqueId() != passenger.getUniqueId())
+                 result = mountable.removePassenger(passenger);
 
             // If there are no more passengers, dispose
             if(mountable.getPassengers().isEmpty())

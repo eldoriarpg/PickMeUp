@@ -21,6 +21,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -206,6 +207,11 @@ public class CarryListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event){
+        removePlayerData(event.getPlayer());
+    }
+
     private void unmountAll(Player player) {
         for (Entity passenger : player.getPassengers()) {
             player.removePassenger(passenger);
@@ -291,7 +297,7 @@ public class CarryListener implements Listener {
         }
 
         private void setupOffsetter() {
-            if (offsetter != null)
+            if (offsetter != null && !offsetter.isDead())
                 return;
 
             ArmorStand armorStand = (ArmorStand) owner.getWorld().spawnEntity(owner.getLocation(), EntityType.ARMOR_STAND);

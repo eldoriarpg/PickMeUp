@@ -94,6 +94,8 @@ public class ThrowBarHandler extends ReschedulingTask {
 
     public double getAndRemove(Player player) {
         AtomicInteger remove = currentValues.remove(player);
+        //Send an empty message to instantly hide the bar
+        sender.send(MessageChannel.ACTION_BAR, MessageType.BLANK, player, "");
         if (remove != null) {
             return calculateForce(remove.get());
         }

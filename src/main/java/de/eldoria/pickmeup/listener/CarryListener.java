@@ -98,11 +98,11 @@ public class CarryListener implements Listener {
         //Check if the settings/perms allow the player to pick up this entity
         if (!config.mobSettings().canBePickedUp(player, entity.getType())) return;
 
-        if (!player.hasPermission(Permissions.BYPASS_MAXSELFCARRY)
+        /*if (!player.hasPermission(Permissions.BYPASS_MAXSELFCARRY)
                 && (mountHandler != null
                 ? mountHandler.getDirectPassengers().size()
                 : MountHandler.getDirectPassengers(player, true).size())
-                >= config.carrySettings().maximumSelfCarry()) return;
+                >= config.carrySettings().maximumSelfCarry()) return;*/
 
 
         if (!config.carrySettings().isAllowStacking()

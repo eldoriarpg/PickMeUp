@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MountHandler {
     @SuppressWarnings("deprecation")
-    private static final NamespacedKey offsetterIdentifierKey = new NamespacedKey("pickmeup", "IsOffsetter");
+    private static final NamespacedKey offsetterIdentifierKey = new NamespacedKey("pickmeup", "is-offsetter");
 
 
     public MountState state;

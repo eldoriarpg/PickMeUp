@@ -16,8 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import static com.palmergames.bukkit.towny.Towny.getPlugin;
-
 public class Reload extends AdvancedCommand implements ITabExecutor {
     public Reload(Plugin plugin) {
         super(plugin, CommandMeta.builder("reload")
@@ -27,7 +25,7 @@ public class Reload extends AdvancedCommand implements ITabExecutor {
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull String alias, @NotNull Arguments args) throws CommandException {
-        getPlugin().onEnable();
+        ((PickMeUp) plugin()).onReload();
         messageSender().sendLocalizedMessage(sender, "reload.success");
         PickMeUp.logger().info("PickMeUp reloaded!");
     }

@@ -135,7 +135,7 @@ bukkit {
     main = "de.eldoria.pickmeup.PickMeUp"
     website = "https://www.spigotmc.org/resources/88151/"
     apiVersion = "1.13"
-    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny")
+    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens")
     commands {
         register("pickmeup") {
             description = "Main command of pick me up"

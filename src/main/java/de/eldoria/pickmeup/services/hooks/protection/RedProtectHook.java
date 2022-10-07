@@ -4,6 +4,7 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.API.RedProtectAPI;
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -20,7 +21,7 @@ public class RedProtectHook extends AProtectionHook {
     }
 
     @Override
-    public boolean canInteract(Player player, Location location) {
+    public boolean canInteract(Player player, Entity entity, Location location) {
         Region region = redProtectAPI.getRegion(location);
         if (region == null) {
             return true;

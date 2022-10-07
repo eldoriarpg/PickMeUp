@@ -52,7 +52,7 @@ public class CarryListener implements Listener {
     public void onEntityInteract(PlayerInteractAtEntityEvent event) {
         if (!config.worldSettings().allowInWorld(event.getPlayer().getWorld())) return;
 
-        if (!protectionService.canInteract(event.getPlayer(), event.getRightClicked().getLocation())) return;
+        if (!protectionService.canInteract(event.getPlayer(), event.getRightClicked())) return;
 
         if (blocked.contains(event.getRightClicked().getUniqueId())) return;
 

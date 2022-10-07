@@ -54,8 +54,6 @@ public class CarryListener implements Listener {
 
         if (!protectionService.canInteract(event.getPlayer(), event.getRightClicked())) return;
 
-        if (event.getRightClicked().hasMetadata("NPC")) return;
-
         if (blocked.contains(event.getRightClicked().getUniqueId())) return;
 
         MountState mountState = mountStates.get(event.getPlayer().getUniqueId());

@@ -6,7 +6,7 @@ import de.eldoria.pickmeup.services.hooks.protection.IProtectionHook;
 import de.eldoria.pickmeup.services.hooks.protection.PlotSquaredHook;
 import de.eldoria.pickmeup.services.hooks.protection.RedProtectHook;
 import de.eldoria.pickmeup.services.hooks.protection.TownyHook;
-import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -47,9 +47,9 @@ public class ProtectionService {
                 });
     }
 
-    public boolean canInteract(Player player, Location location) {
+    public boolean canInteract(Player player, Entity entity) {
         for (IProtectionHook hook : hooks) {
-            if (!hook.canInteract(player, location)) return false;
+            if (!hook.canInteract(player, entity, entity.getLocation())) return false;
         }
         return true;
     }

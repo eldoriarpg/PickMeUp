@@ -1,6 +1,7 @@
 package de.eldoria.pickmeup.services.hooks.protection;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import world.bentobox.bentobox.BentoBox;
@@ -21,7 +22,7 @@ public class BentoBoxHook extends AProtectionHook {
     }
 
     @Override
-    public boolean canInteract(Player player, Location location) {
+    public boolean canInteract(Player player, Entity entity, Location location) {
         if (!bentoBox.getIWM().inWorld(location)) {
             return true;
         }

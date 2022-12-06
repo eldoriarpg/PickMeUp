@@ -1,0 +1,22 @@
+specVersion: 1
+type: plugin
+name: Pick me Up
+authors:
+  - RainbowDashLabs
+supportedPlatforms:
+  - spigot
+supportedGameVersions: 1.8 - 1.16.5
+category: misc
+introduction:
+  de: Hebe Entities hoch, trage sie herum und wirf sie weg
+  en: Pick up entities, carry them around and throw them away
+description:
+  de: |
+    Mit Pick me Up kann jede vorhandene Entity hochgehoben werden. Das Hochheben kann für jede Entity aktiviert und
+    deaktiviert werden (ja, auch für Spieler!). Für jede Entity kann auch eine Permission festgelegt werden.
+    Da das noch lange nicht genug ist, können Entities nach dem Hochheben wieder weggeworfen werden.
+    Und klar, auch jemand der bereits jemanden trägt, kann hochgehoben werden.
+  en: |
+    Pick me Up allows you to pick up every existing entity. You can enable and disable pick up for every entity 
+    (Players as well if you want). You can also define a permission for every entity. Because this is not enough and 
+    just let them down again is lame you can throw them away. And yes you can pickup someone who picked up someone.

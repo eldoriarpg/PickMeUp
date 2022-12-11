@@ -1,8 +1,11 @@
 specVersion: 1
 type: plugin
-name: Pick me Up
+name: Pick Me Up
 authors:
   - RainbowDashLabs
+download:
+  url: https://eldonexus.de/service/rest/v1/search/assets/download?sort=version&direction=desc&&repository=maven-releases&maven.groupId=de.eldoria&maven.artifactId=pickmeup&maven.classifier=all
+  name: Nexus
 supportedPlatforms:
   - spigot
 supportedGameVersions: 1.8 - 1.16.5

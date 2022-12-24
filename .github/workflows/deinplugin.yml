@@ -1,0 +1,14 @@
+name: Update DeinPlugin
+
+on: [push, pull_request]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    name: Update DeinPlugin meta data
+
+    steps:
+      - name: Update
+        uses: deinplugin/deinplugin-publish-action@v0.1
+        with:
+          token: 'dummy'

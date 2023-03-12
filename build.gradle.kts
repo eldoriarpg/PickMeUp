@@ -11,17 +11,23 @@ repositories {
     maven("https://eldonexus.de/repository/maven-public")
     maven("https://eldonexus.de/repository/maven-proxies")
     maven("https://raw.githubusercontent.com/FabioZumbi12/RedProtect/mvn-repo/")
+    maven("https://raw.githubusercontent.com/FabioZumbi12/UltimateChat/mvn-repo/")
+    maven("https://maven.citizensnpcs.co/repo")
+    maven("https://jitpack.io")
 }
 
 dependencies {
-    implementation("de.eldoria", "eldo-util", "1.13.9")
+    implementation("de.eldoria", "eldo-util", "1.14.0-DEV")
     compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.mojang", "authlib", "1.5.25")
     compileOnly("org.jetbrains", "annotations", "16.0.2")
+    compileOnly("net.citizensnpcs", "citizens-main","2.0.30-SNAPSHOT") {
+        exclude("*")
+    }
     compileOnly("world.bentobox", "bentobox", "1.16.2-SNAPSHOT")
-    compileOnly("com.github.TechFortress", "GriefPrevention", "16.17.1")
+    compileOnly("com.github.TechFortress", "GriefPrevention", "16.18")
     compileOnly("com.github.TownyAdvanced", "Towny", "0.97.1.0")
-    implementation("com.plotsquared", "PlotSquared-Core", "6.9.0") {
+    compileOnly("com.plotsquared", "PlotSquared-Core", "6.9.0") {
         exclude("com.intellectualsites.paster")
         exclude("net.kyori")
         exclude("org.apache.logging.log4j")
@@ -46,7 +52,7 @@ dependencies {
 }
 
 group = "de.eldoria"
-version = "1.3.7"
+version = "1.3.9"
 var mainPackage = "pickmeup"
 val shadebase = group as String? + "." + mainPackage + "."
 
@@ -131,7 +137,7 @@ bukkit {
     main = "de.eldoria.pickmeup.PickMeUp"
     website = "https://www.spigotmc.org/resources/88151/"
     apiVersion = "1.13"
-    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny")
+    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens")
     commands {
         register("pickmeup") {
             description = "Main command of pick me up"

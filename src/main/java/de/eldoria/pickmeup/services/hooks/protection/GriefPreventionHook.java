@@ -2,6 +2,7 @@ package de.eldoria.pickmeup.services.hooks.protection;
 
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -18,7 +19,7 @@ public class GriefPreventionHook extends AProtectionHook {
     }
 
     @Override
-    public boolean canInteract(Player player, Location location) {
+    public boolean canInteract(Player player, Entity entity, Location location) {
         if (!griefPrevention.claimsEnabledForWorld(location.getWorld())) {
             return true;
         }

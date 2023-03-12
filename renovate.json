@@ -1,0 +1,10 @@
+{
+  "baseBranches": ["dev"],
+  "dependencyDashboard": true,
+  "labels": ["dependencies"],
+  "extends": ["config:base"],
+  "ignoreDeps": ["spigot-api", "MockBukkit-v1.19"],
+  "reviewers": ["RainbowDashLabs"],
+  "prConcurrentLimit": 3,
+  "prHourlyLimit": 20
+}

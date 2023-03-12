@@ -27,7 +27,7 @@ public class Reload extends AdvancedCommand implements ITabExecutor {
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull String alias, @NotNull Arguments args) throws CommandException {
-        getPlugin().onEnable();
+        plugin().onEnable();
         messageSender().sendLocalizedMessage(sender, "reload.success");
         PickMeUp.logger().info("PickMeUp reloaded!");
     }

@@ -6,6 +6,7 @@ import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.PlotArea;
 import com.plotsquared.core.plot.world.PlotAreaManager;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -22,7 +23,7 @@ public class PlotSquaredHook extends AProtectionHook {
     }
 
     @Override
-    public boolean canInteract(Player player, Location location) {
+    public boolean canInteract(Player player, Entity entity, Location location) {
         PlotAreaManager areaManager = plotSquared.getPlotAreaManager();
         if (!areaManager.hasPlotArea(location.getWorld().getName())) {
             return true;

@@ -33,7 +33,7 @@ dependencies {
         exclude("org.apache.logging.log4j")
 
     }
-    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.9.0") { isTransitive = false } // PlotSquared Bukkit API
+    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.11.1") { isTransitive = false } // PlotSquared Bukkit API
 
     compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Spigot", "8.0.0-SNAPSHOT") {
         exclude("com.github.MilkBowl")

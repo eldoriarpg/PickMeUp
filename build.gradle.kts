@@ -12,6 +12,7 @@ repositories {
     maven("https://eldonexus.de/repository/maven-proxies")
     maven("https://raw.githubusercontent.com/FabioZumbi12/RedProtect/mvn-repo/")
     maven("https://maven.citizensnpcs.co/repo")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -23,7 +24,7 @@ dependencies {
         exclude("*")
     }
     compileOnly("world.bentobox", "bentobox", "1.16.2-SNAPSHOT")
-    compileOnly("com.github.TechFortress", "GriefPrevention", "16.17.1")
+    compileOnly("com.github.TechFortress", "GriefPrevention", "16.18")
     compileOnly("com.github.TownyAdvanced", "Towny", "0.97.1.0")
     compileOnly("com.plotsquared", "PlotSquared-Core", "6.9.0") {
         exclude("com.intellectualsites.paster")

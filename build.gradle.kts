@@ -11,6 +11,7 @@ repositories {
     maven("https://eldonexus.de/repository/maven-public")
     maven("https://eldonexus.de/repository/maven-proxies")
     maven("https://raw.githubusercontent.com/FabioZumbi12/RedProtect/mvn-repo/")
+    maven("https://raw.githubusercontent.com/FabioZumbi12/UltimateChat/mvn-repo/")
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://jitpack.io")
 }

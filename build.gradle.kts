@@ -20,7 +20,7 @@ dependencies {
     implementation("de.eldoria", "eldo-util", "1.14.0-DEV")
     compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.mojang", "authlib", "1.5.25")
-    compileOnly("org.jetbrains", "annotations", "16.0.2")
+    compileOnly("org.jetbrains", "annotations", "16.0.3")
     compileOnly("net.citizensnpcs", "citizens-main","2.0.30-SNAPSHOT") {
         exclude("*")
     }

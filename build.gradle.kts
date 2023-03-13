@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation("de.eldoria", "eldo-util", "1.14.0-DEV")
+    implementation("de.eldoria", "eldo-util", "1.14.4")
     compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.mojang", "authlib", "1.5.25")
     compileOnly("org.jetbrains", "annotations", "24.0.1")

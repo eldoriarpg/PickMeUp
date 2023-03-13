@@ -27,11 +27,8 @@ dependencies {
     compileOnly("world.bentobox", "bentobox", "1.22.0-SNAPSHOT")
     compileOnly("com.github.TechFortress", "GriefPrevention", "16.18.1")
     compileOnly("com.github.TownyAdvanced", "Towny", "0.98.6.17")
-    compileOnly("com.plotsquared", "PlotSquared-Core", "6.9.0") {
-        exclude("com.intellectualsites.paster")
-        exclude("net.kyori")
-        exclude("org.apache.logging.log4j")
-
+    compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {
+        exclude("*")
     }
     compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.11.1") { isTransitive = false } // PlotSquared Bukkit API
 

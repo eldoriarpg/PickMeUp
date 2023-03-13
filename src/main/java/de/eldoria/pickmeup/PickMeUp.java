@@ -1,11 +1,13 @@
 package de.eldoria.pickmeup;
 
 import de.eldoria.eldoutilities.bstats.EldoMetrics;
+import de.eldoria.eldoutilities.debug.DefaultProperties;
+import de.eldoria.eldoutilities.debug.UserData;
 import de.eldoria.eldoutilities.localization.ILocalizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
 import de.eldoria.eldoutilities.updater.Updater;
-import de.eldoria.eldoutilities.updater.butlerupdater.ButlerUpdateData;
+import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateData;
 import de.eldoria.pickmeup.commands.PickMeUpCommand;
 import de.eldoria.pickmeup.config.CarrySettings;
 import de.eldoria.pickmeup.config.Configuration;
@@ -17,6 +19,7 @@ import de.eldoria.pickmeup.services.ProtectionService;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,9 +37,6 @@ public class PickMeUp extends EldoPlugin {
             MessageSender.create(this, "§6[PMU]");
             registerListener(new CarryListener(this, configuration, protectionService));
             registerCommand("pickmeup", new PickMeUpCommand(this));
-            Updater.butler(new ButlerUpdateData(this, Permissions.RELOAD,
-                    configuration.generalSettings().isUpdateCheck(),
-                    false, 21, ButlerUpdateData.HOST));
             EldoMetrics metrics = new EldoMetrics(this, 9960);
             if (metrics.isEnabled()) {
                 getLogger().info("§2Metrics enabled. Thank you <3");
@@ -46,6 +46,15 @@ public class PickMeUp extends EldoPlugin {
             configuration.reload();
         }
         ILocalizer.getPluginLocalizer(this).setLocale(configuration.generalSettings().language());
+    }
+
+    @Override
+    public void onPostStart() throws Throwable {
+        Updater.lyna(LynaUpdateData.builder(this, 5)
+                .notifyPermission(Permissions.RELOAD)
+                .notifyUpdate(configuration.generalSettings().isUpdateCheck())
+                .build()
+        );
     }
 
     @Override

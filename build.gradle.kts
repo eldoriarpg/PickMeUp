@@ -26,7 +26,7 @@ dependencies {
     }
     compileOnly("world.bentobox", "bentobox", "1.22.0-SNAPSHOT")
     compileOnly("com.github.TechFortress", "GriefPrevention", "16.18.1")
-    compileOnly("com.github.TownyAdvanced", "Towny", "0.98.6.18")
+    compileOnly("com.github.TownyAdvanced", "Towny", "0.98.6.19")
     compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {
         exclude("*")
     }

@@ -14,6 +14,7 @@ import org.bukkit.plugin.PluginManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class ProtectionService {
     private final Plugin plugin;
@@ -24,7 +25,7 @@ public class ProtectionService {
     }
 
     public static ProtectionService of(Plugin plugin) {
-        ProtectionService protectionService = new ProtectionService(plugin);
+        var protectionService = new ProtectionService(plugin);
         protectionService.init();
         return protectionService;
     }
@@ -41,7 +42,13 @@ public class ProtectionService {
                     return false;
                 })
                 .forEach(hook -> {
-                    hook.init(plugin);
+                    try {
+                        hook.init(plugin);
+                    } catch (Throwable e) {
+                        plugin.getLogger().log(Level.WARNING, "Failed to enable protection hook for " + hook.pluginName(), e);
+                        plugin.getLogger().log(Level.WARNING, "Please make sure you are using the latest version. If you are please report this error.");
+                        return;
+                    }
                     hooks.add(hook);
                     plugin.getLogger().info("Enabled protection hook for " + hook.pluginName());
                 });

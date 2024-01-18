@@ -2,7 +2,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
     java
     `maven-publish`
-    id("de.chojo.publishdata") version "1.3.0"
+    id("de.chojo.publishdata") version "1.4.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
 }
 

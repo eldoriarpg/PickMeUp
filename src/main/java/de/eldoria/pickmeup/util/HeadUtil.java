@@ -171,8 +171,8 @@ public class HeadUtil {
                 return "";
             case ZOGLIN:
                 return "";
-            case PIGLIN_BRUTE:
-                return "";
+            //case PIGLIN_BRUTE:
+              //  return "";
             case FISHING_HOOK:
                 return "";
             case PLAYER:
@@ -260,7 +260,7 @@ public class HeadUtil {
             case PIGLIN:
             case STRIDER:
             case ZOGLIN:
-            case PIGLIN_BRUTE:
+            //case PIGLIN_BRUTE:
             case FISHING_HOOK:
             case PLAYER:
                 return true;

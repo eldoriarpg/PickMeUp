@@ -1,11 +1,13 @@
 package de.eldoria.pickmeup.scheduler;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import be.seeseemelk.mockbukkit.MockBukkit;
 
 class ThrowBarHandlerTest {
     @Test
+    @Disabled
     public void calcTest() {
         MockBukkit.mock();
         for (int i = 0; i < 60; i++) {

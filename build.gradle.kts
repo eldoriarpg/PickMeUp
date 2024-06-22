@@ -53,7 +53,7 @@ dependencies {
 }
 
 group = "de.eldoria"
-version = "1.3.10"
+version = "1.3.11"
 var mainPackage = "pickmeup"
 val shadebase = group as String? + "." + mainPackage + "."
 
@@ -107,7 +107,6 @@ tasks {
     }
 
     shadowJar {
-        relocate("de.eldoria.eldoutilities", shadebase + "eldoutilities")
         mergeServiceFiles()
         minimize()
     }

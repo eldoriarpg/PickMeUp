@@ -1,10 +1,9 @@
 package de.eldoria.pickmeup;
 
-import de.eldoria.eldoutilities.bstats.EldoMetrics;
-import de.eldoria.eldoutilities.debug.DefaultProperties;
-import de.eldoria.eldoutilities.debug.UserData;
 import de.eldoria.eldoutilities.localization.ILocalizer;
+import de.eldoria.eldoutilities.localization.Localizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
+import de.eldoria.eldoutilities.metrics.EldoMetrics;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
 import de.eldoria.eldoutilities.updater.Updater;
 import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateData;
@@ -19,9 +18,9 @@ import de.eldoria.pickmeup.services.ProtectionService;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class PickMeUp extends EldoPlugin {
 
@@ -33,8 +32,8 @@ public class PickMeUp extends EldoPlugin {
         if (!initialized) {
             configuration = new Configuration(this);
             ProtectionService protectionService = ProtectionService.of(this);
-            ILocalizer.create(this, "en_US", "de_DE", "zh_CN");
-            MessageSender.create(this, "§6[PMU]");
+            Localizer.create(this, "en_US", "de_DE", "zh_CN");
+            MessageSender.builder(this).prefix("<gold>[PMU]").register();
             registerListener(new CarryListener(this, configuration, protectionService));
             registerCommand("pickmeup", new PickMeUpCommand(this));
             EldoMetrics metrics = new EldoMetrics(this, 9960);
@@ -55,6 +54,11 @@ public class PickMeUp extends EldoPlugin {
                 .notifyUpdate(configuration.generalSettings().isUpdateCheck())
                 .build()
         );
+    }
+
+    @Override
+    public Level getLogLevel() {
+        return Level.INFO;
     }
 
     @Override

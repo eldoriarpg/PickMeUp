@@ -1,13 +1,11 @@
 package de.eldoria.pickmeup.scheduler;
 
-import de.eldoria.eldoutilities.crossversion.ServerVersion;
-import de.eldoria.eldoutilities.crossversion.builder.VersionFunctionBuilder;
+import de.eldoria.eldoutilities.crossversion.builder.FunctionBuilder;
 import de.eldoria.eldoutilities.crossversion.function.VersionFunction;
-import de.eldoria.eldoutilities.messages.MessageChannel;
 import de.eldoria.eldoutilities.messages.MessageSender;
-import de.eldoria.eldoutilities.messages.MessageType;
 import de.eldoria.eldoutilities.threading.ReschedulingTask;
 import de.eldoria.eldoutilities.utils.EMath;
+import de.eldoria.eldoutilities.utils.Version;
 import de.eldoria.pickmeup.PickMeUp;
 import de.eldoria.pickmeup.util.ColorConverter;
 import net.md_5.bungee.api.ChatColor;
@@ -29,10 +27,10 @@ public class ThrowBarHandler extends ReschedulingTask {
 
     static {
         FULL_BAR = new LinkedList<>();
-        VersionFunction<String, String> colorMapper = VersionFunctionBuilder.functionBuilder(String.class, String.class)
-                .addVersionFunctionBetween(ServerVersion.MC_1_13, ServerVersion.MC_1_15,
+        VersionFunction<String, String> colorMapper = FunctionBuilder.functionBuilder(String.class, String.class)
+                .addVersionFunctionBetween(Version.of(1,13), Version.of(1,15,Integer.MAX_VALUE),
                         color -> "§" + ColorConverter.getNearestBukkitChatColor(Color.decode(color)).getChar())
-                .addVersionFunctionBetween(ServerVersion.MC_1_16, ServerVersion.MC_1_20,
+                .addVersionFunctionBetween(Version.of(1,16), Version.of(1,Integer.MAX_VALUE),
                         color -> ChatColor.of(color).toString())
                 .build();
 
@@ -74,7 +72,7 @@ public class ThrowBarHandler extends ReschedulingTask {
         for (Map.Entry<Player, AtomicInteger> entry : currentValues.entrySet()) {
             int currValue = entry.getValue().incrementAndGet();
             String barDisplay = String.join("", FULL_BAR.subList(0, calculateIndex(currValue)));
-            sender.send(MessageChannel.ACTION_BAR, MessageType.BLANK, entry.getKey(), barDisplay);
+            sender.sendActionBar(entry.getKey(), barDisplay);
         }
         if (currentValues.isEmpty()) {
             idleTicks++;

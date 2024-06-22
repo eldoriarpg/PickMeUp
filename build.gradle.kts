@@ -17,10 +17,10 @@ repositories {
 }
 
 dependencies {
-    implementation("de.eldoria", "eldo-util", "1.14.4")
-    compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
+    bukkitLibrary(libs.bundles.eldoria.utilities)
+    compileOnly(libs.spigot.v16)
     compileOnly("com.mojang", "authlib", "1.5.25")
-    compileOnly("org.jetbrains", "annotations", "24.1.0")
+    compileOnly(libs.jetbrains.annotations)
     compileOnly("net.citizensnpcs", "citizens-main","2.0.30-SNAPSHOT") {
         exclude("*")
     }
@@ -45,6 +45,7 @@ dependencies {
         exclude("com.typesafe")
     }
 
+    testImplementation(libs.bundles.eldoria.utilities)
     testImplementation(platform("org.junit:junit-bom:5.10.2"))
     testImplementation("org.junit.jupiter", "junit-jupiter")
     testImplementation("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")

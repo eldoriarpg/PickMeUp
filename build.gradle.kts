@@ -1,9 +1,9 @@
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     java
     `maven-publish`
-    id("de.chojo.publishdata") version "1.0.4"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
+    id("de.chojo.publishdata") version "1.4.0"
+    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
 }
 
 repositories {
@@ -17,25 +17,25 @@ repositories {
 }
 
 dependencies {
-    implementation("de.eldoria", "eldo-util", "1.14.0-DEV")
-    compileOnly("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
+    bukkitLibrary(libs.bundles.eldoria.utilities)
+    compileOnly(libs.spigot.v16)
     compileOnly("com.mojang", "authlib", "1.5.25")
-    compileOnly("org.jetbrains", "annotations", "16.0.2")
+    compileOnly(libs.jetbrains.annotations)
     compileOnly("net.citizensnpcs", "citizens-main","2.0.30-SNAPSHOT") {
         exclude("*")
     }
-    compileOnly("world.bentobox", "bentobox", "1.16.2-SNAPSHOT")
-    compileOnly("com.github.TechFortress", "GriefPrevention", "16.18")
-    compileOnly("com.github.TownyAdvanced", "Towny", "0.97.1.0")
-    compileOnly("com.plotsquared", "PlotSquared-Core", "6.9.0") {
-        exclude("com.intellectualsites.paster")
-        exclude("net.kyori")
-        exclude("org.apache.logging.log4j")
-
+    compileOnly("world.bentobox", "bentobox", "2.3.0-SNAPSHOT")
+    compileOnly("com.github.TechFortress", "GriefPrevention", "17.0.0")
+    compileOnly("com.github.TownyAdvanced", "Towny", "0.100.0.17")
+    compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {
+        exclude("*")
     }
-    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.9.0") { isTransitive = false } // PlotSquared Bukkit API
+    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.11.1") { isTransitive = false } // PlotSquared Bukkit API
 
-    compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Spigot", "8.0.0-SNAPSHOT") {
+    compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Core", "8.1.1") {
+        exclude("*")
+    }
+    compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Spigot", "8.1.1") {
         exclude("com.github.MilkBowl")
         exclude("com.github.TheBusyBiscuit")
         exclude("com.gmail.nossr50.mcMMO")
@@ -45,14 +45,15 @@ dependencies {
         exclude("com.typesafe")
     }
 
-    testImplementation(platform("org.junit:junit-bom:5.7.2"))
+    testImplementation(libs.bundles.eldoria.utilities)
+    testImplementation(platform("org.junit:junit-bom:5.10.2"))
     testImplementation("org.junit.jupiter", "junit-jupiter")
     testImplementation("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
-    testImplementation("com.github.seeseemelk", "MockBukkit-v1.16", "1.0.0")
+    testImplementation("com.github.seeseemelk", "MockBukkit-v1.16", "1.5.2")
 }
 
 group = "de.eldoria"
-version = "1.3.9"
+version = "1.3.10"
 var mainPackage = "pickmeup"
 val shadebase = group as String? + "." + mainPackage + "."
 

@@ -1,11 +1,12 @@
 package de.eldoria.pickmeup;
 
-import de.eldoria.eldoutilities.bstats.EldoMetrics;
 import de.eldoria.eldoutilities.localization.ILocalizer;
+import de.eldoria.eldoutilities.localization.Localizer;
 import de.eldoria.eldoutilities.messages.MessageSender;
+import de.eldoria.eldoutilities.metrics.EldoMetrics;
 import de.eldoria.eldoutilities.plugin.EldoPlugin;
 import de.eldoria.eldoutilities.updater.Updater;
-import de.eldoria.eldoutilities.updater.butlerupdater.ButlerUpdateData;
+import de.eldoria.eldoutilities.updater.lynaupdater.LynaUpdateData;
 import de.eldoria.pickmeup.commands.PickMeUpCommand;
 import de.eldoria.pickmeup.config.CarrySettings;
 import de.eldoria.pickmeup.config.Configuration;
@@ -19,6 +20,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class PickMeUp extends EldoPlugin {
 
@@ -30,13 +32,10 @@ public class PickMeUp extends EldoPlugin {
         if (!initialized) {
             configuration = new Configuration(this);
             ProtectionService protectionService = ProtectionService.of(this);
-            ILocalizer.create(this, "en_US", "de_DE", "zh_CN");
-            MessageSender.create(this, "§6[PMU]");
+            Localizer.create(this, "en_US", "de_DE", "zh_CN");
+            MessageSender.builder(this).prefix("<gold>[PMU]").register();
             registerListener(new CarryListener(this, configuration, protectionService));
             registerCommand("pickmeup", new PickMeUpCommand(this));
-            Updater.butler(new ButlerUpdateData(this, Permissions.RELOAD,
-                    configuration.generalSettings().isUpdateCheck(),
-                    false, 21, ButlerUpdateData.HOST));
             EldoMetrics metrics = new EldoMetrics(this, 9960);
             if (metrics.isEnabled()) {
                 getLogger().info("§2Metrics enabled. Thank you <3");
@@ -46,6 +45,20 @@ public class PickMeUp extends EldoPlugin {
             configuration.reload();
         }
         ILocalizer.getPluginLocalizer(this).setLocale(configuration.generalSettings().language());
+    }
+
+    @Override
+    public void onPostStart() throws Throwable {
+        Updater.lyna(LynaUpdateData.builder(this, 5)
+                .notifyPermission(Permissions.RELOAD)
+                .notifyUpdate(configuration.generalSettings().isUpdateCheck())
+                .build()
+        );
+    }
+
+    @Override
+    public Level getLogLevel() {
+        return Level.INFO;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package de.eldoria.pickmeup.listener;
 
-import de.eldoria.eldoutilities.core.EldoUtilities;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.scheduling.DelayedActions;
 import de.eldoria.pickmeup.PickMeUp;
@@ -29,7 +28,7 @@ import java.util.UUID;
 
 public class CarryListener implements Listener {
     private final Configuration config;
-    private ProtectionService protectionService;
+    private final ProtectionService protectionService;
     private final Plugin plugin;
     private final ThrowBarHandler throwBarHandler;
     private final Set<UUID> blocked = new HashSet<>();
@@ -59,7 +58,7 @@ public class CarryListener implements Listener {
         MountState mountState = mountStates.get(event.getPlayer().getUniqueId());
         if (mountState == MountState.SNEAK_THROW) {
             if (event.getPlayer().getPassengers().contains(event.getRightClicked())
-                    && event.getPlayer().getEquipment().getItemInMainHand().getType() == Material.AIR) {
+                && event.getPlayer().getEquipment().getItemInMainHand().getType() == Material.AIR) {
                 unmountAll(event.getPlayer());
                 throwBarHandler.getAndRemove(event.getPlayer());
                 mountStates.remove(event.getPlayer().getUniqueId());
@@ -74,12 +73,13 @@ public class CarryListener implements Listener {
         Player player = event.getPlayer();
         if (player.getEquipment().getItemInMainHand().getType() != Material.AIR) return;
         if (!config.mobSettings().canBePickedUp(event.getPlayer(), event.getRightClicked().getType())) return;
+        // TODO: Add player toggle
         if (!player.getPassengers().isEmpty()) return;
         if (!player.isSneaking()) return;
 
         if (!event.getRightClicked().getPassengers().isEmpty() && !config.carrySettings().isAllowStacking()) {
             if (!player.hasPermission(Permissions.BYPASS_NOSTACK)) {
-                messageSender.sendLocalizedError(player, "nostack");
+                messageSender.sendError(player, "nostack");
                 return;
             }
         }
@@ -127,9 +127,9 @@ public class CarryListener implements Listener {
                     player.removePassenger(passenger);
                     passenger.setVelocity(throwVec);
                     plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector()
-                            + " | Force: " + force
-                            + " | ThrowForce: " + config.carrySettings().throwForce()
-                            + " | ViewVec: " + throwVec);
+                                              + " | Force: " + force
+                                              + " | ThrowForce: " + config.carrySettings().throwForce()
+                                              + " | ViewVec: " + throwVec);
                 }
             }
             mountStates.remove(player.getUniqueId());

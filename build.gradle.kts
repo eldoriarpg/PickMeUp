@@ -32,6 +32,9 @@ dependencies {
     }
     compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.11.1") { isTransitive = false } // PlotSquared Bukkit API
 
+    compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Core", "8.1.1") {
+        exclude("*")
+    }
     compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Spigot", "8.1.1") {
         exclude("com.github.MilkBowl")
         exclude("com.github.TheBusyBiscuit")

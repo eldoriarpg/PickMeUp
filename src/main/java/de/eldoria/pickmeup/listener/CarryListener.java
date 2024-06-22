@@ -11,7 +11,6 @@ import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,7 +28,7 @@ import java.util.UUID;
 
 public class CarryListener implements Listener {
     private final Configuration config;
-    private ProtectionService protectionService;
+    private final ProtectionService protectionService;
     private final Plugin plugin;
     private final ThrowBarHandler throwBarHandler;
     private final Set<UUID> blocked = new HashSet<>();
@@ -80,7 +79,7 @@ public class CarryListener implements Listener {
 
         if (!event.getRightClicked().getPassengers().isEmpty() && !config.carrySettings().isAllowStacking()) {
             if (!player.hasPermission(Permissions.BYPASS_NOSTACK)) {
-                messageSender.sendLocalizedError(player, "nostack");
+                messageSender.sendError(player, "nostack");
                 return;
             }
         }

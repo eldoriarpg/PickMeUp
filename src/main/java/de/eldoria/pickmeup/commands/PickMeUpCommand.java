@@ -4,7 +4,6 @@ import de.eldoria.eldoutilities.commands.command.AdvancedCommand;
 import de.eldoria.eldoutilities.commands.command.CommandMeta;
 import de.eldoria.eldoutilities.commands.defaultcommands.DefaultAbout;
 import de.eldoria.eldoutilities.commands.defaultcommands.DefaultDebug;
-import de.eldoria.eldoutilities.simplecommands.EldoCommand;
 import de.eldoria.pickmeup.util.Permissions;
 import org.bukkit.plugin.Plugin;
 

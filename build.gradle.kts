@@ -24,7 +24,7 @@ dependencies {
     compileOnly("net.citizensnpcs", "citizens-main","2.0.30-SNAPSHOT") {
         exclude("*")
     }
-    compileOnly("world.bentobox", "bentobox", "2.3.0-SNAPSHOT")
+    compileOnly("world.bentobox", "bentobox", "2.3.0")
     compileOnly("com.github.TechFortress", "GriefPrevention", "17.0.0")
     compileOnly("com.github.TownyAdvanced", "Towny", "0.100.0.17")
     compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {

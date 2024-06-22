@@ -28,9 +28,9 @@ public class ThrowBarHandler extends ReschedulingTask {
     static {
         FULL_BAR = new LinkedList<>();
         VersionFunction<String, String> colorMapper = FunctionBuilder.functionBuilder(String.class, String.class)
-                .addVersionFunctionBetween(Version.of(1,13), Version.of(1,15,Integer.MAX_VALUE),
+                .addExclusiveVersion(Version.of(1,13), Version.of(1,16),
                         color -> "§" + ColorConverter.getNearestBukkitChatColor(Color.decode(color)).getChar())
-                .addVersionFunctionBetween(Version.of(1,16), Version.of(1,Integer.MAX_VALUE),
+                .addExclusiveVersion(Version.of(1,16), Version.of(1,Integer.MAX_VALUE),
                         color -> ChatColor.of(color).toString())
                 .build();
 

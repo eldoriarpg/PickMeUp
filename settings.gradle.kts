@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             // utilities
-            version("eldoutil", "2.0.9")
+            version("eldoutil", "2.0.10")
             library("legacy-serialization", "de.eldoria.util","legacy-serialization").versionRef("eldoutil")
             library("plugin", "de.eldoria.util","plugin").versionRef("eldoutil")
             library("metrics", "de.eldoria.util","metrics").versionRef("eldoutil")

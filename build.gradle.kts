@@ -14,6 +14,7 @@ repositories {
     maven("https://raw.githubusercontent.com/FabioZumbi12/UltimateChat/mvn-repo/")
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://jitpack.io")
+    maven("https://repo.glaremasters.me/repository/towny/")
 }
 
 dependencies {
@@ -26,7 +27,7 @@ dependencies {
     }
     compileOnly("world.bentobox", "bentobox", "2.3.0-SNAPSHOT")
     compileOnly("com.github.TechFortress", "GriefPrevention", "17.0.0")
-    compileOnly("com.github.TownyAdvanced", "Towny", "0.100.4.4")
+    compileOnly("com.palmergames.bukkit.towny", "towny", "0.100.4.0")
     compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {
         exclude("*")
     }

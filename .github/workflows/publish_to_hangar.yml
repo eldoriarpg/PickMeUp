@@ -22,7 +22,7 @@ jobs:
       - name: Test with Gradle
         run: ./gradlew test
       - name: Publish release to hangar
-        if: github.ref_name == 'main'
+        if: github.ref_name == 'master'
         env:
           HANGAR_KEY: ${{ secrets.HANGAR_KEY }}
           HANGAR_CHANNEL: Release

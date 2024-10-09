@@ -16,6 +16,7 @@ import de.eldoria.pickmeup.config.WorldSettings;
 import de.eldoria.pickmeup.listener.CarryListener;
 import de.eldoria.pickmeup.services.ProtectionService;
 import de.eldoria.pickmeup.util.Permissions;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.Arrays;
@@ -32,12 +33,12 @@ public class PickMeUp extends EldoPlugin {
         if (!initialized) {
             configuration = new Configuration(this);
             ProtectionService protectionService = ProtectionService.of(this);
-            Localizer.create(this, "en_US", "de_DE", "zh_CN");
+            Localizer.builder(this, "en_US").setIncludedLocales("de_DE", "zh_CN");
             MessageSender.builder(this).prefix("<gold>[PMU]").register();
             registerListener(new CarryListener(this, configuration, protectionService));
             registerCommand("pickmeup", new PickMeUpCommand(this));
-            EldoMetrics metrics = new EldoMetrics(this, 9960);
-            if (metrics.isEnabled()) {
+            Metrics metrics = new Metrics(this, 9960);
+            if (EldoMetrics.isEnabled(this)) {
                 getLogger().info("§2Metrics enabled. Thank you <3");
             }
             initialized = true;

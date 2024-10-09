@@ -55,7 +55,7 @@ dependencies {
 }
 
 group = "de.eldoria"
-version = "1.3.11"
+version = "1.3.12"
 var mainPackage = "pickmeup"
 val shadebase = group as String? + "." + mainPackage + "."
 

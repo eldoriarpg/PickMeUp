@@ -13,7 +13,7 @@ pluginManagement{
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("bstats","org.bstats:bstats-bukkit:3.0.2")
+            library("bstats","org.bstats:bstats-bukkit:3.1.0")
 
             // utilities
             version("eldoutil", "2.1.6")

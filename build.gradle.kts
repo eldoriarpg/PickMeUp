@@ -1,7 +1,10 @@
+import io.papermc.hangarpublishplugin.model.Platforms
+
 plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
     java
     `maven-publish`
+        alias(libs.plugins.hangar)
     id("de.chojo.publishdata") version "1.4.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
 }
@@ -146,6 +149,23 @@ bukkit {
             description = "Main command of pick me up"
             usage = "Trust the tab completion"
             aliases = listOf("pmu")
+        }
+    }
+}
+
+hangarPublish {
+    publications.register("plugin") {
+        version.set(publishData.getVersion())
+        id = "PickMeUp"
+        channel = System.getenv("HANGAR_CHANNEL")
+
+        apiKey = System.getenv("HANGAR_KEY")
+
+        platforms {
+            register(Platforms.PAPER) {
+                jar.set(tasks.shadowJar.flatMap { it.archiveFile })
+                platformVersions.set(listOf("1.16.5-1.21"))
+            }
         }
     }
 }

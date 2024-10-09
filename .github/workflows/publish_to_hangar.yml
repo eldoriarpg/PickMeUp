@@ -1,0 +1,35 @@
+name: Publish to Hangar
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    environment: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Build with Gradle
+        run: ./gradlew --build-cache build
+      - name: Test with Gradle
+        run: ./gradlew test
+      - name: Publish release to hangar
+        if: github.ref_name == 'main'
+        env:
+          HANGAR_KEY: ${{ secrets.HANGAR_KEY }}
+          HANGAR_CHANNEL: Release
+        run: ./gradlew publishAllPublicationsToHangar
+      - name: Publish dev to hangar
+        if: github.ref_name == 'dev'
+        env:
+          HANGAR_KEY: ${{ secrets.HANGAR_KEY }}
+          HANGAR_CHANNEL: Development
+        run: ./gradlew publishAllPublicationsToHangar

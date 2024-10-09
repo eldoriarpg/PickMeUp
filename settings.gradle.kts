@@ -41,6 +41,7 @@ dependencyResolutionManagement {
             plugin("spotless", "com.diffplug.spotless").version("6.25.0")
             plugin("shadow", "com.gradleup.shadow").version("8.3.3")
             plugin("pluginyml-bukkit", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
+            plugin("hangar", "io.papermc.hangar-publish-plugin").version("0.1.2")
         }
 
         create("testlibs") {

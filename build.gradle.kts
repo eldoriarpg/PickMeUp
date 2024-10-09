@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     bukkitLibrary(libs.bundles.eldoria.utilities)
+    implementation(libs.bstats)
     compileOnly(libs.spigot.v16)
     compileOnly("com.mojang", "authlib", "1.5.25")
     compileOnly(libs.jetbrains.annotations)
@@ -108,6 +109,7 @@ tasks {
     }
 
     shadowJar {
+        relocate("org.bstats", shadebase + "bstats")
         mergeServiceFiles()
         minimize()
     }

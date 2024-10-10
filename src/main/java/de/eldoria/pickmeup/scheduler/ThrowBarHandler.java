@@ -1,18 +1,12 @@
 package de.eldoria.pickmeup.scheduler;
 
-import de.eldoria.eldoutilities.crossversion.builder.FunctionBuilder;
-import de.eldoria.eldoutilities.crossversion.function.VersionFunction;
 import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.threading.ReschedulingTask;
 import de.eldoria.eldoutilities.utils.EMath;
-import de.eldoria.eldoutilities.utils.Version;
 import de.eldoria.pickmeup.PickMeUp;
-import de.eldoria.pickmeup.util.ColorConverter;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,15 +21,8 @@ public class ThrowBarHandler extends ReschedulingTask {
 
     static {
         FULL_BAR = new LinkedList<>();
-        VersionFunction<String, String> colorMapper = FunctionBuilder.functionBuilder(String.class, String.class)
-                .addExclusiveVersion(Version.of(1,13), Version.of(1,16),
-                        color -> "§" + ColorConverter.getNearestBukkitChatColor(Color.decode(color)).getChar())
-                .addExclusiveVersion(Version.of(1,16), Version.of(1,Integer.MAX_VALUE),
-                        color -> ChatColor.of(color).toString())
-                .build();
-
         for (String color : GRADIENT) {
-            FULL_BAR.add(colorMapper.apply("#" + color) + BAR_FRAGMENT);
+            FULL_BAR.add("<#%s>%s".formatted(color, BAR_FRAGMENT));
         }
     }
 

@@ -21,6 +21,11 @@ repositories {
     maven("https://repo.glaremasters.me/repository/towny/")
 }
 
+group = "de.eldoria"
+version = "1.3.14"
+var mainPackage = "pickmeup"
+val shadebase = group as String? + "." + mainPackage + "."
+
 dependencies {
     bukkitLibrary(libs.bundles.eldoria.utilities)
     implementation(libs.bstats)
@@ -57,11 +62,6 @@ dependencies {
     testImplementation("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     testImplementation("com.github.seeseemelk", "MockBukkit-v1.16", "1.5.2")
 }
-
-group = "de.eldoria"
-version = "1.3.13"
-var mainPackage = "pickmeup"
-val shadebase = group as String? + "." + mainPackage + "."
 
 java {
     withSourcesJar()

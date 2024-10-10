@@ -1,12 +1,13 @@
 import io.papermc.hangarpublishplugin.model.Platforms
 
 plugins {
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.3"
     java
     `maven-publish`
-        alias(libs.plugins.hangar)
+    alias(libs.plugins.hangar)
     id("de.chojo.publishdata") version "1.4.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 repositories {
@@ -26,7 +27,7 @@ dependencies {
     compileOnly(libs.spigot.v16)
     compileOnly("com.mojang", "authlib", "1.5.25")
     compileOnly(libs.jetbrains.annotations)
-    compileOnly("net.citizensnpcs", "citizens-main","2.0.30-SNAPSHOT") {
+    compileOnly("net.citizensnpcs", "citizens-main", "2.0.30-SNAPSHOT") {
         exclude("*")
     }
     compileOnly("world.bentobox", "bentobox", "2.3.0-SNAPSHOT")
@@ -66,7 +67,7 @@ java {
     withSourcesJar()
     withJavadocJar()
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -135,6 +136,13 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion("1.21.1")
     }
 }
 

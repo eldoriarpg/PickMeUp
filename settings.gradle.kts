@@ -26,7 +26,7 @@ dependencyResolutionManagement {
             bundle("eldoria-utilities", listOf("legacy-serialization", "plugin", "threading", "updater", "crossversion", "metrics"))
 
             // misc
-            library("jetbrains-annotations", "org.jetbrains:annotations:26.0.0")
+            library("jetbrains-annotations", "org.jetbrains:annotations:26.0.1")
             // minecraft
             version("minecraft-latest", "1.20.1-R0.1-SNAPSHOT")
             library("paper-latest", "io.papermc.paper", "paper-api").versionRef("minecraft-latest")

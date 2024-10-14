@@ -29,10 +29,10 @@ dependencies {
     compileOnly("world.bentobox", "bentobox", "2.3.0-SNAPSHOT")
     compileOnly("com.github.TechFortress", "GriefPrevention", "17.0.0")
     compileOnly("com.palmergames.bukkit.towny", "towny", "0.100.4.4")
-    compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {
+    compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.2") {
         exclude("*")
     }
-    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.11.1") { isTransitive = false } // PlotSquared Bukkit API
+    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.11.2") { isTransitive = false } // PlotSquared Bukkit API
 
     compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Core", "8.1.2") {
         exclude("*")

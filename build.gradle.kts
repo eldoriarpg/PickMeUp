@@ -28,7 +28,7 @@ dependencies {
     }
     compileOnly("world.bentobox", "bentobox", "2.3.0-SNAPSHOT")
     compileOnly("com.github.TechFortress", "GriefPrevention", "17.0.0")
-    compileOnly("com.palmergames.bukkit.towny", "towny", "0.100.4.4")
+    compileOnly("com.palmergames.bukkit.towny", "towny", "0.100.4.5")
     compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {
         exclude("*")
     }

@@ -4,13 +4,11 @@ import de.eldoria.eldoutilities.messages.MessageSender;
 import de.eldoria.eldoutilities.threading.ReschedulingTask;
 import de.eldoria.eldoutilities.utils.EMath;
 import de.eldoria.pickmeup.PickMeUp;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThrowBarHandler extends ReschedulingTask {
@@ -26,7 +24,7 @@ public class ThrowBarHandler extends ReschedulingTask {
         }
     }
 
-    private final Map<Player, AtomicInteger> currentValues = new HashMap<>();
+    private final Map<UUID, AtomicInteger> currentValues = new HashMap<>();
     private final MessageSender sender;
     private int idleTicks;
 
@@ -56,36 +54,70 @@ public class ThrowBarHandler extends ReschedulingTask {
 
     @Override
     public void run() {
-        for (Map.Entry<Player, AtomicInteger> entry : currentValues.entrySet()) {
-            int currValue = entry.getValue().incrementAndGet();
-            String barDisplay = String.join("", FULL_BAR.subList(0, calculateIndex(currValue)));
-            sender.sendActionBar(entry.getKey(), barDisplay);
+        if (!Bukkit.isPrimaryThread()) {
+            Bukkit.getScheduler().runTask(PickMeUp.getInstance(), this::run);
+            return;
         }
+
+        currentValues.entrySet().removeIf(entry -> {
+            Player player = Bukkit.getPlayer(entry.getKey());
+            if (player == null || !player.isOnline() || !player.isSneaking()) {
+                if (player != null && player.isOnline()) {
+                    sender.sendActionBar(player, "");
+                }
+                return true;
+            }
+
+            int currValue = entry.getValue().incrementAndGet();
+            int index = calculateIndex(currValue);
+            if (index > 0 && index <= FULL_BAR.size()) {
+                String barDisplay = String.join("", FULL_BAR.subList(0, index));
+                sender.sendActionBar(player, barDisplay);
+            }
+            return false;
+        });
+
         if (currentValues.isEmpty()) {
-            idleTicks++;
-            if (idleTicks >= 200) {
+            if (++idleTicks >= 200) {
                 cancel();
             }
+        } else {
+            idleTicks = 0;
         }
     }
 
     public void register(Player player) {
-        currentValues.put(player, new AtomicInteger(0));
+        currentValues.put(player.getUniqueId(), new AtomicInteger(0));
         if (!isRunning()) {
             schedule();
+            idleTicks = 0;
         }
-        idleTicks = 0;
     }
 
     public double getAndRemove(Player player) {
-        AtomicInteger remove = currentValues.remove(player);
-        if (remove != null) {
-            return calculateForce(remove.get());
+        AtomicInteger removed = currentValues.remove(player.getUniqueId());
+        if (player.isOnline()) {
+            sender.sendActionBar(player, "");
         }
-        return 0;
+        return removed != null ? calculateForce(removed.get()) : 0;
     }
 
     public boolean isRegistered(Player player) {
-        return currentValues.containsKey(player);
+        return currentValues.containsKey(player.getUniqueId());
+    }
+
+    public void remove(Player player) {
+        if (currentValues.remove(player.getUniqueId()) != null && player.isOnline()) {
+            sender.sendActionBar(player, "");
+        }
+    }
+
+    public void remove(UUID uuid) {
+        if (currentValues.remove(uuid) != null) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null && player.isOnline()) {
+                sender.sendActionBar(player, "");
+            }
+        }
     }
 }

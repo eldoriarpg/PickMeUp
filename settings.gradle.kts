@@ -16,7 +16,7 @@ dependencyResolutionManagement {
             library("bstats","org.bstats:bstats-bukkit:3.1.0")
 
             // utilities
-            version("eldoutil", "2.1.6")
+            version("eldoutil", "2.1.11")
             library("legacy-serialization", "de.eldoria.util","legacy-serialization").versionRef("eldoutil")
             library("plugin", "de.eldoria.util","plugin").versionRef("eldoutil")
             library("metrics", "de.eldoria.util","metrics").versionRef("eldoutil")

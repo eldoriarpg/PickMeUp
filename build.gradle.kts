@@ -26,18 +26,18 @@ dependencies {
     compileOnly("net.citizensnpcs", "citizens-main","2.0.30-SNAPSHOT") {
         exclude("*")
     }
-    compileOnly("world.bentobox", "bentobox", "2.3.0-SNAPSHOT")
+    compileOnly("world.bentobox", "bentobox", "2.7.0")
     compileOnly("com.github.TechFortress", "GriefPrevention", "17.0.0")
-    compileOnly("com.palmergames.bukkit.towny", "towny", "0.100.4.4")
-    compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {
+    compileOnly("com.palmergames.bukkit.towny", "towny", "0.103.2.13")
+    compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.2") {
         exclude("*")
     }
-    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.11.1") { isTransitive = false } // PlotSquared Bukkit API
+    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.11.2") { isTransitive = false } // PlotSquared Bukkit API
 
     compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Core", "8.1.2") {
         exclude("*")
     }
-    compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Spigot", "8.1.1") {
+    compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Spigot", "8.1.2") {
         exclude("com.github.MilkBowl")
         exclude("com.github.TheBusyBiscuit")
         exclude("com.gmail.nossr50.mcMMO")
@@ -48,7 +48,7 @@ dependencies {
     }
 
     testImplementation(libs.bundles.eldoria.utilities)
-    testImplementation(platform("org.junit:junit-bom:5.11.2"))
+    testImplementation(platform("org.junit:junit-bom:5.14.4"))
     testImplementation("org.junit.jupiter", "junit-jupiter")
     testImplementation("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     testImplementation("com.github.seeseemelk", "MockBukkit-v1.16", "1.5.2")

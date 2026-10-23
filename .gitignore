@@ -36,3 +36,4 @@ buildNumber.properties
 /.direnv
 
 .concept/
+.kotlin/

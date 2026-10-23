@@ -11,4 +11,6 @@ jobs:
     uses: rainbowdashlabs/docs-hub/.github/workflows/space.yml@v1
     with:
       hub-repository: eldoriarpg/docs
-    secrets: inherit
+      app-id: ${{ vars.DOCS_APP_ID }}
+    secrets:
+      DOCS_APP_PRIVATE_KEY: ${{ secrets.DOCS_APP_PRIVATE_KEY }}

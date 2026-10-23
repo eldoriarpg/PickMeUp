@@ -1,6 +1,13 @@
+/*
+ *     SPDX-License-Identifier: AGPL-3.0-only
+ *
+ *     Copyright (C) EldoriaRPG Team and Contributor
+ */
+
 package de.eldoria.pickmeup.services;
 
 import de.eldoria.pickmeup.services.hooks.protection.BentoBoxHook;
+import de.eldoria.pickmeup.services.hooks.protection.CitizensHook;
 import de.eldoria.pickmeup.services.hooks.protection.GriefPreventionHook;
 import de.eldoria.pickmeup.services.hooks.protection.IProtectionHook;
 import de.eldoria.pickmeup.services.hooks.protection.PlotSquaredHook;
@@ -45,8 +52,12 @@ public class ProtectionService {
                     try {
                         hook.init(plugin);
                     } catch (Throwable e) {
-                        plugin.getLogger().log(Level.WARNING, "Failed to enable protection hook for " + hook.pluginName(), e);
-                        plugin.getLogger().log(Level.WARNING, "Please make sure you are using the latest version. If you are please report this error.");
+                        plugin.getLogger()
+                                .log(Level.WARNING, "Failed to enable protection hook for " + hook.pluginName(), e);
+                        plugin.getLogger()
+                                .log(
+                                        Level.WARNING,
+                                        "Please make sure you are using the latest version. If you are please report this error.");
                         return;
                     }
                     hooks.add(hook);
@@ -62,6 +73,13 @@ public class ProtectionService {
     }
 
     private static IProtectionHook[] hooks() {
-        return new IProtectionHook[]{new BentoBoxHook(), new GriefPreventionHook(), new PlotSquaredHook(), new TownyHook(), new RedProtectHook()};
+        return new IProtectionHook[] {
+            new BentoBoxHook(),
+            new CitizensHook(),
+            new GriefPreventionHook(),
+            new PlotSquaredHook(),
+            new TownyHook(),
+            new RedProtectHook()
+        };
     }
 }

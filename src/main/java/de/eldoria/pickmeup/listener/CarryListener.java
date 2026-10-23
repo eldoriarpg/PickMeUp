@@ -1,148 +1,304 @@
+/*
+ *     SPDX-License-Identifier: AGPL-3.0-only
+ *
+ *     Copyright (C) EldoriaRPG Team and Contributor
+ */
+
 package de.eldoria.pickmeup.listener;
 
 import de.eldoria.eldoutilities.messages.MessageSender;
-import de.eldoria.eldoutilities.scheduling.DelayedActions;
-import de.eldoria.pickmeup.PickMeUp;
-import de.eldoria.pickmeup.config.Configuration;
+import de.eldoria.pickmeup.config.CarrySettings;
+import de.eldoria.pickmeup.config.PickMeUpConfig;
 import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
 import de.eldoria.pickmeup.scheduler.TrailHandler;
 import de.eldoria.pickmeup.services.ProtectionService;
 import de.eldoria.pickmeup.util.Permissions;
-import org.bukkit.Material;
+import de.eldoria.pickmeup.util.PickupToggle;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDismountEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Picks up entities on a sneaking click with an empty hand and throws them when sneak is held and released again.
+ * <p>
+ * A carrier goes through {@link MountState}: picking up while sneaking, walking with the entity once sneak is
+ * released, and charging a throw once sneak is pressed again. Releasing sneak before the throw bar appears drops the
+ * entity, releasing it afterwards throws it. A carrier's state ends whenever the carried entity leaves them, so only
+ * passengers this listener mounted are ever touched.
+ * <p>
+ * The events of a carrier fire on the thread that owns the carrier, and delayed work runs on the carrier's scheduler.
+ * That keeps every carrier on one thread on Folia, while the maps are shared between regions.
+ */
 public class CarryListener implements Listener {
-    private final Configuration config;
+    private static final long REPICKUP_DELAY_MILLIS = 1000;
+    private final PickMeUpConfig config;
     private final ProtectionService protectionService;
+    private final PickupToggle pickupToggle;
     private final Plugin plugin;
     private final ThrowBarHandler throwBarHandler;
-    private final Set<UUID> blocked = new HashSet<>();
-    private final Map<UUID, MountState> mountStates = new HashMap<>();
     private final TrailHandler trailHandler;
     private final MessageSender messageSender;
-    private final DelayedActions delayedActions;
+    private final Map<UUID, Long> blockedUntil = new ConcurrentHashMap<>();
+    private final Map<UUID, MountState> mountStates = new ConcurrentHashMap<>();
 
-    public CarryListener(Plugin plugin, Configuration config, ProtectionService protectionService) {
+    public CarryListener(
+            Plugin plugin, PickMeUpConfig config, ProtectionService protectionService, PickupToggle pickupToggle) {
         this.plugin = plugin;
-        this.throwBarHandler = new ThrowBarHandler(plugin);
-        this.trailHandler = new TrailHandler(plugin);
         this.config = config;
         this.protectionService = protectionService;
-        messageSender = MessageSender.getPluginMessageSender(PickMeUp.class);
-        delayedActions = DelayedActions.start(plugin);
+        this.pickupToggle = pickupToggle;
+        throwBarHandler = new ThrowBarHandler(plugin);
+        trailHandler = new TrailHandler(plugin);
+        messageSender = MessageSender.getPluginMessageSender(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityInteract(PlayerInteractAtEntityEvent event) {
-        if (!config.worldSettings().allowInWorld(event.getPlayer().getWorld())) return;
-
-        if (!protectionService.canInteract(event.getPlayer(), event.getRightClicked())) return;
-
-        if (blocked.contains(event.getRightClicked().getUniqueId())) return;
-
-        MountState mountState = mountStates.get(event.getPlayer().getUniqueId());
-        if (mountState == MountState.SNEAK_THROW) {
-            if (event.getPlayer().getPassengers().contains(event.getRightClicked())
-                && event.getPlayer().getEquipment().getItemInMainHand().getType() == Material.AIR) {
-                unmountAll(event.getPlayer());
-                throwBarHandler.getAndRemove(event.getPlayer());
-                mountStates.remove(event.getPlayer().getUniqueId());
-                blocked.add(event.getRightClicked().getUniqueId());
-                delayedActions.schedule(() -> blocked.remove(event.getRightClicked().getUniqueId()), 20);
-                event.setCancelled(true);
-                return;
-            }
-        }
-
-
+        if (event.getHand() != EquipmentSlot.HAND) return;
         Player player = event.getPlayer();
-        if (player.getEquipment().getItemInMainHand().getType() != Material.AIR) return;
-        if (!config.mobSettings().canBePickedUp(event.getPlayer(), event.getRightClicked().getType())) return;
-        // TODO: Add player toggle
-        if (!player.getPassengers().isEmpty()) return;
-        if (!player.isSneaking()) return;
+        Entity target = event.getRightClicked();
 
-        if (!event.getRightClicked().getPassengers().isEmpty() && !config.carrySettings().isAllowStacking()) {
-            if (!player.hasPermission(Permissions.BYPASS_NOSTACK)) {
-                messageSender.sendError(player, "nostack");
-                return;
-            }
+        if (mountStates.get(player.getUniqueId()) == MountState.SNEAK_THROW
+                && player.getPassengers().contains(target)
+                && hasEmptyHand(player)) {
+            drop(player);
+            event.setCancelled(true);
+            return;
         }
 
-        mountStates.put(player.getUniqueId(), MountState.SNEAK_MOUNT);
-        player.addPassenger(event.getRightClicked());
-        event.setCancelled(true);
+        if (tryPickUp(player, target)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPunch(EntityDamageByEntityEvent event) {
+        CarrySettings settings = config.carrySettings();
+        if (!settings.leftClickPickup()) return;
+        if (!(event.getDamager() instanceof Player player)) return;
+        if (event.getEntity() instanceof Player && !settings.leftClickPickupPlayers()) return;
+
+        if (tryPickUp(player, event.getEntity())) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onSneak(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
-        if (!mountStates.containsKey(player.getUniqueId())) {
-            unmountAll(player);
-            return;
-        }
+        MountState state = mountStates.get(player.getUniqueId());
+        if (state == null) return;
 
-        MountState mountState = mountStates.get(player.getUniqueId());
-
-        if (!event.isSneaking() && mountState == MountState.SNEAK_MOUNT) {
-            mountStates.put(player.getUniqueId(), MountState.WALKING);
-            return;
-        }
-
-        if (event.isSneaking() && mountState == MountState.WALKING) {
-            mountStates.put(player.getUniqueId(), MountState.SNEAK_THROW);
-            delayedActions.schedule(() -> {
-                        if (player.isSneaking()) {
-                            throwBarHandler.register(player);
-                        }
-                    }
-                    , 10);
-            return;
-        }
-
-        if (!event.isSneaking() && mountState == MountState.SNEAK_THROW) {
-            if (!throwBarHandler.isRegistered(player)) {
-                unmountAll(player);
-            } else {
-                double force = throwBarHandler.getAndRemove(player);
-                Vector throwVec = player.getEyeLocation().getDirection().normalize().multiply(force * config.carrySettings().throwForce());
-                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
-                for (Entity passenger : player.getPassengers()) {
-                    delayedActions.schedule(() -> trailHandler.startTrail(passenger), 2);
-                    player.removePassenger(passenger);
-                    passenger.setVelocity(throwVec);
-                    plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector()
-                                              + " | Force: " + force
-                                              + " | ThrowForce: " + config.carrySettings().throwForce()
-                                              + " | ViewVec: " + throwVec);
+        switch (state) {
+            case SNEAK_MOUNT -> {
+                if (!event.isSneaking()) mountStates.put(player.getUniqueId(), MountState.WALKING);
+            }
+            case WALKING -> {
+                if (event.isSneaking()) startCharging(player);
+            }
+            case SNEAK_THROW -> {
+                if (event.isSneaking()) return;
+                if (throwBarHandler.isRegistered(player)) {
+                    throwPassengers(player);
+                } else {
+                    drop(player);
                 }
             }
-            mountStates.remove(player.getUniqueId());
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onDismount(EntityDismountEvent event) {
+        if (!(event.getDismounted() instanceof Player player)) return;
+        if (!mountStates.containsKey(player.getUniqueId())) return;
+        if (player.getPassengers().stream().allMatch(passenger -> passenger.equals(event.getEntity()))) {
+            clear(player);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onTeleport(PlayerTeleportEvent event) {
+        if (mountStates.containsKey(event.getPlayer().getUniqueId())) {
+            unmountAll(event.getPlayer());
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        if (mountStates.containsKey(event.getEntity().getUniqueId())) {
+            unmountAll(event.getEntity());
+        }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        if (mountStates.containsKey(event.getPlayer().getUniqueId())) {
+            unmountAll(event.getPlayer());
+        }
+    }
+
+    /**
+     * Lets every carrier drop what they carry. Called when the plugin is disabled, so nothing stays mounted on a
+     * player without PickMeUp knowing about it. Carriers owned by another region are handed to their own scheduler.
+     */
+    public void dropAll() {
+        for (UUID carrier : new ArrayList<>(mountStates.keySet())) {
+            Player player = Bukkit.getPlayer(carrier);
+            if (player == null) continue;
+            if (Bukkit.isOwnedByCurrentRegion(player)) {
+                unmountAll(player);
+            } else {
+                player.getScheduler().run(plugin, task -> unmountAll(player), null);
+            }
+        }
+        mountStates.clear();
+    }
+
+    private boolean tryPickUp(Player player, Entity target) {
+        if (!player.isSneaking() || !hasEmptyHand(player)) return false;
+        if (mountStates.containsKey(player.getUniqueId())
+                || !player.getPassengers().isEmpty()) return false;
+        if (isBlocked(target)) return false;
+        if (target.isInsideVehicle()) return false;
+        if (!config.worldSettings().allowInWorld(player.getWorld())) return false;
+        if (!config.mobSettings().canBePickedUp(player, target.getType())) return false;
+
+        if (target instanceof Player targetPlayer
+                && !pickupToggle.isPickupable(targetPlayer)
+                && !player.hasPermission(Permissions.BYPASS_TOGGLE)) {
+            messageSender.sendErrorActionBar(
+                    player, "error.notPickupable", Placeholder.unparsed("player", targetPlayer.getName()));
+            return false;
+        }
+
+        if (!target.getPassengers().isEmpty()) {
+            CarrySettings settings = config.carrySettings();
+            if (!settings.allowStacking() && !player.hasPermission(Permissions.BYPASS_NOSTACK)) {
+                messageSender.sendErrorActionBar(player, "error.noStack");
+                return false;
+            }
+            int maximum = settings.maximumStacking();
+            if (maximum > 0 && stackHeight(target) > maximum && !player.hasPermission(Permissions.BYPASS_MAXSTACK)) {
+                messageSender.sendErrorActionBar(
+                        player, "error.maxStack", Placeholder.unparsed("max", String.valueOf(maximum)));
+                return false;
+            }
+        }
+
+        if (!protectionService.canInteract(player, target)) return false;
+        if (!player.addPassenger(target)) return false;
+
+        mountStates.put(player.getUniqueId(), MountState.SNEAK_MOUNT);
+        return true;
+    }
+
+    private void startCharging(Player player) {
+        UUID carrier = player.getUniqueId();
+        mountStates.put(carrier, MountState.SNEAK_THROW);
+        player.getScheduler()
+                .runDelayed(
+                        plugin,
+                        task -> {
+                            if (player.isSneaking()
+                                    && mountStates.get(carrier) == MountState.SNEAK_THROW
+                                    && !player.getPassengers().isEmpty()) {
+                                throwBarHandler.register(player);
+                            }
+                        },
+                        null,
+                        Math.max(1, config.carrySettings().throwDelay()));
+    }
+
+    private void throwPassengers(Player player) {
+        double force = throwBarHandler.getAndRemove(player);
+        double throwForce = config.carrySettings().throwForce();
+        Vector throwVec = player.getEyeLocation().getDirection().multiply(force * throwForce);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
+
+        List<Entity> passengers = new ArrayList<>(player.getPassengers());
+        clear(player);
+        for (Entity passenger : passengers) {
+            player.removePassenger(passenger);
+            passenger.setVelocity(throwVec);
+            trailHandler.startTrail(passenger);
+            plugin.getLogger()
+                    .config("Throwing entity | Location:" + player.getLocation().toVector()
+                            + " | Force: " + force
+                            + " | ThrowForce: " + throwForce
+                            + " | ViewVec: " + throwVec);
+        }
+    }
+
+    private void drop(Player player) {
+        long now = System.currentTimeMillis();
+        blockedUntil.values().removeIf(until -> until <= now);
+        long until = now + REPICKUP_DELAY_MILLIS;
+        for (Entity passenger : player.getPassengers()) {
+            blockedUntil.put(passenger.getUniqueId(), until);
+        }
+        unmountAll(player);
+    }
+
+    private boolean isBlocked(Entity entity) {
+        Long until = blockedUntil.get(entity.getUniqueId());
+        if (until == null) return false;
+        if (until > System.currentTimeMillis()) return true;
+        blockedUntil.remove(entity.getUniqueId(), until);
+        return false;
     }
 
     private void unmountAll(Player player) {
-        for (Entity passenger : player.getPassengers()) {
-            player.removePassenger(passenger);
+        clear(player);
+        new ArrayList<>(player.getPassengers()).forEach(player::removePassenger);
+    }
+
+    private void clear(Player player) {
+        mountStates.remove(player.getUniqueId());
+        throwBarHandler.remove(player);
+    }
+
+    private static boolean hasEmptyHand(Player player) {
+        return player.getInventory().getItemInMainHand().getType().isAir();
+    }
+
+    /**
+     * Counts the entities in the stack an entity carries, the entity included.
+     *
+     * @param entity the bottom of the stack
+     * @return the height of the stack
+     */
+    private static int stackHeight(Entity entity) {
+        int highest = 0;
+        for (Entity passenger : entity.getPassengers()) {
+            highest = Math.max(highest, stackHeight(passenger));
         }
+        return highest + 1;
     }
 
     private enum MountState {
-        SNEAK_MOUNT, WALKING, SNEAK_THROW
+        SNEAK_MOUNT,
+        WALKING,
+        SNEAK_THROW
     }
 }

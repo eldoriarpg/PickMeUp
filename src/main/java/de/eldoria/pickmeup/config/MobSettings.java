@@ -1,71 +1,76 @@
+/*
+ *     SPDX-License-Identifier: AGPL-3.0-only
+ *
+ *     Copyright (C) EldoriaRPG Team and Contributor
+ */
+
 package de.eldoria.pickmeup.config;
 
-import de.eldoria.eldoutilities.serialization.SerializationUtil;
-import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.eldoria.pickmeup.PickMeUp;
 import de.eldoria.pickmeup.util.Permissions;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
-@SerializableAs("pickMeUpMobSettings")
-public class MobSettings implements ConfigurationSerializable {
-    private static final transient List<EntityType> DEFAULT_MOBS;
+/**
+ * Which entities may be picked up.
+ * <p>
+ * The entity types are kept as written, so a name this server does not know stays in the file instead of being
+ * dropped on the next save. Names Minecraft renamed are read as their new type, unknown ones are reported once.
+ */
+@SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
+public class MobSettings {
+    private static final Map<String, String> RENAMED = Map.of(
+            "BOAT", "OAK_BOAT",
+            "CHEST_BOAT", "OAK_CHEST_BOAT",
+            "MUSHROOM_COW", "MOOSHROOM",
+            "SNOWMAN", "SNOW_GOLEM",
+            "MINECART_CHEST", "CHEST_MINECART",
+            "MINECART_FURNACE", "FURNACE_MINECART",
+            "MINECART_TNT", "TNT_MINECART",
+            "MINECART_HOPPER", "HOPPER_MINECART",
+            "MINECART_MOB_SPAWNER", "SPAWNER_MINECART",
+            "MINECART_COMMAND", "COMMAND_BLOCK_MINECART");
 
-    static {
-        DEFAULT_MOBS = new ArrayList<EntityType>() {{
-            add(EntityType.PIG);
-            add(EntityType.CHICKEN);
-            add(EntityType.RABBIT);
-            add(EntityType.WOLF);
-            add(EntityType.BOAT);
-            add(EntityType.SHEEP);
-            add(EntityType.PARROT);
-        }};
-    }
+    private List<String> allowedMobs =
+            new ArrayList<>(List.of("PIG", "CHICKEN", "RABBIT", "WOLF", "OAK_BOAT", "SHEEP", "PARROT"));
+    private boolean requirePermission = false;
+    private boolean blacklist = false;
 
-    private List<EntityType> allowedMobs = DEFAULT_MOBS;
-    private boolean requirePermission;
-    private boolean blacklist;
-
-    public MobSettings(Map<String, Object> objectMap) {
-        TypeResolvingMap map = SerializationUtil.mapOf(objectMap);
-        allowedMobs = map.getValueOrDefault("allowedMobs", DEFAULT_MOBS, EntityType.class);
-        requirePermission = map.getValueOrDefault("requirePermission", requirePermission);
-        blacklist = map.getValueOrDefault("blacklist", blacklist);
-    }
-
-    public MobSettings() {
-
-    }
-
-    @Override
-    public @NotNull Map<String, Object> serialize() {
-        return SerializationUtil.newBuilder()
-                .addEnum("allowedMobs", allowedMobs)
-                .add("requirePermission", requirePermission)
-                .add("blacklist", blacklist)
-                .build();
-    }
+    @JsonIgnore
+    private Set<EntityType> resolved;
 
     public boolean canBePickedUp(Player player, EntityType type) {
-        boolean allowed;
-        if (blacklist) {
-            allowed = !allowedMobs.contains(type);
-        } else {
-            allowed = allowedMobs.contains(type);
+        boolean listed = resolved().contains(type);
+        if (blacklist == listed) return false;
+        return !requirePermission || player.hasPermission(Permissions.getPickUpPermission(type));
+    }
+
+    private Set<EntityType> resolved() {
+        if (resolved == null) {
+            resolved = resolve(allowedMobs);
         }
-        if (!allowed) {
-            return false;
+        return resolved;
+    }
+
+    private static Set<EntityType> resolve(List<String> names) {
+        Set<EntityType> types = EnumSet.noneOf(EntityType.class);
+        for (String name : names) {
+            String upper = name.toUpperCase(Locale.ROOT);
+            try {
+                types.add(EntityType.valueOf(RENAMED.getOrDefault(upper, upper)));
+            } catch (IllegalArgumentException e) {
+                PickMeUp.logger()
+                        .warning("Unknown entity type \"" + name + "\" in mobSettings.allowedMobs. It is ignored.");
+            }
         }
-        if (requirePermission) {
-            allowed = player.hasPermission(Permissions.getPickUpPermission(type));
-        }
-        return allowed;
+        return types;
     }
 }

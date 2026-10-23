@@ -1,0 +1,49 @@
+[versions]
+utilities = "3.5.3"
+jackson = "3.2.4"
+paper = "1.21.11-R0.1-SNAPSHOT"
+junit = "6.1.3"
+palantir = "2.102.0"
+plotsquared = "7.6.0"
+
+[libraries]
+eldoutil-plugin = { module = "de.eldoria.util:plugin", version.ref = "utilities" }
+eldoutil-jackson = { module = "de.eldoria.util:jackson-configuration", version.ref = "utilities" }
+eldoutil-updater = { module = "de.eldoria.util:updater", version.ref = "utilities" }
+eldoutil-metrics = { module = "de.eldoria.util:metrics", version.ref = "utilities" }
+
+jackson-bom = { module = "tools.jackson:jackson-bom", version.ref = "jackson" }
+jackson-databind = { module = "tools.jackson.core:jackson-databind" }
+jackson-yaml = { module = "tools.jackson.dataformat:jackson-dataformat-yaml" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations" }
+
+bstats = "org.bstats:bstats-bukkit:3.2.1"
+jetbrains-annotations = "org.jetbrains:annotations:26.1.0"
+paper = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
+
+bentobox = "world.bentobox:bentobox:2.7.0"
+griefprevention = "com.github.TechFortress:GriefPrevention:18.0.0"
+towny = "com.palmergames.bukkit.towny:towny:0.103.2.13"
+plotsquared-core = { module = "com.intellectualsites.plotsquared:plotsquared-core", version.ref = "plotsquared" }
+plotsquared-bukkit = { module = "com.intellectualsites.plotsquared:plotsquared-bukkit", version.ref = "plotsquared" }
+guice = "com.google.inject:guice:7.0.0"
+redprotect-core = "io.github.fabiozumbi12.RedProtect:RedProtect-Core:8.1.2"
+redprotect-spigot = "io.github.fabiozumbi12.RedProtect:RedProtect-Spigot:8.1.2"
+
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+
+[bundles]
+utilities = ["eldoutil-plugin", "eldoutil-jackson", "eldoutil-updater", "eldoutil-metrics"]
+jackson = ["jackson-databind", "jackson-annotations", "jackson-yaml"]
+
+[plugins]
+spotless = { id = "com.diffplug.spotless", version = "8.10.4" }
+publishdata = { id = "de.chojo.publishdata", version = "2.1.0" }
+publishdata-manifest = { id = "de.chojo.publishdata.manifest", version = "2.1.0" }
+shadow = { id = "com.gradleup.shadow", version = "9.6.1" }
+pluginyml-bukkit = { id = "de.eldoria.plugin-yml.bukkit", version = "0.9.0" }
+runpaper = { id = "xyz.jpenilla.run-paper", version = "3.1.0" }
+hangar = { id = "io.papermc.hangar-publish-plugin", version = "0.1.4" }
+minotaur = { id = "com.modrinth.minotaur", version = "2.10.0" }

@@ -1,13 +1,17 @@
+/*
+ *     SPDX-License-Identifier: AGPL-3.0-only
+ *
+ *     Copyright (C) EldoriaRPG Team and Contributor
+ */
+
 package de.eldoria.pickmeup.scheduler;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import be.seeseemelk.mockbukkit.MockBukkit;
 
 class ThrowBarHandlerTest {
     @Test
     public void calcTest() {
-        MockBukkit.mock();
         for (int i = 0; i < 60; i++) {
             Assertions.assertEquals(ThrowBarHandler.calculateIndex(i), ThrowBarHandler.calculateIndex(60 - i));
         }
@@ -18,5 +22,14 @@ class ThrowBarHandlerTest {
         Assertions.assertEquals(28, ThrowBarHandler.calculateIndex(31));
         Assertions.assertEquals(0, ThrowBarHandler.calculateIndex(60));
         Assertions.assertEquals(0, ThrowBarHandler.calculateIndex(59));
+    }
+
+    @Test
+    public void forceStaysBoundedWhenHeldLong() {
+        for (int ticks = 0; ticks < 10_000; ticks++) {
+            double force = ThrowBarHandler.calculateForce(ticks);
+            Assertions.assertTrue(force >= 0 && force <= 1, "force " + force + " at " + ticks + " ticks");
+            Assertions.assertEquals(ThrowBarHandler.calculateForce(ticks % 60), force);
+        }
     }
 }

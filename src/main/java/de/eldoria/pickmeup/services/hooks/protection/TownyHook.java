@@ -1,3 +1,9 @@
+/*
+ *     SPDX-License-Identifier: AGPL-3.0-only
+ *
+ *     Copyright (C) EldoriaRPG Team and Contributor
+ */
+
 package de.eldoria.pickmeup.services.hooks.protection;
 
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -25,6 +31,7 @@ public class TownyHook extends AProtectionHook {
         if (!townyAPI.isTownyWorld(location.getWorld())) {
             return true;
         }
-        return PlayerCacheUtil.getCachePermission(player, location, location.getBlock().getType(), TownyPermission.ActionType.DESTROY);
+        return PlayerCacheUtil.getCachePermission(
+                player, location, location.getBlock().getType(), TownyPermission.ActionType.DESTROY);
     }
 }

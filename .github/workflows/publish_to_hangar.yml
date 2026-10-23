@@ -1,9 +1,10 @@
 name: Publish to Hangar
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - master
+    tags:
+      - v*
 
 jobs:
   build:
@@ -11,25 +12,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 17
-      - name: Build with Gradle
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Build and test with Gradle
         run: ./gradlew --build-cache build
-      - name: Test with Gradle
-        run: ./gradlew test
       - name: Publish release to hangar
-        if: github.ref_name == 'master'
         env:
           HANGAR_KEY: ${{ secrets.HANGAR_KEY }}
           HANGAR_CHANNEL: Release
-        run: ./gradlew publishAllPublicationsToHangar
-      - name: Publish dev to hangar
-        if: github.ref_name == 'dev'
-        env:
-          HANGAR_KEY: ${{ secrets.HANGAR_KEY }}
-          HANGAR_CHANNEL: Development
         run: ./gradlew publishAllPublicationsToHangar

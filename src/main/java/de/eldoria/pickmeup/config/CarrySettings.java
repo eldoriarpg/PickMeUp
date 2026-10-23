@@ -1,38 +1,62 @@
+/*
+ *     SPDX-License-Identifier: AGPL-3.0-only
+ *
+ *     Copyright (C) EldoriaRPG Team and Contributor
+ */
+
 package de.eldoria.pickmeup.config;
 
-import de.eldoria.eldoutilities.serialization.SerializationUtil;
-import de.eldoria.eldoutilities.serialization.TypeResolvingMap;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.SerializableAs;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
-
-@SerializableAs("pickMeUpCarrySettings")
-public class CarrySettings implements ConfigurationSerializable {
+/**
+ * How entities are picked up, stacked and thrown.
+ */
+@SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
+public class CarrySettings {
     private double throwForce = 2.0;
-    private boolean allowStacking;
+    private int throwDelay = 10;
+    private boolean allowStacking = false;
+    private int maximumStacking = 0;
+    private boolean leftClickPickup = false;
+    private boolean leftClickPickupPlayers = false;
 
-    public CarrySettings(Map<String, Object> objectMap) {
-        TypeResolvingMap map = SerializationUtil.mapOf(objectMap);
-        throwForce = map.getValueOrDefault("throwForce", throwForce);
-        allowStacking = map.getValueOrDefault("allowStacking", allowStacking);
-    }
-
-    public CarrySettings() {
-
-    }
-
-    @Override
-    public @NotNull Map<String, Object> serialize() {
-        return SerializationUtil.objectToMap(this);
-    }
-
+    /**
+     * @return the multiplier of the charged throw strength, never negative
+     */
     public double throwForce() {
-        return throwForce;
+        return Double.isFinite(throwForce) ? Math.max(0, throwForce) : 0;
     }
 
-    public boolean isAllowStacking() {
+    /**
+     * @return the ticks sneak has to be held while carrying before the throw bar starts charging
+     */
+    public int throwDelay() {
+        return Math.max(0, throwDelay);
+    }
+
+    /**
+     * @return whether entities which carry entities themselves may be picked up
+     */
+    public boolean allowStacking() {
         return allowStacking;
+    }
+
+    /**
+     * @return the maximum height of a carried stack, the carrier excluded; zero or less for no limit
+     */
+    public int maximumStacking() {
+        return maximumStacking;
+    }
+
+    /**
+     * @return whether entities can also be picked up by punching them while sneaking, which Bedrock players need
+     */
+    public boolean leftClickPickup() {
+        return leftClickPickup;
+    }
+
+    /**
+     * @return whether punching while sneaking also picks up players, given {@link #leftClickPickup()}
+     */
+    public boolean leftClickPickupPlayers() {
+        return leftClickPickupPlayers;
     }
 }

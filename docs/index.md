@@ -24,7 +24,7 @@ This documentation describes Pick Me Up 2.0. Coming from 1.x? See [Updating from
 - **Let players opt out.** With `/pickmeup toggle`, players decide whether others may pick them up.
 - **Stack them.** If you allow it, players can pick up someone who is already carrying someone, up to a height you
   choose.
-- **Respect claims.** With BentoBox, GriefPrevention, PlotSquared, Towny, RedProtect or WorldGuard installed, players can only pick
+- **Respect claims.** With BentoBox, GriefPrevention, HuskClaims, PlotSquared, Towny, RedProtect or WorldGuard installed, players can only pick
   up entities where they are allowed to. Citizens NPCs can never be picked up. See
   [Protection plugins](./entities.md#protection-plugins).
 - **Stay up to date.** Pick Me Up tells you about new versions and can download them for you.
@@ -36,7 +36,7 @@ This documentation describes Pick Me Up 2.0. Coming from 1.x? See [Updating from
 | Server | Paper or Folia 1.21.11 or newer, 26.x included |
 | Java | 25 or newer |
 | Other plugins | None required |
-| Optional | BentoBox, GriefPrevention, PlotSquared, Towny, RedProtect, WorldGuard, Citizens |
+| Optional | BentoBox, GriefPrevention, HuskClaims, PlotSquared, Towny, RedProtect, WorldGuard, Citizens |
 
 ## Where to go next
 

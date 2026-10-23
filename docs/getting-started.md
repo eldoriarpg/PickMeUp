@@ -14,7 +14,7 @@ This page takes you from an empty plugin folder to your first thrown pig.
    [Lyna](https://lyna.eldoria.de/products/5) and put it into the `plugins` folder.
 3. Restart the server. Do not use `/reload`.
 
-Pick Me Up needs no other plugins. If BentoBox, GriefPrevention, PlotSquared, Towny, RedProtect, WorldGuard or Citizens is
+Pick Me Up needs no other plugins. If BentoBox, GriefPrevention, HuskClaims, PlotSquared, Towny, RedProtect, WorldGuard or Citizens is
 installed, Pick Me Up hooks into it on start. The server log says which hooks were enabled.
 
 After the first start you find `plugins/PickMeUp/config.yml`. It holds every setting. See

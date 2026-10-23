@@ -19,6 +19,8 @@ hold sneak until the power bar fills and send it flying.
 - Respects BentoBox, GriefPrevention, PlotSquared, Towny and RedProtect claims and leaves Citizens NPCs alone.
 - Tells admins about new versions and can download them on its own.
 
+Everything else is in the [documentation](https://docs.eldoria.de/pick-me-up).
+
 ## Requirements
 
 | What | Version |

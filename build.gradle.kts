@@ -25,6 +25,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://repo.glaremasters.me/repository/towny/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.william278.net/releases/")
     exclusiveContent {
         forRepository {
             maven("https://repo.codemc.org/repository/maven-public/") {
@@ -56,6 +57,7 @@ dependencies {
     compileOnly(libs.plotsquared.core) { isTransitive = false }
     compileOnly(libs.plotsquared.bukkit) { isTransitive = false }
     compileOnly(libs.guice) { isTransitive = false }
+    compileOnly(libs.huskclaims.bukkit) { isTransitive = false }
     compileOnly(libs.worldguard.bukkit) {
         exclude("org.bukkit")
         exclude("org.spigotmc")
@@ -127,6 +129,7 @@ pluginManifest {
     optional("RedProtect") { spigot(15841) }
     optional("Citizens") { spigot(13811) }
     optional("WorldGuard") { modrinth("worldguard") }
+    optional("HuskClaims") { link("https://github.com/WiIIiam278/HuskClaims") }
 }
 
 tasks {
@@ -191,7 +194,7 @@ bukkit {
     website = "https://hangar.papermc.io/eldoriarpg/PickMeUp"
     apiVersion = "1.21.11"
     foliaSupported = true
-    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens", "WorldGuard")
+    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens", "WorldGuard", "HuskClaims")
 
     commands {
         register("pickmeup") {

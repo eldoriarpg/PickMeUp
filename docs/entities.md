@@ -96,6 +96,7 @@ the spot where the entity stands.
 | Towny | In Towny worlds, players who may destroy blocks at that spot. |
 | RedProtect | Inside a region, players who may build there. Outside of regions, everyone. |
 | WorldGuard | Decided by the `pickmeup` region flag, see below. Regions without the flag do not limit picking up. |
+| HuskClaims | Inside a claim, players who may interact with entities there, following the claim's trust levels and flags. Outside of claims, as HuskClaims allows in the wilderness. |
 | Citizens | Nobody can pick up an NPC. |
 
 In all other places the protection plugin does not limit picking up.

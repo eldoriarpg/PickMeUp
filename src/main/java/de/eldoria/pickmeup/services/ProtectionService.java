@@ -9,6 +9,7 @@ package de.eldoria.pickmeup.services;
 import de.eldoria.pickmeup.services.hooks.protection.BentoBoxHook;
 import de.eldoria.pickmeup.services.hooks.protection.CitizensHook;
 import de.eldoria.pickmeup.services.hooks.protection.GriefPreventionHook;
+import de.eldoria.pickmeup.services.hooks.protection.HuskClaimsHook;
 import de.eldoria.pickmeup.services.hooks.protection.IProtectionHook;
 import de.eldoria.pickmeup.services.hooks.protection.PlotSquaredHook;
 import de.eldoria.pickmeup.services.hooks.protection.RedProtectHook;
@@ -80,6 +81,7 @@ public class ProtectionService {
             new GriefPreventionHook(),
             new PlotSquaredHook(),
             new TownyHook(),
+            new HuskClaimsHook(),
             new WorldGuardHook(),
             new RedProtectHook()
         };

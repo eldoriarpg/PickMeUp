@@ -12,7 +12,7 @@ Pick Me Up has one command, `/pickmeup`. The short form is `/pmu`. None of the s
 | `/pickmeup about` | none | Shows the plugin name, authors, version and links. |
 | `/pickmeup toggle` | `pickmeup.toggle` | Turns on or off whether other players can pick you up. Players only. |
 | `/pickmeup reload` | `pickmeup.reload` | Reads `config.yml` again and applies it. |
-| `/pickmeup debug` | `pickmeup.reload` or `eldoutilitites.debug` | Uploads debug data for support. |
+| `/pickmeup debug` | `pickmeup.reload` or `eldoutilities.debug` | Uploads debug data for support. |
 
 ## `/pickmeup toggle`
 
@@ -37,7 +37,8 @@ The first time you run it, the command explains what is sent and asks you to run
 it shows a link to read the data and a link to delete it. The data is deleted after 14 days.
 
 :::note
-The permission `eldoutilitites.debug` is spelled with three "t"s at the end of "utilitites". Use it exactly like that.
+Up to Pick Me Up 2.0 this permission was spelled `eldoutilitites.debug`, with three "t"s. Since 2.1 it is
+`eldoutilities.debug`. Grant the new name where you granted the old one.
 :::
 
 ## `/pickmeup:eldo-update`

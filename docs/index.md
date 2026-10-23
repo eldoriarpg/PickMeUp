@@ -36,6 +36,7 @@ This documentation describes Pick Me Up 2.0. Coming from 1.x? See [Updating from
 | Server | Paper or Folia 1.21.11 or newer, 26.x included |
 | Java | 25 or newer |
 | Other plugins | None required |
+| Internet | On the first start, to download the libraries |
 | Optional | BentoBox, GriefPrevention, HuskClaims, PlotSquared, Towny, RedProtect, WorldGuard, Citizens |
 
 ## Where to go next

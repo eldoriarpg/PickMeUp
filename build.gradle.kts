@@ -225,8 +225,7 @@ hangarPublish {
 
 modrinth {
     token = providers.environmentVariable("MODRINTH_TOKEN")
-    // TODO: set the id of the Modrinth project once it exists
-    projectId = ""
+    projectId = "eLiWuFr8"
     versionNumber = project.version.toString()
     versionType = "release"
     uploadFile.set(tasks.shadowJar)

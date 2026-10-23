@@ -30,6 +30,7 @@ hold sneak until the power bar fills and send it flying.
 ## Download
 
 - [Hangar](https://hangar.papermc.io/eldoriarpg/PickMeUp)
+- [Modrinth](https://modrinth.com/plugin/eLiWuFr8)
 - [Lyna](https://lyna.eldoria.de/products/5)
 
 ## Updating from 1.x

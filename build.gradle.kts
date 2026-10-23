@@ -1,6 +1,7 @@
 import io.papermc.hangarpublishplugin.model.Platforms
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.Permission.Default.OP
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.Permission.Default.TRUE
+import net.minecrell.pluginyml.paper.PaperPluginDescription.RelativeLoadOrder.BEFORE
 
 plugins {
     java
@@ -9,7 +10,7 @@ plugins {
     alias(libs.plugins.publishdata)
     alias(libs.plugins.publishdata.manifest)
     alias(libs.plugins.shadow)
-    alias(libs.plugins.pluginyml.bukkit)
+    alias(libs.plugins.pluginyml.paper)
     alias(libs.plugins.runpaper)
     alias(libs.plugins.hangar)
     alias(libs.plugins.minotaur)
@@ -39,14 +40,8 @@ repositories {
 val shadebase = "de.eldoria.pickmeup.libs."
 
 dependencies {
-    implementation(libs.bundles.utilities) {
-        exclude("com.fasterxml")
-        exclude("net.kyori")
-        exclude("org.jetbrains")
-        exclude("org.yaml")
-    }
-    implementation(platform(libs.jackson.bom))
-    implementation(libs.bundles.jackson)
+    paperLibrary(libs.bundles.utilities)
+    paperLibrary(libs.bundles.jackson)
     implementation(libs.bstats)
 
     compileOnly(libs.paper)
@@ -70,6 +65,8 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.paper)
+    testImplementation(libs.bundles.utilities)
+    testImplementation(libs.bundles.jackson)
 }
 
 java {
@@ -155,12 +152,6 @@ tasks {
 
     shadowJar {
         relocate("org.bstats", shadebase + "bstats")
-        relocate("com.fasterxml", shadebase + "fasterxml")
-        relocate("tools.jackson", shadebase + "jackson")
-        relocate("org.snakeyaml", shadebase + "snakeyaml")
-        relocate("dev.chojo.ocular", shadebase + "ocular")
-        relocate("de.eldoria.jacksonbukkit", shadebase + "jacksonbukkit")
-        relocate("de.eldoria.eldoutilities", shadebase + "utilities")
         mergeServiceFiles()
         addMultiReleaseAttribute = false
         exclude("META-INF/versions/**")
@@ -168,6 +159,10 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+
+    generatePaperPluginDescription {
+        useDefaultCentralProxy()
     }
 
     runServer {
@@ -185,23 +180,27 @@ runPaper {
     }
 }
 
-bukkit {
+paper {
     name = "PickMeUp"
     version = project.version.toString()
     description = "Pick up entities, carry them around and throw them away"
     authors = listOf("RainbowDashLabs")
     main = "de.eldoria.pickmeup.PickMeUp"
-    website = "https://hangar.papermc.io/eldoriarpg/PickMeUp"
+    loader = "de.eldoria.pickmeup.PickMeUpLoader"
+    website = "https://docs.eldoria.de/pick-me-up"
     apiVersion = "1.21.11"
     foliaSupported = true
-    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens", "WorldGuard", "HuskClaims")
+    generateLibrariesJson = true
 
-    commands {
-        register("pickmeup") {
-            description = "Main command of pick me up"
-            usage = "Trust the tab completion"
-            aliases = listOf("pmu")
-        }
+    serverDependencies {
+        listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens", "WorldGuard", "HuskClaims")
+            .forEach {
+                register(it) {
+                    required = false
+                    load = BEFORE
+                    joinClasspath = true
+                }
+            }
     }
 
     permissions {

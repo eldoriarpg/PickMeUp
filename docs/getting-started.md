@@ -14,6 +14,12 @@ This page takes you from an empty plugin folder to your first thrown pig.
    [Lyna](https://lyna.eldoria.de/products/5) and put it into the `plugins` folder.
 3. Restart the server. Do not use `/reload`.
 
+:::info Libraries are downloaded on the first start
+The jar is small because Pick Me Up lets Paper download its libraries on the first start, from EldoNexus and Paper's
+Maven Central mirror, into the server's `libraries` folder. The server needs internet access for that once; later
+starts use the downloaded files.
+:::
+
 Pick Me Up needs no other plugins. If BentoBox, GriefPrevention, HuskClaims, PlotSquared, Towny, RedProtect, WorldGuard or Citizens is
 installed, Pick Me Up hooks into it on start. The server log says which hooks were enabled.
 

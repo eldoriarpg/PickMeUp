@@ -55,6 +55,6 @@ A name the server does not know stays in the file, but is ignored. The server lo
 ## Permissions and update messages
 
 - Messages about new versions now go to players with `pickmeup.updates` instead of `pickmeup.reload`.
-- All permissions except `pickmeup.pickup.<entity type>` and `eldoutilitites.debug` are now registered with a
+- All permissions except `pickmeup.pickup.<entity type>` and `eldoutilitites.debug` (`eldoutilities.debug` since 2.1) are now registered with a
   default. See [Permissions](./reference/permissions.md).
 - `/pickmeup toggle` is new. Every player can use it to stop others from picking them up.

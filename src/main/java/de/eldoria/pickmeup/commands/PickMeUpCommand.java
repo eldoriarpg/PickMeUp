@@ -19,6 +19,7 @@ public class PickMeUpCommand extends AdvancedCommand {
         super(
                 plugin,
                 CommandMeta.builder("pickmeup")
+                        .addAlias("pmu")
                         .withSubCommand(new DefaultDebug(plugin, Permissions.RELOAD))
                         .withSubCommand(new Reload(plugin))
                         .withSubCommand(new Toggle(plugin, pickupToggle))

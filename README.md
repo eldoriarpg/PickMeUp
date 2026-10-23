@@ -28,6 +28,7 @@ Everything else is in the [documentation](https://docs.eldoria.de/pick-me-up).
 | Server | Paper or Folia 1.21.11 or newer |
 | Java | 25 |
 | Other plugins | None required |
+| Internet | On the first start, to download the libraries |
 
 ## Download
 

@@ -24,7 +24,7 @@ them:
 | Permission | Allows |
 |---|---|
 | `pickmeup.pickup.<entity type>` | Picking up this entity type, for example `pickmeup.pickup.pig`. Only checked when `requirePermission` is `true`. |
-| `eldoutilitites.debug` | `/pickmeup debug` |
+| `eldoutilities.debug` | `/pickmeup debug`. Called `eldoutilitites.debug` up to 2.0. |
 
 Picking up itself needs no permission. When `requirePermission` is `false`, which is the default, every player can
 pick up every allowed entity type.

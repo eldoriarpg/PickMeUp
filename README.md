@@ -16,7 +16,7 @@ hold sneak until the power bar fills and send it flying.
 - Players can be picked up too, and every player can turn that off for themselves with `/pickmeup toggle`.
 - Stack carried entities, with an optional height limit.
 - Pick up by punching as well, for Bedrock players.
-- Respects BentoBox, GriefPrevention, PlotSquared, Towny and RedProtect claims and leaves Citizens NPCs alone.
+- Respects BentoBox, GriefPrevention, PlotSquared, Towny, RedProtect and WorldGuard regions and leaves Citizens NPCs alone.
 - Tells admins about new versions and can download them on its own.
 
 Everything else is in the [documentation](https://docs.eldoria.de/pick-me-up).

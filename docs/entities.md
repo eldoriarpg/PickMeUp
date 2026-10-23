@@ -95,6 +95,24 @@ the spot where the entity stands.
 | PlotSquared | On a plot, players who are added to that plot. Roads and places outside of plots are free. |
 | Towny | In Towny worlds, players who may destroy blocks at that spot. |
 | RedProtect | Inside a region, players who may build there. Outside of regions, everyone. |
+| WorldGuard | Decided by the `pickmeup` region flag, see below. Regions without the flag do not limit picking up. |
 | Citizens | Nobody can pick up an NPC. |
 
 In all other places the protection plugin does not limit picking up.
+
+### The WorldGuard flag
+
+Pick Me Up adds the region flag `pickmeup`. Deny it to stop strangers from picking up entities in a region:
+
+```text
+/rg flag <region> pickmeup deny
+```
+
+The flag applies to non-members by default, so members and owners of the region can still pick up there. To block
+everyone, add the group:
+
+```text
+/rg flag <region> pickmeup -g all deny
+```
+
+Players with WorldGuard's region bypass are never blocked.

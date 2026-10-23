@@ -16,6 +16,7 @@ import de.eldoria.pickmeup.config.LegacyConfig;
 import de.eldoria.pickmeup.config.PickMeUpConfig;
 import de.eldoria.pickmeup.listener.CarryListener;
 import de.eldoria.pickmeup.services.ProtectionService;
+import de.eldoria.pickmeup.services.hooks.protection.WorldGuardFlag;
 import de.eldoria.pickmeup.updates.Updates;
 import de.eldoria.pickmeup.util.PickupToggle;
 import org.bstats.bukkit.Metrics;
@@ -31,6 +32,9 @@ public class PickMeUp extends EldoPlugin {
     @Override
     public void onPluginLoad() throws Throwable {
         LegacyConfig.migrate(getDataFolder().toPath(), getLogger());
+        if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+            WorldGuardFlag.register(getLogger());
+        }
         configuration = new PickMeUpConfig(this);
         PluginBaseConfiguration base = configuration.secondary(PluginBaseConfiguration.KEY);
         if (base.version() == 0) {

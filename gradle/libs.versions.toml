@@ -26,6 +26,7 @@ griefprevention = "com.github.TechFortress:GriefPrevention:18.0.0"
 towny = "com.palmergames.bukkit.towny:towny:0.103.2.13"
 plotsquared-core = { module = "com.intellectualsites.plotsquared:plotsquared-core", version.ref = "plotsquared" }
 plotsquared-bukkit = { module = "com.intellectualsites.plotsquared:plotsquared-bukkit", version.ref = "plotsquared" }
+worldguard-bukkit = "com.sk89q.worldguard:worldguard-bukkit:7.0.20"
 guice = "com.google.inject:guice:7.0.0"
 redprotect-core = "io.github.fabiozumbi12.RedProtect:RedProtect-Core:8.1.2"
 redprotect-spigot = "io.github.fabiozumbi12.RedProtect:RedProtect-Spigot:8.1.2"

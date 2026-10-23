@@ -5,6 +5,7 @@ import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.Permission.Default
 plugins {
     java
     `maven-publish`
+    alias(libs.plugins.spotless)
     alias(libs.plugins.publishdata)
     alias(libs.plugins.publishdata.manifest)
     alias(libs.plugins.shadow)
@@ -71,6 +72,32 @@ java {
     }
 }
 
+spotless {
+    java {
+        licenseHeaderFile(rootProject.file("HEADER.txt"))
+        target("**/*.java")
+    }
+}
+
+publishing {
+    publications.withType<MavenPublication>().configureEach {
+        pom {
+            url = "https://github.com/eldoriarpg/PickMeUp"
+            licenses {
+                license {
+                    name = "AGPL-3.0-only"
+                    url = "https://github.com/eldoriarpg/PickMeUp/blob/master/LICENSE.md"
+                }
+            }
+            developers {
+                developer {
+                    name = "Eldoria"
+                }
+            }
+        }
+    }
+}
+
 publishData {
     eldoNexus(dev = false)
     component = "shadow"
@@ -104,6 +131,7 @@ tasks {
     }
 
     test {
+        dependsOn(spotlessCheck)
         useJUnitPlatform()
         testLogging {
             events("passed", "skipped", "failed")

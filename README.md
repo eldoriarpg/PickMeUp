@@ -36,3 +36,7 @@ hold sneak until the power bar fills and send it flying.
 
 The configuration is converted on the first start. The old file is kept as `config.v1.yml` and the old message
 files as `messages.v1`.
+
+## License
+
+Pick Me Up is licensed under the [GNU Affero General Public License v3.0](LICENSE.md).

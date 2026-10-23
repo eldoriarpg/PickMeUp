@@ -31,6 +31,7 @@ public class TownyHook extends AProtectionHook {
         if (!townyAPI.isTownyWorld(location.getWorld())) {
             return true;
         }
-        return PlayerCacheUtil.getCachePermission(player, location, location.getBlock().getType(), TownyPermission.ActionType.DESTROY);
+        return PlayerCacheUtil.getCachePermission(
+                player, location, location.getBlock().getType(), TownyPermission.ActionType.DESTROY);
     }
 }

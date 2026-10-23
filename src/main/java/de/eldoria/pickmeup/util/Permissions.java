@@ -19,8 +19,7 @@ public final class Permissions {
     public static final String BYPASS_MAXSTACK = BASE + "bypass.maxstack";
     public static final String BYPASS_TOGGLE = BASE + "bypass.toggle";
 
-    private Permissions() {
-    }
+    private Permissions() {}
 
     public static String getPickUpPermission(EntityType type) {
         return BASE + "pickup." + type.name().toLowerCase(Locale.ROOT);

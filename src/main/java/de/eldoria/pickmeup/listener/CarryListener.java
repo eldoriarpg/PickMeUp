@@ -63,7 +63,8 @@ public class CarryListener implements Listener {
     private final Set<UUID> blocked = new HashSet<>();
     private final Map<UUID, MountState> mountStates = new HashMap<>();
 
-    public CarryListener(Plugin plugin, PickMeUpConfig config, ProtectionService protectionService, PickupToggle pickupToggle) {
+    public CarryListener(
+            Plugin plugin, PickMeUpConfig config, ProtectionService protectionService, PickupToggle pickupToggle) {
         this.plugin = plugin;
         this.config = config;
         this.protectionService = protectionService;
@@ -81,8 +82,8 @@ public class CarryListener implements Listener {
         Entity target = event.getRightClicked();
 
         if (mountStates.get(player.getUniqueId()) == MountState.SNEAK_THROW
-            && player.getPassengers().contains(target)
-            && hasEmptyHand(player)) {
+                && player.getPassengers().contains(target)
+                && hasEmptyHand(player)) {
             drop(player);
             event.setCancelled(true);
             return;
@@ -173,16 +174,18 @@ public class CarryListener implements Listener {
 
     private boolean tryPickUp(Player player, Entity target) {
         if (!player.isSneaking() || !hasEmptyHand(player)) return false;
-        if (mountStates.containsKey(player.getUniqueId()) || !player.getPassengers().isEmpty()) return false;
+        if (mountStates.containsKey(player.getUniqueId())
+                || !player.getPassengers().isEmpty()) return false;
         if (blocked.contains(target.getUniqueId())) return false;
         if (target.isInsideVehicle()) return false;
         if (!config.worldSettings().allowInWorld(player.getWorld())) return false;
         if (!config.mobSettings().canBePickedUp(player, target.getType())) return false;
 
         if (target instanceof Player targetPlayer
-            && !pickupToggle.isPickupable(targetPlayer)
-            && !player.hasPermission(Permissions.BYPASS_TOGGLE)) {
-            messageSender.sendErrorActionBar(player, "error.notPickupable", Placeholder.unparsed("player", targetPlayer.getName()));
+                && !pickupToggle.isPickupable(targetPlayer)
+                && !player.hasPermission(Permissions.BYPASS_TOGGLE)) {
+            messageSender.sendErrorActionBar(
+                    player, "error.notPickupable", Placeholder.unparsed("player", targetPlayer.getName()));
             return false;
         }
 
@@ -194,7 +197,8 @@ public class CarryListener implements Listener {
             }
             int maximum = settings.maximumStacking();
             if (maximum > 0 && stackHeight(target) > maximum && !player.hasPermission(Permissions.BYPASS_MAXSTACK)) {
-                messageSender.sendErrorActionBar(player, "error.maxStack", Placeholder.unparsed("max", String.valueOf(maximum)));
+                messageSender.sendErrorActionBar(
+                        player, "error.maxStack", Placeholder.unparsed("max", String.valueOf(maximum)));
                 return false;
             }
         }
@@ -209,11 +213,15 @@ public class CarryListener implements Listener {
     private void startCharging(Player player) {
         UUID carrier = player.getUniqueId();
         mountStates.put(carrier, MountState.SNEAK_THROW);
-        delayedActions.schedule(() -> {
-            if (player.isSneaking() && mountStates.get(carrier) == MountState.SNEAK_THROW && !player.getPassengers().isEmpty()) {
-                throwBarHandler.register(player);
-            }
-        }, config.carrySettings().throwDelay());
+        delayedActions.schedule(
+                () -> {
+                    if (player.isSneaking()
+                            && mountStates.get(carrier) == MountState.SNEAK_THROW
+                            && !player.getPassengers().isEmpty()) {
+                        throwBarHandler.register(player);
+                    }
+                },
+                config.carrySettings().throwDelay());
     }
 
     private void throwPassengers(Player player) {
@@ -228,10 +236,11 @@ public class CarryListener implements Listener {
             player.removePassenger(passenger);
             passenger.setVelocity(throwVec);
             delayedActions.schedule(() -> trailHandler.startTrail(passenger), 2);
-            plugin.getLogger().config("Throwing entity | Location:" + player.getLocation().toVector()
-                                      + " | Force: " + force
-                                      + " | ThrowForce: " + throwForce
-                                      + " | ViewVec: " + throwVec);
+            plugin.getLogger()
+                    .config("Throwing entity | Location:" + player.getLocation().toVector()
+                            + " | Force: " + force
+                            + " | ThrowForce: " + throwForce
+                            + " | ViewVec: " + throwVec);
         }
     }
 
@@ -273,6 +282,8 @@ public class CarryListener implements Listener {
     }
 
     private enum MountState {
-        SNEAK_MOUNT, WALKING, SNEAK_THROW
+        SNEAK_MOUNT,
+        WALKING,
+        SNEAK_THROW
     }
 }

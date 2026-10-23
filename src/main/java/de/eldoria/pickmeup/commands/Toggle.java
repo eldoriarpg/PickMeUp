@@ -23,9 +23,9 @@ public class Toggle extends AdvancedCommand implements IPlayerTabExecutor {
     private final PickupToggle pickupToggle;
 
     public Toggle(Plugin plugin, PickupToggle pickupToggle) {
-        super(plugin, CommandMeta.builder("toggle")
-                .withPermission(Permissions.TOGGLE)
-                .build());
+        super(
+                plugin,
+                CommandMeta.builder("toggle").withPermission(Permissions.TOGGLE).build());
         this.pickupToggle = pickupToggle;
     }
 

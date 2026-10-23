@@ -52,8 +52,12 @@ public class ProtectionService {
                     try {
                         hook.init(plugin);
                     } catch (Throwable e) {
-                        plugin.getLogger().log(Level.WARNING, "Failed to enable protection hook for " + hook.pluginName(), e);
-                        plugin.getLogger().log(Level.WARNING, "Please make sure you are using the latest version. If you are please report this error.");
+                        plugin.getLogger()
+                                .log(Level.WARNING, "Failed to enable protection hook for " + hook.pluginName(), e);
+                        plugin.getLogger()
+                                .log(
+                                        Level.WARNING,
+                                        "Please make sure you are using the latest version. If you are please report this error.");
                         return;
                     }
                     hooks.add(hook);
@@ -69,6 +73,13 @@ public class ProtectionService {
     }
 
     private static IProtectionHook[] hooks() {
-        return new IProtectionHook[]{new BentoBoxHook(), new CitizensHook(), new GriefPreventionHook(), new PlotSquaredHook(), new TownyHook(), new RedProtectHook()};
+        return new IProtectionHook[] {
+            new BentoBoxHook(),
+            new CitizensHook(),
+            new GriefPreventionHook(),
+            new PlotSquaredHook(),
+            new TownyHook(),
+            new RedProtectHook()
+        };
     }
 }

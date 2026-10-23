@@ -19,9 +19,9 @@ public class Reload extends AdvancedCommand implements ITabExecutor {
     private final PickMeUp plugin;
 
     public Reload(PickMeUp plugin) {
-        super(plugin, CommandMeta.builder("reload")
-                .withPermission(Permissions.RELOAD)
-                .build());
+        super(
+                plugin,
+                CommandMeta.builder("reload").withPermission(Permissions.RELOAD).build());
         this.plugin = plugin;
     }
 

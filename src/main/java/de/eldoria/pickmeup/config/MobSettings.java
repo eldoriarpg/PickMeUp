@@ -39,9 +39,11 @@ public class MobSettings {
             "MINECART_MOB_SPAWNER", "SPAWNER_MINECART",
             "MINECART_COMMAND", "COMMAND_BLOCK_MINECART");
 
-    private List<String> allowedMobs = new ArrayList<>(List.of("PIG", "CHICKEN", "RABBIT", "WOLF", "OAK_BOAT", "SHEEP", "PARROT"));
+    private List<String> allowedMobs =
+            new ArrayList<>(List.of("PIG", "CHICKEN", "RABBIT", "WOLF", "OAK_BOAT", "SHEEP", "PARROT"));
     private boolean requirePermission = false;
     private boolean blacklist = false;
+
     @JsonIgnore
     private Set<EntityType> resolved;
 
@@ -65,7 +67,8 @@ public class MobSettings {
             try {
                 types.add(EntityType.valueOf(RENAMED.getOrDefault(upper, upper)));
             } catch (IllegalArgumentException e) {
-                PickMeUp.logger().warning("Unknown entity type \"" + name + "\" in mobSettings.allowedMobs. It is ignored.");
+                PickMeUp.logger()
+                        .warning("Unknown entity type \"" + name + "\" in mobSettings.allowedMobs. It is ignored.");
             }
         }
         return types;

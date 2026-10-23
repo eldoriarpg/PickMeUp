@@ -16,11 +16,13 @@ import de.eldoria.pickmeup.util.PickupToggle;
 
 public class PickMeUpCommand extends AdvancedCommand {
     public PickMeUpCommand(PickMeUp plugin, PickupToggle pickupToggle) {
-        super(plugin, CommandMeta.builder("pickmeup")
-                .withSubCommand(new DefaultDebug(plugin, Permissions.RELOAD))
-                .withSubCommand(new Reload(plugin))
-                .withSubCommand(new Toggle(plugin, pickupToggle))
-                .withSubCommand(new DefaultAbout(plugin))
-                .build());
+        super(
+                plugin,
+                CommandMeta.builder("pickmeup")
+                        .withSubCommand(new DefaultDebug(plugin, Permissions.RELOAD))
+                        .withSubCommand(new Reload(plugin))
+                        .withSubCommand(new Toggle(plugin, pickupToggle))
+                        .withSubCommand(new DefaultAbout(plugin))
+                        .build());
     }
 }

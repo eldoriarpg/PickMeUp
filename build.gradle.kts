@@ -74,8 +74,14 @@ java {
 
 spotless {
     java {
+        target("src/**/*.java")
         licenseHeaderFile(rootProject.file("HEADER.txt"))
-        target("**/*.java")
+        trimTrailingWhitespace()
+        endWithNewline()
+        palantirJavaFormat(libs.versions.palantir.get()).formatJavadoc(false)
+        removeUnusedImports()
+        importOrder("", "java", "javax", "\\#")
+        encoding("UTF-8")
     }
 }
 
@@ -131,7 +137,6 @@ tasks {
     }
 
     test {
-        dependsOn(spotlessCheck)
         useJUnitPlatform()
         testLogging {
             events("passed", "skipped", "failed")

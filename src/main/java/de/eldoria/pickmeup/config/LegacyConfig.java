@@ -27,8 +27,7 @@ import java.util.regex.Pattern;
 public final class LegacyConfig {
     private static final Pattern LEGACY_LINE = Pattern.compile("^(\\s*==:.*|debug:.*)$");
 
-    private LegacyConfig() {
-    }
+    private LegacyConfig() {}
 
     /**
      * Converts the configuration in the data folder if it was written by 1.x.
@@ -63,6 +62,8 @@ public final class LegacyConfig {
      * @return the lines without type markers and debug level
      */
     static List<String> convert(List<String> lines) {
-        return lines.stream().filter(line -> !LEGACY_LINE.matcher(line).matches()).toList();
+        return lines.stream()
+                .filter(line -> !LEGACY_LINE.matcher(line).matches())
+                .toList();
     }
 }

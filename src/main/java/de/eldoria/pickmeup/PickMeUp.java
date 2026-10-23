@@ -47,10 +47,7 @@ public class PickMeUp extends EldoPlugin {
                 .setIncludedLocales("de_DE", "zh_CN")
                 .build();
         localizer.setDefaultLocale(configuration.generalSettings().language());
-        MessageSender.builder(this)
-                .prefix("<gold>[PMU]")
-                .localizer(localizer)
-                .register();
+        MessageSender.builder(this).prefix("<gold>[PMU]").localizer(localizer).register();
 
         PickupToggle pickupToggle = new PickupToggle(this);
         carryListener = new CarryListener(this, configuration, ProtectionService.of(this), pickupToggle);

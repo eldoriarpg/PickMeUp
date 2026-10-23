@@ -6,6 +6,23 @@ on:
     types: [ opened, ready_for_review, synchronize ]
 
 jobs:
+  verify-format:
+    runs-on: ubuntu-latest
+    name: Verify Formatting
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Check formatting and license headers
+        run: ./gradlew spotlessCheck
+
   build:
     runs-on: ubuntu-latest
 
@@ -20,4 +37,4 @@ jobs:
           java-version: 25
       - uses: gradle/actions/setup-gradle@v6
       - name: Build and test with Gradle
-        run: ./gradlew --build-cache build
+        run: ./gradlew --build-cache build -x spotlessCheck

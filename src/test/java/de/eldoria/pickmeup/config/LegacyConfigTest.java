@@ -62,8 +62,12 @@ class LegacyConfigTest {
         Assertions.assertTrue(Files.isDirectory(dir.resolve("messages.v1")));
         Assertions.assertFalse(LegacyConfig.migrate(dir, Logger.getAnonymousLogger()));
 
-        var configurations = new Configurations<>(dir, Key.builder(Path.of("config.yml"), ConfigFile::new).build(),
-                List.of(new YamlDataFormat()), getClass().getClassLoader(), null);
+        var configurations = new Configurations<>(
+                dir,
+                Key.builder(Path.of("config.yml"), ConfigFile::new).build(),
+                List.of(new YamlDataFormat()),
+                getClass().getClassLoader(),
+                null);
         ConfigFile config = configurations.main();
 
         Assertions.assertEquals("de_DE", config.generalSettings().language());

@@ -17,8 +17,7 @@ public class CitizensHook extends AProtectionHook {
     }
 
     @Override
-    public void init(Plugin plugin) {
-    }
+    public void init(Plugin plugin) {}
 
     @Override
     public boolean canInteract(Player player, Entity entity, Location location) {

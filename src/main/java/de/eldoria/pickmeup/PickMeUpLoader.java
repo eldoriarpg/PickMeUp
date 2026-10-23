@@ -24,19 +24,19 @@ import java.nio.charset.StandardCharsets;
 /**
  * Lets Paper download the libraries of PickMeUp before the plugin loads, instead of shipping them in the jar.
  * <p>
- * The libraries are the ones the build lists in {@value #LIBRARIES}. They are resolved from EldoNexus, which hosts
- * eldo-util, and from Paper's Maven Central mirror for everything else. Paper keeps them in its {@code libraries}
- * folder and gives them to this plugin only, so other plugins with other versions are not affected.
+ * The libraries are the ones the build lists in {@value #LIBRARIES}. They are resolved from Paper's Maven Central
+ * mirror first, then from EldoNexus, which hosts eldo-util and proxies what the mirror lacks. Paper keeps them in its
+ * {@code libraries} folder and gives them to this plugin only, so other plugins with other versions are not affected.
  */
 public class PickMeUpLoader implements PluginLoader {
     private static final String LIBRARIES = "paper-libraries.json";
-    private static final String ELDONEXUS = "https://eldonexus.de/repository/maven-public/";
 
     @Override
     public void classloader(PluginClasspathBuilder classpathBuilder) {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
-        resolver.addRepository(repository("eldonexus", ELDONEXUS));
         resolver.addRepository(repository("central", MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR));
+        resolver.addRepository(repository("eldonexus-releases", "https://eldonexus.de/repository/maven-releases/"));
+        resolver.addRepository(repository("eldonexus-proxies", "https://eldonexus.de/repository/maven-proxies/"));
         for (var library : libraries().getAsJsonArray("dependencies")) {
             resolver.addDependency(new Dependency(new DefaultArtifact(library.getAsString()), null));
         }

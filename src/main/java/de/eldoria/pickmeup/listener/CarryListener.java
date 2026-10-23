@@ -7,7 +7,6 @@
 package de.eldoria.pickmeup.listener;
 
 import de.eldoria.eldoutilities.messages.MessageSender;
-import de.eldoria.eldoutilities.scheduling.DelayedActions;
 import de.eldoria.pickmeup.config.CarrySettings;
 import de.eldoria.pickmeup.config.PickMeUpConfig;
 import de.eldoria.pickmeup.scheduler.ThrowBarHandler;
@@ -35,12 +34,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Picks up entities on a sneaking click with an empty hand and throws them when sneak is held and released again.
@@ -49,9 +46,12 @@ import java.util.UUID;
  * released, and charging a throw once sneak is pressed again. Releasing sneak before the throw bar appears drops the
  * entity, releasing it afterwards throws it. A carrier's state ends whenever the carried entity leaves them, so only
  * passengers this listener mounted are ever touched.
+ * <p>
+ * The events of a carrier fire on the thread that owns the carrier, and delayed work runs on the carrier's scheduler.
+ * That keeps every carrier on one thread on Folia, while the maps are shared between regions.
  */
 public class CarryListener implements Listener {
-    private static final int REPICKUP_DELAY = 20;
+    private static final long REPICKUP_DELAY_MILLIS = 1000;
     private final PickMeUpConfig config;
     private final ProtectionService protectionService;
     private final PickupToggle pickupToggle;
@@ -59,9 +59,8 @@ public class CarryListener implements Listener {
     private final ThrowBarHandler throwBarHandler;
     private final TrailHandler trailHandler;
     private final MessageSender messageSender;
-    private final DelayedActions delayedActions;
-    private final Set<UUID> blocked = new HashSet<>();
-    private final Map<UUID, MountState> mountStates = new HashMap<>();
+    private final Map<UUID, Long> blockedUntil = new ConcurrentHashMap<>();
+    private final Map<UUID, MountState> mountStates = new ConcurrentHashMap<>();
 
     public CarryListener(
             Plugin plugin, PickMeUpConfig config, ProtectionService protectionService, PickupToggle pickupToggle) {
@@ -72,7 +71,6 @@ public class CarryListener implements Listener {
         throwBarHandler = new ThrowBarHandler(plugin);
         trailHandler = new TrailHandler(plugin);
         messageSender = MessageSender.getPluginMessageSender(plugin);
-        delayedActions = DelayedActions.start(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -162,12 +160,17 @@ public class CarryListener implements Listener {
 
     /**
      * Lets every carrier drop what they carry. Called when the plugin is disabled, so nothing stays mounted on a
-     * player without PickMeUp knowing about it.
+     * player without PickMeUp knowing about it. Carriers owned by another region are handed to their own scheduler.
      */
     public void dropAll() {
         for (UUID carrier : new ArrayList<>(mountStates.keySet())) {
             Player player = Bukkit.getPlayer(carrier);
-            if (player != null) unmountAll(player);
+            if (player == null) continue;
+            if (Bukkit.isOwnedByCurrentRegion(player)) {
+                unmountAll(player);
+            } else {
+                player.getScheduler().run(plugin, task -> unmountAll(player), null);
+            }
         }
         mountStates.clear();
     }
@@ -176,7 +179,7 @@ public class CarryListener implements Listener {
         if (!player.isSneaking() || !hasEmptyHand(player)) return false;
         if (mountStates.containsKey(player.getUniqueId())
                 || !player.getPassengers().isEmpty()) return false;
-        if (blocked.contains(target.getUniqueId())) return false;
+        if (isBlocked(target)) return false;
         if (target.isInsideVehicle()) return false;
         if (!config.worldSettings().allowInWorld(player.getWorld())) return false;
         if (!config.mobSettings().canBePickedUp(player, target.getType())) return false;
@@ -213,15 +216,18 @@ public class CarryListener implements Listener {
     private void startCharging(Player player) {
         UUID carrier = player.getUniqueId();
         mountStates.put(carrier, MountState.SNEAK_THROW);
-        delayedActions.schedule(
-                () -> {
-                    if (player.isSneaking()
-                            && mountStates.get(carrier) == MountState.SNEAK_THROW
-                            && !player.getPassengers().isEmpty()) {
-                        throwBarHandler.register(player);
-                    }
-                },
-                config.carrySettings().throwDelay());
+        player.getScheduler()
+                .runDelayed(
+                        plugin,
+                        task -> {
+                            if (player.isSneaking()
+                                    && mountStates.get(carrier) == MountState.SNEAK_THROW
+                                    && !player.getPassengers().isEmpty()) {
+                                throwBarHandler.register(player);
+                            }
+                        },
+                        null,
+                        Math.max(1, config.carrySettings().throwDelay()));
     }
 
     private void throwPassengers(Player player) {
@@ -235,7 +241,7 @@ public class CarryListener implements Listener {
         for (Entity passenger : passengers) {
             player.removePassenger(passenger);
             passenger.setVelocity(throwVec);
-            delayedActions.schedule(() -> trailHandler.startTrail(passenger), 2);
+            trailHandler.startTrail(passenger);
             plugin.getLogger()
                     .config("Throwing entity | Location:" + player.getLocation().toVector()
                             + " | Force: " + force
@@ -245,12 +251,21 @@ public class CarryListener implements Listener {
     }
 
     private void drop(Player player) {
+        long now = System.currentTimeMillis();
+        blockedUntil.values().removeIf(until -> until <= now);
+        long until = now + REPICKUP_DELAY_MILLIS;
         for (Entity passenger : player.getPassengers()) {
-            UUID id = passenger.getUniqueId();
-            blocked.add(id);
-            delayedActions.schedule(() -> blocked.remove(id), REPICKUP_DELAY);
+            blockedUntil.put(passenger.getUniqueId(), until);
         }
         unmountAll(player);
+    }
+
+    private boolean isBlocked(Entity entity) {
+        Long until = blockedUntil.get(entity.getUniqueId());
+        if (until == null) return false;
+        if (until > System.currentTimeMillis()) return true;
+        blockedUntil.remove(entity.getUniqueId(), until);
+        return false;
     }
 
     private void unmountAll(Player player) {

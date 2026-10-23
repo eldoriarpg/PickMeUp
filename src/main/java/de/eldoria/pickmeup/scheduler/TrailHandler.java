@@ -6,35 +6,41 @@
 
 package de.eldoria.pickmeup.scheduler;
 
-import de.eldoria.eldoutilities.scheduling.SelfSchedulingWorker;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Draws a particle trail behind thrown entities until they land, hit water or have flown for {@value #MAX_TICKS}
  * ticks.
+ * <p>
+ * Each trail runs on the scheduler of its entity, so it follows the entity across regions on Folia.
  */
-public class TrailHandler extends SelfSchedulingWorker<Entity, Set<Entity>> {
+public class TrailHandler {
+    private static final int START_DELAY = 2;
     private static final int MAX_TICKS = 100;
-    private final Set<Entity> remove = new HashSet<>();
-    private final Map<Entity, Integer> age = new HashMap<>();
+    private final Plugin plugin;
 
     public TrailHandler(Plugin plugin) {
-        super(plugin);
+        this.plugin = plugin;
     }
 
-    @Override
-    protected void execute(Entity entity) {
-        int ticks = age.merge(entity, 1, Integer::sum);
+    /**
+     * Starts the trail of an entity that was just thrown. The first ticks are skipped, so the entity has left the
+     * ground before landing ends the trail.
+     *
+     * @param entity the thrown entity
+     */
+    public void startTrail(Entity entity) {
+        int[] age = {0};
+        entity.getScheduler().runAtFixedRate(plugin, task -> draw(task, entity, ++age[0]), null, START_DELAY, 1);
+    }
+
+    private static void draw(ScheduledTask task, Entity entity, int ticks) {
         if (!entity.isValid() || entity.isOnGround() || entity.isInWater() || ticks > MAX_TICKS) {
-            remove.add(entity);
+            task.cancel();
             return;
         }
 
@@ -46,24 +52,5 @@ public class TrailHandler extends SelfSchedulingWorker<Entity, Set<Entity>> {
                         Particle.HAPPY_VILLAGER,
                         entity.getLocation().subtract(offset).add(0, 0.25, 0),
                         2);
-    }
-
-    public void startTrail(Entity entity) {
-        age.remove(entity);
-        register(entity);
-    }
-
-    @Override
-    protected void tick() {
-        remove.forEach(entity -> {
-            unregister(entity);
-            age.remove(entity);
-        });
-        remove.clear();
-    }
-
-    @Override
-    protected Set<Entity> getQueueImplementation() {
-        return new HashSet<>();
     }
 }

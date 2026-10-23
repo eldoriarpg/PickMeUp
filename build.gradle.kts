@@ -113,7 +113,7 @@ publishData {
 }
 
 pluginManifest {
-    platforms("paper")
+    platforms("paper", "folia")
     optional("BentoBox") { spigot(73261) }
     optional("GriefPrevention") { spigot(1884) }
     optional("PlotSquared") { spigot(77506) }
@@ -166,6 +166,15 @@ tasks {
     }
 }
 
+runPaper {
+    folia {
+        registerTask {
+            minecraftVersion("26.3")
+            jvmArgs("-Dcom.mojang.eula.agree=true")
+        }
+    }
+}
+
 bukkit {
     name = "PickMeUp"
     version = project.version.toString()
@@ -174,6 +183,7 @@ bukkit {
     main = "de.eldoria.pickmeup.PickMeUp"
     website = "https://hangar.papermc.io/eldoriarpg/PickMeUp"
     apiVersion = "1.21.11"
+    foliaSupported = true
     softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens")
 
     commands {
@@ -235,7 +245,7 @@ modrinth {
     versionType = "release"
     uploadFile.set(tasks.shadowJar)
     gameVersions.addAll("1.21.11", "26.1", "26.1.1", "26.1.2", "26.2", "26.3")
-    loaders.addAll("paper", "purpur")
+    loaders.addAll("paper", "purpur", "folia")
     changelog = providers.environmentVariable("MODRINTH_CHANGELOG").orElse("")
     syncBodyFrom = rootProject.file("README.md").readText()
 }

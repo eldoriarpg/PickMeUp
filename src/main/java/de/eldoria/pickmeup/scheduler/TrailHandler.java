@@ -18,7 +18,7 @@ public class TrailHandler extends SelfSchedulingWorker<Entity, Set<Entity>> {
 
     @Override
     protected void execute(Entity entity) {
-        if (!entity.isValid()) {
+        if (entity == null || !entity.isValid() || entity.isDead()) {
             remove.add(entity);
             return;
         }
@@ -26,9 +26,12 @@ public class TrailHandler extends SelfSchedulingWorker<Entity, Set<Entity>> {
             remove.add(entity);
             return;
         }
-
-        Vector offset = entity.getVelocity().normalize().multiply(1);
-        entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation().clone().subtract(offset).add(0, 0.25, 0), 2);
+        try {
+            Vector offset = entity.getVelocity().normalize().multiply(1);
+            entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation().clone().subtract(offset).add(0, 0.25, 0), 2);
+        } catch (Exception e) {
+            remove.add(entity);
+        }
     }
 
     public void startTrail(Entity entity) {

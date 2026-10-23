@@ -20,6 +20,8 @@ public class GriefPreventionHook extends AProtectionHook {
 
     @Override
     public boolean canInteract(Player player, Entity entity, Location location) {
+        if (griefPrevention == null) return true;
+        if (location == null || location.getWorld() == null) return false;
         if (!griefPrevention.claimsEnabledForWorld(location.getWorld())) {
             return true;
         }

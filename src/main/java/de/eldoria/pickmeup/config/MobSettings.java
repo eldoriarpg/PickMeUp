@@ -54,6 +54,7 @@ public class MobSettings implements ConfigurationSerializable {
     }
 
     public boolean canBePickedUp(Player player, EntityType type) {
+        if (allowedMobs == null) return false;
         boolean allowed;
         if (blacklist) {
             allowed = !allowedMobs.contains(type);

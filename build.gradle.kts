@@ -195,6 +195,16 @@ bukkit {
     }
 
     permissions {
+        register("pickmeup.*") {
+            description = "All permissions of pick me up"
+            children = listOf(
+                "pickmeup.reload",
+                "pickmeup.updates",
+                "pickmeup.toggle",
+                "pickmeup.bypass.nostack",
+                "pickmeup.bypass.maxstack",
+                "pickmeup.bypass.toggle")
+        }
         register("pickmeup.reload") {
             description = "Reload the configuration and use the debug command"
             default = OP

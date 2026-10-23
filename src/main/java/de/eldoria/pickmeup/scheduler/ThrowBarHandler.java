@@ -8,7 +8,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThrowBarHandler extends ReschedulingTask {
@@ -54,11 +58,6 @@ public class ThrowBarHandler extends ReschedulingTask {
 
     @Override
     public void run() {
-        if (!Bukkit.isPrimaryThread()) {
-            Bukkit.getScheduler().runTask(PickMeUp.getInstance(), this::run);
-            return;
-        }
-
         currentValues.entrySet().removeIf(entry -> {
             Player player = Bukkit.getPlayer(entry.getKey());
             if (player == null || !player.isOnline() || !player.isSneaking()) {
@@ -69,11 +68,7 @@ public class ThrowBarHandler extends ReschedulingTask {
             }
 
             int currValue = entry.getValue().incrementAndGet();
-            int index = calculateIndex(currValue);
-            if (index > 0 && index <= FULL_BAR.size()) {
-                String barDisplay = String.join("", FULL_BAR.subList(0, index));
-                sender.sendActionBar(player, barDisplay);
-            }
+            sender.sendActionBar(player, String.join("", FULL_BAR.subList(0, calculateIndex(currValue))));
             return false;
         });
 
@@ -96,10 +91,9 @@ public class ThrowBarHandler extends ReschedulingTask {
 
     public double getAndRemove(Player player) {
         AtomicInteger removed = currentValues.remove(player.getUniqueId());
-        if (player.isOnline()) {
-            sender.sendActionBar(player, "");
-        }
-        return removed != null ? calculateForce(removed.get()) : 0;
+        if (removed == null) return 0;
+        sender.sendActionBar(player, "");
+        return calculateForce(removed.get());
     }
 
     public boolean isRegistered(Player player) {
@@ -109,15 +103,6 @@ public class ThrowBarHandler extends ReschedulingTask {
     public void remove(Player player) {
         if (currentValues.remove(player.getUniqueId()) != null && player.isOnline()) {
             sender.sendActionBar(player, "");
-        }
-    }
-
-    public void remove(UUID uuid) {
-        if (currentValues.remove(uuid) != null) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null && player.isOnline()) {
-                sender.sendActionBar(player, "");
-            }
         }
     }
 }

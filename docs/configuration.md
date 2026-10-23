@@ -16,6 +16,7 @@ carrySettings:
   leftClickPickup: false
   leftClickPickupPlayers: false
   maximumStacking: 0
+  teleportWithCarrier: false
   throwDelay: 10
   throwForce: 2.0
 generalSettings:
@@ -78,6 +79,7 @@ later, or never ask again. Pick Me Up saves the choice to `config.yml`. The offe
 | `maximumStacking` | `0` | The highest stack a player may pick up. It counts the entity and everything riding on it. `0` or less means no limit. Players with `pickmeup.bypass.maxstack` have no limit. |
 | `leftClickPickup` | `false` | Also lets players pick up by punching an entity while sneaking with an empty hand. Meant for Bedrock players. The punch does no damage when it picks up. |
 | `leftClickPickupPlayers` | `false` | Lets punching pick up players too. Only works when `leftClickPickup` is `true`. |
+| `teleportWithCarrier` | `false` | Carried entities follow you through teleports, ender pearls and portals, also into other worlds, and sit on you again afterwards. With `false` they are set down where you were. They stay behind when carrying is turned off in the destination world. |
 
 `maximumStacking` is only checked when the entity carries something. A single entity can always be picked up.
 

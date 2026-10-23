@@ -11,27 +11,32 @@ and the pig sits on your head. Walk it home, set it down, or hold sneak and send
 You choose which entities can be picked up. That can be a short list of friendly animals, or nearly everything,
 players included.
 
+This documentation describes Pick Me Up 2.0. Coming from 1.x? See [Updating from 1.x](./updating.md).
+
 ## What it can do
 
 - **Pick up and carry.** Sneak and right-click an entity with an empty hand. It rides on top of you while you walk.
-  See [Picking up and throwing](./using.md).
+  If you allow it, Bedrock players can punch instead. See [Picking up and throwing](./using.md).
 - **Throw.** Hold sneak while carrying. A colored power bar fills up, and the throw gets stronger the fuller the bar
   is. Thrown entities leave a small particle trail.
 - **Decide what can be picked up.** Use an allow list or a block list of entity types, ask for a permission per type,
   and limit the plugin to some worlds. See [Which entities can be picked up](./entities.md).
-- **Stack them.** If you allow it, players can pick up someone who is already carrying someone.
+- **Let players opt out.** With `/pickmeup toggle`, players decide whether others may pick them up.
+- **Stack them.** If you allow it, players can pick up someone who is already carrying someone, up to a height you
+  choose.
 - **Respect claims.** With BentoBox, GriefPrevention, PlotSquared, Towny or RedProtect installed, players can only pick
-  up entities where they are allowed to build. See
+  up entities where they are allowed to. Citizens NPCs can never be picked up. See
   [Protection plugins](./entities.md#protection-plugins).
+- **Stay up to date.** Pick Me Up tells you about new versions and can download them for you.
 
 ## Requirements
 
 | What | Version |
 |---|---|
-| Server | Paper 1.16.5 to 1.21 |
-| Java | 21 or newer |
+| Server | Paper 1.21.11 or newer, 26.x included |
+| Java | 25 or newer |
 | Other plugins | None required |
-| Optional | BentoBox, GriefPrevention, PlotSquared, Towny, RedProtect |
+| Optional | BentoBox, GriefPrevention, PlotSquared, Towny, RedProtect, Citizens |
 
 ## Where to go next
 
@@ -39,4 +44,5 @@ players included.
 - [Picking up and throwing](./using.md) explains the controls for your players.
 - [Which entities can be picked up](./entities.md) explains the entity list, permissions, worlds and claims.
 - [Configuration](./configuration.md) lists every setting in `config.yml`.
+- [Updating from 1.x](./updating.md) explains what happens to your old configuration.
 - [Commands](./reference/commands.md) and [Permissions](./reference/permissions.md) are the reference tables.

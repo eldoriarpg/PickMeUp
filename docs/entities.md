@@ -12,7 +12,7 @@ protection plugins. All settings live in `config.yml`. The full list of keys is 
 ## The entity list
 
 `mobSettings.allowedMobs` is a list of entity types. The names are the Bukkit entity type names, such as `PIG`,
-`COW`, `VILLAGER` or `PLAYER`. Players count as `PLAYER`.
+`COW`, `VILLAGER` or `PLAYER`. Players count as `PLAYER`. Upper or lower case does not matter.
 
 The default list is:
 
@@ -23,7 +23,7 @@ mobSettings:
   - CHICKEN
   - RABBIT
   - WOLF
-  - BOAT
+  - OAK_BOAT
   - SHEEP
   - PARROT
 ```
@@ -35,9 +35,19 @@ The list can work in two ways. `mobSettings.blacklist` picks the one you want.
 | `false` (default) | Only the listed entity types can be picked up. |
 | `true` | Every entity type can be picked up, except the listed ones. |
 
+:::note Unknown names
+A name the server does not know stays in the file, but is ignored. The server log reports it once. Old names that
+Minecraft has renamed still work: `BOAT` counts as `OAK_BOAT`, `CHEST_BOAT` as `OAK_CHEST_BOAT`, `MUSHROOM_COW` as
+`MOOSHROOM`, `SNOWMAN` as `SNOW_GOLEM`, and `MINECART_CHEST` and the other `MINECART_*` names as `CHEST_MINECART` and
+so on.
+:::
+
 :::tip Picking up players
 To let players pick up each other, add `PLAYER` to the list. With `blacklist: true`, players can be picked up unless
 you list `PLAYER`.
+
+Each player can still opt out with `/pickmeup toggle`. See
+[Players who do not want to be picked up](./using.md#players-who-do-not-want-to-be-picked-up).
 :::
 
 ## A permission per entity type
@@ -75,20 +85,16 @@ The world is checked when a player picks something up.
 
 ## Protection plugins
 
-When one of these plugins is installed, Pick Me Up asks it before every pick-up. The check uses the spot where the
-entity stands.
+When one of these plugins is installed, Pick Me Up asks it before every pick-up, after all other checks. The check uses
+the spot where the entity stands.
 
 | Plugin | Who can pick up |
 |---|---|
 | BentoBox | In BentoBox worlds, only members of the island the entity is on. Outside of islands in those worlds, nobody. |
-| GriefPrevention | In worlds with claims, players who may build at that spot. |
+| GriefPrevention | Inside a claim, players with container trust or more in that claim. Outside of claims, everyone. |
 | PlotSquared | On a plot, players who are added to that plot. Roads and places outside of plots are free. |
 | Towny | In Towny worlds, players who may destroy blocks at that spot. |
 | RedProtect | Inside a region, players who may build there. Outside of regions, everyone. |
+| Citizens | Nobody can pick up an NPC. |
 
 In all other places the protection plugin does not limit picking up.
-
-:::warning Citizens NPCs
-Pick Me Up does not protect Citizens NPCs. If an NPC's entity type is allowed, players can pick it up. Player-shaped
-NPCs count as `PLAYER`.
-:::

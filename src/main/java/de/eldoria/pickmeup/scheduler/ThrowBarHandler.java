@@ -11,6 +11,7 @@ import de.eldoria.eldoutilities.utils.EMath;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,12 @@ public class ThrowBarHandler {
             FULL_BAR.add("<#%s>%s".formatted(color, BAR_FRAGMENT));
         }
     }
+
+    /**
+     * The highest speed a throw gives, in blocks per tick. A full bar at the default throw force reaches 2, so the cap
+     * only stops a configured throw force from launching entities faster than the server can handle.
+     */
+    public static final double MAX_THROW_VELOCITY = 4.0;
 
     private final Plugin plugin;
     private final MessageSender sender;
@@ -72,6 +79,19 @@ public class ThrowBarHandler {
             ratio = EMath.parabolaValue(0, 0, 1, 1, 1 - ratio);
         }
         return ratio;
+    }
+
+    /**
+     * The velocity a throw gives a carried entity.
+     *
+     * @param direction  where the carrier looks
+     * @param strength   the charged strength, see {@link #calculateForce(int)}
+     * @param throwForce the configured multiplier of the strength
+     * @return the velocity in the look direction, never faster than {@value #MAX_THROW_VELOCITY} blocks per tick
+     */
+    public static Vector throwVelocity(Vector direction, double strength, double throwForce) {
+        double speed = Math.clamp(strength * throwForce, 0, MAX_THROW_VELOCITY);
+        return direction.clone().normalize().multiply(speed);
     }
 
     /**

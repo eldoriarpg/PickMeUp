@@ -2,11 +2,13 @@ name: Docs
 
 on:
   push:
-    paths: ['docs/**']
+    paths: ['docs/**', '.github/workflows/docs.yml']
   pull_request:
-    paths: ['docs/**']
+    paths: ['docs/**', '.github/workflows/docs.yml']
 
 jobs:
   docs:
-    uses: eldoriarpg/docs/.github/workflows/space.yml@main
+    uses: rainbowdashlabs/docs-hub/.github/workflows/space.yml@v1
+    with:
+      hub-repository: eldoriarpg/docs
     secrets: inherit

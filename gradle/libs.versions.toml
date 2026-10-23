@@ -1,5 +1,5 @@
 [versions]
-utilities = "3.5.0"
+utilities = "3.5.1"
 jackson = "3.2.4"
 paper = "1.21.11-R0.1-SNAPSHOT"
 junit = "6.1.3"
@@ -27,6 +27,7 @@ griefprevention = "com.github.TechFortress:GriefPrevention:18.0.0"
 towny = "com.palmergames.bukkit.towny:towny:0.103.2.13"
 plotsquared-core = { module = "com.intellectualsites.plotsquared:plotsquared-core", version.ref = "plotsquared" }
 plotsquared-bukkit = { module = "com.intellectualsites.plotsquared:plotsquared-bukkit", version.ref = "plotsquared" }
+guice = "com.google.inject:guice:7.0.0"
 redprotect-core = "io.github.fabiozumbi12.RedProtect:RedProtect-Core:8.1.2"
 redprotect-spigot = "io.github.fabiozumbi12.RedProtect:RedProtect-Spigot:8.1.2"
 

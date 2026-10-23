@@ -52,6 +52,7 @@ dependencies {
     compileOnly(libs.towny) { isTransitive = false }
     compileOnly(libs.plotsquared.core) { isTransitive = false }
     compileOnly(libs.plotsquared.bukkit) { isTransitive = false }
+    compileOnly(libs.guice) { isTransitive = false }
     compileOnly(libs.redprotect.core) { isTransitive = false }
     compileOnly(libs.redprotect.spigot) { isTransitive = false }
 
@@ -65,7 +66,7 @@ java {
     withSourcesJar()
     withJavadocJar()
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -78,7 +79,6 @@ publishData {
 }
 
 pluginManifest {
-    minecraft("1.21.11", "1.21.11")
     platforms("paper")
     optional("BentoBox") { spigot(73261) }
     optional("GriefPrevention") { spigot(1884) }
@@ -127,7 +127,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.11")
+        minecraftVersion("26.3")
         jvmArgs("-Dcom.mojang.eula.agree=true")
     }
 }
@@ -188,7 +188,7 @@ hangarPublish {
         platforms {
             register(Platforms.PAPER) {
                 jar = tasks.shadowJar.flatMap { it.archiveFile }
-                platformVersions = listOf("1.21.11")
+                platformVersions = listOf("1.21.11-26.3")
             }
         }
     }

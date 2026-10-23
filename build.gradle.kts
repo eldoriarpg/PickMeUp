@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.pluginyml.bukkit)
     alias(libs.plugins.runpaper)
     alias(libs.plugins.hangar)
+    alias(libs.plugins.minotaur)
 }
 
 repositories {
@@ -192,4 +193,17 @@ hangarPublish {
             }
         }
     }
+}
+
+modrinth {
+    token = providers.environmentVariable("MODRINTH_TOKEN")
+    // TODO: set the id of the Modrinth project once it exists
+    projectId = ""
+    versionNumber = project.version.toString()
+    versionType = "release"
+    uploadFile.set(tasks.shadowJar)
+    gameVersions.addAll("1.21.11", "26.1", "26.1.1", "26.1.2", "26.2", "26.3")
+    loaders.addAll("paper", "purpur")
+    changelog = providers.environmentVariable("MODRINTH_CHANGELOG").orElse("")
+    syncBodyFrom = rootProject.file("README.md").readText()
 }

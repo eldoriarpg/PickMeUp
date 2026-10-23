@@ -23,7 +23,7 @@ hold sneak until the power bar fills and send it flying.
 
 | What | Version |
 |---|---|
-| Server | Paper 1.21.11 or newer |
+| Server | Paper or Folia 1.21.11 or newer |
 | Java | 25 |
 | Other plugins | None required |
 

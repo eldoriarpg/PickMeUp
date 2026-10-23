@@ -38,13 +38,19 @@ public class ThrowBarHandler extends ReschedulingTask {
     }
 
     public static int calculateIndex(int currValue) {
-        int doubleBar = INT_GRADIENT.length * 2;
-        int clampedValue = currValue % doubleBar;
-        double ratio = calculateForce(clampedValue);
+        double ratio = calculateForce(currValue);
         return (int) Math.round(ratio * INT_GRADIENT.length);
     }
 
-    public static double calculateForce(int currValue) {
+    /**
+     * The throw strength after the bar charged for the given ticks. The bar fills and empties again in cycles of twice
+     * its length, so the strength stays between 0 and 1 however long sneak is held.
+     *
+     * @param ticks ticks the bar has charged
+     * @return strength between 0 and 1
+     */
+    public static double calculateForce(int ticks) {
+        int currValue = ticks % (INT_GRADIENT.length * 2);
         double ratio;
         if (currValue <= INT_GRADIENT.length) {
             ratio = currValue / (double) INT_GRADIENT.length;

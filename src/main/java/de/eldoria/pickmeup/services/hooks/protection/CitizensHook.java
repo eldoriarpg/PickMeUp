@@ -12,7 +12,6 @@ public class CitizensHook extends AProtectionHook {
 
     @Override
     public void init(Plugin plugin) {
-        // nothing
     }
 
     @Override

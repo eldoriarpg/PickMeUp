@@ -1,6 +1,7 @@
 package de.eldoria.pickmeup.services;
 
 import de.eldoria.pickmeup.services.hooks.protection.BentoBoxHook;
+import de.eldoria.pickmeup.services.hooks.protection.CitizensHook;
 import de.eldoria.pickmeup.services.hooks.protection.GriefPreventionHook;
 import de.eldoria.pickmeup.services.hooks.protection.IProtectionHook;
 import de.eldoria.pickmeup.services.hooks.protection.PlotSquaredHook;
@@ -62,6 +63,6 @@ public class ProtectionService {
     }
 
     private static IProtectionHook[] hooks() {
-        return new IProtectionHook[]{new BentoBoxHook(), new GriefPreventionHook(), new PlotSquaredHook(), new TownyHook(), new RedProtectHook()};
+        return new IProtectionHook[]{new BentoBoxHook(), new CitizensHook(), new GriefPreventionHook(), new PlotSquaredHook(), new TownyHook(), new RedProtectHook()};
     }
 }

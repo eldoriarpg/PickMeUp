@@ -6,11 +6,19 @@ import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+/**
+ * Draws a particle trail behind thrown entities until they land, hit water or have flown for {@value #MAX_TICKS}
+ * ticks.
+ */
 public class TrailHandler extends SelfSchedulingWorker<Entity, Set<Entity>> {
+    private static final int MAX_TICKS = 100;
     private final Set<Entity> remove = new HashSet<>();
+    private final Map<Entity, Integer> age = new HashMap<>();
 
     public TrailHandler(Plugin plugin) {
         super(plugin);
@@ -18,29 +26,29 @@ public class TrailHandler extends SelfSchedulingWorker<Entity, Set<Entity>> {
 
     @Override
     protected void execute(Entity entity) {
-        if (entity == null || !entity.isValid() || entity.isDead()) {
+        int ticks = age.merge(entity, 1, Integer::sum);
+        if (!entity.isValid() || entity.isOnGround() || entity.isInWater() || ticks > MAX_TICKS) {
             remove.add(entity);
             return;
         }
-        if (entity.isOnGround()) {
-            remove.add(entity);
-            return;
-        }
-        try {
-            Vector offset = entity.getVelocity().normalize().multiply(1);
-            entity.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, entity.getLocation().clone().subtract(offset).add(0, 0.25, 0), 2);
-        } catch (Exception e) {
-            remove.add(entity);
-        }
+
+        Vector velocity = entity.getVelocity();
+        if (velocity.lengthSquared() < 1.0E-6) return;
+        Vector offset = velocity.normalize();
+        entity.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, entity.getLocation().subtract(offset).add(0, 0.25, 0), 2);
     }
 
     public void startTrail(Entity entity) {
+        age.remove(entity);
         register(entity);
     }
 
     @Override
     protected void tick() {
-        remove.forEach(this::unregister);
+        remove.forEach(entity -> {
+            unregister(entity);
+            age.remove(entity);
+        });
         remove.clear();
     }
 

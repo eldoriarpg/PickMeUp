@@ -2,7 +2,6 @@
 /config/
 
 .gradle
-gradle.properties
 **/build/
 !src/**/build/
 
@@ -35,3 +34,5 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 /run/
 /.direnv
+
+.concept/

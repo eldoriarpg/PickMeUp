@@ -1,99 +1,91 @@
 import io.papermc.hangarpublishplugin.model.Platforms
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.Permission.Default.OP
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.Permission.Default.TRUE
 
 plugins {
-    id("com.gradleup.shadow") version "8.3.3"
     java
     `maven-publish`
+    alias(libs.plugins.publishdata)
+    alias(libs.plugins.publishdata.manifest)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.pluginyml.bukkit)
+    alias(libs.plugins.runpaper)
     alias(libs.plugins.hangar)
-    id("de.chojo.publishdata") version "1.4.0"
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 repositories {
     mavenCentral()
-    maven("https://eldonexus.de/repository/maven-public")
-    maven("https://eldonexus.de/repository/maven-proxies")
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://eldonexus.de/repository/maven-public/")
+    maven("https://eldonexus.de/repository/maven-proxies/")
     maven("https://raw.githubusercontent.com/FabioZumbi12/RedProtect/mvn-repo/")
     maven("https://raw.githubusercontent.com/FabioZumbi12/UltimateChat/mvn-repo/")
-    maven("https://maven.citizensnpcs.co/repo")
     maven("https://jitpack.io")
     maven("https://repo.glaremasters.me/repository/towny/")
+    exclusiveContent {
+        forRepository {
+            maven("https://repo.codemc.org/repository/maven-public/") {
+                metadataSources { artifact() }
+            }
+        }
+        filter { includeModule("world.bentobox", "bentobox") }
+    }
 }
 
-group = "de.eldoria"
-version = "1.3.14"
-var mainPackage = "pickmeup"
-val shadebase = group as String? + "." + mainPackage + "."
+val shadebase = "de.eldoria.pickmeup.libs."
 
 dependencies {
-    bukkitLibrary(libs.bundles.eldoria.utilities)
+    implementation(libs.bundles.utilities) {
+        exclude("com.fasterxml")
+        exclude("net.kyori")
+        exclude("org.jetbrains")
+        exclude("org.yaml")
+    }
+    implementation(platform(libs.jackson.bom))
+    implementation(libs.bundles.jackson)
     implementation(libs.bstats)
-    compileOnly(libs.spigot.v16)
-    compileOnly("com.mojang", "authlib", "1.5.25")
+
+    compileOnly(libs.paper)
     compileOnly(libs.jetbrains.annotations)
-    compileOnly("net.citizensnpcs", "citizens-main", "2.0.30-SNAPSHOT") {
-        exclude("*")
-    }
-    compileOnly("world.bentobox", "bentobox", "2.3.0-SNAPSHOT")
-    compileOnly("com.github.TechFortress", "GriefPrevention", "17.0.0")
-    compileOnly("com.palmergames.bukkit.towny", "towny", "0.100.4.4")
-    compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {
-        exclude("*")
-    }
-    compileOnly("com.plotsquared", "PlotSquared-Bukkit", "6.11.1") { isTransitive = false } // PlotSquared Bukkit API
+    compileOnly(libs.bentobox) { isTransitive = false }
+    compileOnly(libs.griefprevention) { isTransitive = false }
+    compileOnly(libs.towny) { isTransitive = false }
+    compileOnly(libs.plotsquared.core) { isTransitive = false }
+    compileOnly(libs.plotsquared.bukkit) { isTransitive = false }
+    compileOnly(libs.redprotect.core) { isTransitive = false }
+    compileOnly(libs.redprotect.spigot) { isTransitive = false }
 
-    compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Core", "8.1.2") {
-        exclude("*")
-    }
-    compileOnly("io.github.fabiozumbi12.RedProtect", "RedProtect-Spigot", "8.1.1") {
-        exclude("com.github.MilkBowl")
-        exclude("com.github.TheBusyBiscuit")
-        exclude("com.gmail.nossr50.mcMMO")
-        exclude("net.ess3")
-        exclude("org.spigotmc")
-        exclude("org.spongepowered")
-        exclude("com.typesafe")
-    }
-
-    testImplementation(libs.bundles.eldoria.utilities)
-    testImplementation(platform("org.junit:junit-bom:5.11.2"))
-    testImplementation("org.junit.jupiter", "junit-jupiter")
-    testImplementation("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
-    testImplementation("com.github.seeseemelk", "MockBukkit-v1.16", "1.5.2")
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.paper)
 }
 
 java {
     withSourcesJar()
     withJavadocJar()
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 publishData {
-    useEldoNexusRepos()
-    publishComponent("java")
+    eldoNexus(dev = false)
+    component = "shadow"
+    buildData {
+        put("lynaProduct", "5")
+    }
 }
 
-publishing {
-    publications.create<MavenPublication>("maven") {
-        publishData.configurePublication(this)
-    }
-
-    repositories {
-        maven {
-            authentication {
-                credentials(PasswordCredentials::class) {
-                    username = System.getenv("NEXUS_USERNAME")
-                    password = System.getenv("NEXUS_PASSWORD")
-                }
-            }
-
-            name = "EldoNexus"
-            url = uri(publishData.getRepository())
-        }
-    }
+pluginManifest {
+    minecraft("1.21.11", "1.21.11")
+    platforms("paper")
+    optional("BentoBox") { spigot(73261) }
+    optional("GriefPrevention") { spigot(1884) }
+    optional("PlotSquared") { spigot(77506) }
+    optional("Towny") { spigot(72694) }
+    optional("RedProtect") { spigot(15841) }
+    optional("Citizens") { spigot(13811) }
 }
 
 tasks {
@@ -105,6 +97,11 @@ tasks {
         options.encoding = "UTF-8"
     }
 
+    javadoc {
+        options.encoding = "UTF-8"
+        (options as StandardJavadocDocletOptions).addBooleanOption("Xdoclint:none", true)
+    }
+
     test {
         useJUnitPlatform()
         testLogging {
@@ -114,24 +111,15 @@ tasks {
 
     shadowJar {
         relocate("org.bstats", shadebase + "bstats")
+        relocate("com.fasterxml", shadebase + "fasterxml")
+        relocate("tools.jackson", shadebase + "jackson")
+        relocate("org.snakeyaml", shadebase + "snakeyaml")
+        relocate("dev.chojo.ocular", shadebase + "ocular")
+        relocate("de.eldoria.jacksonbukkit", shadebase + "jacksonbukkit")
+        relocate("de.eldoria.eldoutilities", shadebase + "utilities")
         mergeServiceFiles()
-        minimize()
-    }
-
-    processResources {
-        from(sourceSets.main.get().resources.srcDirs) {
-            duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        }
-    }
-
-    register<Copy>("copyToServer") {
-        val path = project.property("targetDir") ?: "";
-        if (path.toString().isEmpty()) {
-            println("targetDir is not set in gradle properties")
-            return@register
-        }
-        from(shadowJar)
-        destinationDir = File(path.toString())
+        addMultiReleaseAttribute = false
+        exclude("META-INF/versions/**")
     }
 
     build {
@@ -139,19 +127,21 @@ tasks {
     }
 
     runServer {
-        // Configure the Minecraft version for our task.
-        // This is the only required configuration besides applying the plugin.
-        // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.1")
+        minecraftVersion("1.21.11")
+        jvmArgs("-Dcom.mojang.eula.agree=true")
     }
 }
 
 bukkit {
+    name = "PickMeUp"
+    version = project.version.toString()
+    description = "Pick up entities, carry them around and throw them away"
     authors = listOf("RainbowDashLabs")
     main = "de.eldoria.pickmeup.PickMeUp"
-    website = "https://www.spigotmc.org/resources/88151/"
-    apiVersion = "1.13"
+    website = "https://hangar.papermc.io/eldoriarpg/PickMeUp"
+    apiVersion = "1.21.11"
     softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens")
+
     commands {
         register("pickmeup") {
             description = "Main command of pick me up"
@@ -159,20 +149,46 @@ bukkit {
             aliases = listOf("pmu")
         }
     }
+
+    permissions {
+        register("pickmeup.reload") {
+            description = "Reload the configuration and use the debug command"
+            default = OP
+        }
+        register("pickmeup.updates") {
+            description = "Hear about new versions on join and download them"
+            default = OP
+        }
+        register("pickmeup.toggle") {
+            description = "Decide whether other players may pick you up"
+            default = TRUE
+        }
+        register("pickmeup.bypass.nostack") {
+            description = "Pick up entities which carry entities themselves, even when stacking is disabled"
+            default = OP
+        }
+        register("pickmeup.bypass.maxstack") {
+            description = "Stack carried entities higher than the configured maximum"
+            default = OP
+        }
+        register("pickmeup.bypass.toggle") {
+            description = "Pick up players who disabled being picked up"
+            default = OP
+        }
+    }
 }
 
 hangarPublish {
     publications.register("plugin") {
-        version.set(publishData.getVersion())
+        version = project.version.toString()
         id = "PickMeUp"
-        channel = System.getenv("HANGAR_CHANNEL")
-
+        channel = System.getenv("HANGAR_CHANNEL") ?: "Release"
         apiKey = System.getenv("HANGAR_KEY")
 
         platforms {
             register(Platforms.PAPER) {
-                jar.set(tasks.shadowJar.flatMap { it.archiveFile })
-                platformVersions.set(listOf("1.16.5-1.21"))
+                jar = tasks.shadowJar.flatMap { it.archiveFile }
+                platformVersions = listOf("1.21.11")
             }
         }
     }

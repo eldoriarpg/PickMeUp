@@ -1,35 +1,31 @@
 package de.eldoria.pickmeup.config;
 
-import de.eldoria.eldoutilities.serialization.SerializationUtil;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.SerializableAs;
-import org.jetbrains.annotations.NotNull;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
-import java.util.Map;
-
-@SerializableAs("pickMeUpGeneralSettings")
-public class GeneralSettings implements ConfigurationSerializable {
+@SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
+public class GeneralSettings {
     private String language = "en_US";
-    private boolean updateCheck = true;
-
-    public GeneralSettings(Map<String, Object> objectMap) {
-        SerializationUtil.mapOnObject(objectMap, this);
-    }
-
-    public GeneralSettings() {
-
-    }
-
-    @Override
-    public @NotNull Map<String, Object> serialize() {
-        return SerializationUtil.objectToMap(this);
-    }
+    private UpdateSettings updates = new UpdateSettings();
 
     public String language() {
         return language;
     }
 
-    public boolean isUpdateCheck() {
-        return updateCheck;
+    /**
+     * @return whether the server is told about new versions and whether they are downloaded
+     */
+    public UpdateSettings updates() {
+        return updates;
+    }
+
+    /**
+     * Reads the update switch of 1.x configurations. It becomes the start value of {@link UpdateSettings#notice()} and
+     * is not written again.
+     *
+     * @param updateCheck whether the old configuration looked for new versions
+     */
+    @JsonSetter("updateCheck")
+    private void legacyUpdateCheck(boolean updateCheck) {
+        updates.notice(updateCheck);
     }
 }

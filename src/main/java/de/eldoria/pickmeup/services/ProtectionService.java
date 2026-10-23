@@ -13,6 +13,7 @@ import de.eldoria.pickmeup.services.hooks.protection.IProtectionHook;
 import de.eldoria.pickmeup.services.hooks.protection.PlotSquaredHook;
 import de.eldoria.pickmeup.services.hooks.protection.RedProtectHook;
 import de.eldoria.pickmeup.services.hooks.protection.TownyHook;
+import de.eldoria.pickmeup.services.hooks.protection.WorldGuardHook;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -79,6 +80,7 @@ public class ProtectionService {
             new GriefPreventionHook(),
             new PlotSquaredHook(),
             new TownyHook(),
+            new WorldGuardHook(),
             new RedProtectHook()
         };
     }

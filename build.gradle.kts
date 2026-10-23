@@ -24,6 +24,7 @@ repositories {
     maven("https://raw.githubusercontent.com/FabioZumbi12/UltimateChat/mvn-repo/")
     maven("https://jitpack.io")
     maven("https://repo.glaremasters.me/repository/towny/")
+    maven("https://maven.enginehub.org/repo/")
     exclusiveContent {
         forRepository {
             maven("https://repo.codemc.org/repository/maven-public/") {
@@ -55,6 +56,11 @@ dependencies {
     compileOnly(libs.plotsquared.core) { isTransitive = false }
     compileOnly(libs.plotsquared.bukkit) { isTransitive = false }
     compileOnly(libs.guice) { isTransitive = false }
+    compileOnly(libs.worldguard.bukkit) {
+        exclude("org.bukkit")
+        exclude("org.spigotmc")
+        exclude("io.papermc")
+    }
     compileOnly(libs.redprotect.core) { isTransitive = false }
     compileOnly(libs.redprotect.spigot) { isTransitive = false }
 
@@ -120,6 +126,7 @@ pluginManifest {
     optional("Towny") { spigot(72694) }
     optional("RedProtect") { spigot(15841) }
     optional("Citizens") { spigot(13811) }
+    optional("WorldGuard") { modrinth("worldguard") }
 }
 
 tasks {
@@ -184,7 +191,7 @@ bukkit {
     website = "https://hangar.papermc.io/eldoriarpg/PickMeUp"
     apiVersion = "1.21.11"
     foliaSupported = true
-    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens")
+    softDepend = listOf("BentoBox", "RedProtect", "GriefPrevention", "PlotSquared", "Towny", "Citizens", "WorldGuard")
 
     commands {
         register("pickmeup") {

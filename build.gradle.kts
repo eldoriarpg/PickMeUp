@@ -2,7 +2,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
     java
     `maven-publish`
-    id("de.chojo.publishdata") version "1.4.0"
+    id("de.chojo.publishdata") version "2.1.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
 }
 
@@ -27,7 +27,7 @@ dependencies {
         exclude("*")
     }
     compileOnly("world.bentobox", "bentobox", "2.3.0-SNAPSHOT")
-    compileOnly("com.github.TechFortress", "GriefPrevention", "17.0.0")
+    compileOnly("com.github.TechFortress", "GriefPrevention", "18.0.0")
     compileOnly("com.palmergames.bukkit.towny", "towny", "0.100.4.4")
     compileOnly("com.plotsquared", "PlotSquared-Core", "6.11.1") {
         exclude("*")
@@ -48,7 +48,7 @@ dependencies {
     }
 
     testImplementation(libs.bundles.eldoria.utilities)
-    testImplementation(platform("org.junit:junit-bom:5.11.2"))
+    testImplementation(platform("org.junit:junit-bom:6.1.3"))
     testImplementation("org.junit.jupiter", "junit-jupiter")
     testImplementation("org.spigotmc", "spigot-api", "1.16.5-R0.1-SNAPSHOT")
     testImplementation("com.github.seeseemelk", "MockBukkit-v1.16", "1.5.2")

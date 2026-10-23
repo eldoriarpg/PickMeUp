@@ -16,7 +16,7 @@ dependencyResolutionManagement {
             library("bstats","org.bstats:bstats-bukkit:3.1.0")
 
             // utilities
-            version("eldoutil", "2.1.6")
+            version("eldoutil", "3.5.1")
             library("legacy-serialization", "de.eldoria.util","legacy-serialization").versionRef("eldoutil")
             library("plugin", "de.eldoria.util","plugin").versionRef("eldoutil")
             library("metrics", "de.eldoria.util","metrics").versionRef("eldoutil")
@@ -37,9 +37,9 @@ dependencyResolutionManagement {
             library("spigot-v16", "org.spigotmc:spigot-api:1.16.1-R0.1-SNAPSHOT")
 
             // plugins
-            plugin("publishdata", "de.chojo.publishdata").version("1.4.0")
-            plugin("spotless", "com.diffplug.spotless").version("6.25.0")
-            plugin("shadow", "com.gradleup.shadow").version("8.3.3")
+            plugin("publishdata", "de.chojo.publishdata").version("2.1.0")
+            plugin("spotless", "com.diffplug.spotless").version("8.10.4")
+            plugin("shadow", "com.gradleup.shadow").version("9.6.1")
             plugin("pluginyml-bukkit", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
         }
 

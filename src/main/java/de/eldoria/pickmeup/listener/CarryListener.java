@@ -16,6 +16,7 @@ import de.eldoria.pickmeup.util.Permissions;
 import de.eldoria.pickmeup.util.PickupToggle;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -52,6 +53,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CarryListener implements Listener {
     private static final long REPICKUP_DELAY_MILLIS = 1000;
+    private static final int ARRIVAL_TIMEOUT = 100;
+    private static final double MOVED_DISTANCE_SQUARED = 1;
     private final PickMeUpConfig config;
     private final ProtectionService protectionService;
     private final PickupToggle pickupToggle;
@@ -139,8 +142,12 @@ public class CarryListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
-        if (mountStates.containsKey(event.getPlayer().getUniqueId())) {
-            unmountAll(event.getPlayer());
+        Player player = event.getPlayer();
+        if (!mountStates.containsKey(player.getUniqueId())) return;
+        List<Entity> carried = new ArrayList<>(player.getPassengers());
+        unmountAll(player);
+        if (config.carrySettings().teleportWithCarrier() && !carried.isEmpty()) {
+            bringAlong(player, carried, event.getFrom());
         }
     }
 
@@ -266,6 +273,54 @@ public class CarryListener implements Listener {
         if (until > System.currentTimeMillis()) return true;
         blockedUntil.remove(entity.getUniqueId(), until);
         return false;
+    }
+
+    /**
+     * Brings entities set down for a teleport to their carrier once the carrier has left the starting point, and mounts
+     * them again. The carrier's actual position is used, because portals move the player a few ticks after the event
+     * and not always to the event's destination. After {@value #ARRIVAL_TIMEOUT} ticks the entities follow to wherever
+     * the carrier is. Entities stay behind when that world does not allow carrying or the carrier left the server.
+     *
+     * @param player  the carrier
+     * @param carried the entities that sat on the carrier
+     * @param origin  where the teleport started
+     */
+    private void bringAlong(Player player, List<Entity> carried, Location origin) {
+        int[] waited = {0};
+        player.getScheduler()
+                .runAtFixedRate(
+                        plugin,
+                        task -> {
+                            boolean moved = !player.getWorld().equals(origin.getWorld())
+                                    || player.getLocation().distanceSquared(origin) > MOVED_DISTANCE_SQUARED;
+                            if (!moved && ++waited[0] < ARRIVAL_TIMEOUT) return;
+                            task.cancel();
+                            if (!config.worldSettings().allowInWorld(player.getWorld())) return;
+                            Location target = player.getLocation();
+                            carried.forEach(entity -> follow(player, entity, target));
+                        },
+                        null,
+                        1,
+                        1);
+    }
+
+    private void follow(Player player, Entity entity, Location target) {
+        entity.getScheduler()
+                .run(
+                        plugin,
+                        task -> entity.teleportAsync(target, PlayerTeleportEvent.TeleportCause.PLUGIN)
+                                .thenAccept(teleported -> {
+                                    if (teleported)
+                                        player.getScheduler().run(plugin, t -> remount(player, entity), null);
+                                }),
+                        null);
+    }
+
+    private void remount(Player player, Entity entity) {
+        if (!player.isOnline() || !entity.isValid() || entity.isInsideVehicle()) return;
+        if (player.addPassenger(entity)) {
+            mountStates.putIfAbsent(player.getUniqueId(), MountState.WALKING);
+        }
     }
 
     private void unmountAll(Player player) {

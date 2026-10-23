@@ -17,6 +17,7 @@ public class CarrySettings {
     private int maximumStacking = 0;
     private boolean leftClickPickup = false;
     private boolean leftClickPickupPlayers = false;
+    private boolean teleportWithCarrier = false;
 
     /**
      * @return the multiplier of the charged throw strength, never negative. The resulting speed is capped at
@@ -59,5 +60,12 @@ public class CarrySettings {
      */
     public boolean leftClickPickupPlayers() {
         return leftClickPickupPlayers;
+    }
+
+    /**
+     * @return whether carried entities follow their carrier through teleports and portals instead of being set down
+     */
+    public boolean teleportWithCarrier() {
+        return teleportWithCarrier;
     }
 }

@@ -42,7 +42,8 @@ picked up." Players with the `pickmeup.bypass.toggle` permission can pick them u
 Stop sneaking after the pick-up. Now you can walk, run and jump, and the entity stays on top of you.
 
 A carried player can get off by sneaking. When the entity you carry gets off or dies, you carry nothing anymore. You
-also drop what you carry when you teleport, die or leave the server.
+also drop what you carry when you die or leave the server, and when you teleport, unless the server lets carried
+entities follow you (`teleportWithCarrier`).
 
 ## Set down
 

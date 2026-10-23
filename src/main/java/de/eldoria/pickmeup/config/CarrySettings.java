@@ -19,7 +19,8 @@ public class CarrySettings {
     private boolean leftClickPickupPlayers = false;
 
     /**
-     * @return the multiplier of the charged throw strength, never negative
+     * @return the multiplier of the charged throw strength, never negative. The resulting speed is capped at
+     *     {@link de.eldoria.pickmeup.scheduler.ThrowBarHandler#MAX_THROW_VELOCITY} blocks per tick.
      */
     public double throwForce() {
         return Double.isFinite(throwForce) ? Math.max(0, throwForce) : 0;

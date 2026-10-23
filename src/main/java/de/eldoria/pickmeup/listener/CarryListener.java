@@ -233,7 +233,7 @@ public class CarryListener implements Listener {
     private void throwPassengers(Player player) {
         double force = throwBarHandler.getAndRemove(player);
         double throwForce = config.carrySettings().throwForce();
-        Vector throwVec = player.getEyeLocation().getDirection().multiply(force * throwForce);
+        Vector throwVec = ThrowBarHandler.throwVelocity(player.getEyeLocation().getDirection(), force, throwForce);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
 
         List<Entity> passengers = new ArrayList<>(player.getPassengers());

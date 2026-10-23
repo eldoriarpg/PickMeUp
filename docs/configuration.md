@@ -72,7 +72,7 @@ later, or never ask again. Pick Me Up saves the choice to `config.yml`. The offe
 
 | Key | Default | What it does |
 |---|---|---|
-| `throwForce` | `2.0` | How hard a throw with a full power bar is. Higher values throw further. A half-full bar throws with a quarter of this. A negative value counts as `0`. |
+| `throwForce` | `2.0` | How hard a throw with a full power bar is. Higher values throw further. A half-full bar throws with a quarter of this. A negative value counts as `0`. A throw is never faster than 4 blocks per tick, so values above `4` only make weaker charges stronger. |
 | `throwDelay` | `10` | How long, in ticks, a player has to hold sneak while carrying before the power bar appears. 20 ticks are one second. Letting go of sneak earlier sets the entity down. |
 | `allowStacking` | `false` | Lets players pick up an entity that is carrying something itself. Without it, only players with `pickmeup.bypass.nostack` can. |
 | `maximumStacking` | `0` | The highest stack a player may pick up. It counts the entity and everything riding on it. `0` or less means no limit. Players with `pickmeup.bypass.maxstack` have no limit. |

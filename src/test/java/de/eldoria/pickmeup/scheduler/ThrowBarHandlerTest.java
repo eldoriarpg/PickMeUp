@@ -6,6 +6,7 @@
 
 package de.eldoria.pickmeup.scheduler;
 
+import org.bukkit.util.Vector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,5 +32,20 @@ class ThrowBarHandlerTest {
             Assertions.assertTrue(force >= 0 && force <= 1, "force " + force + " at " + ticks + " ticks");
             Assertions.assertEquals(ThrowBarHandler.calculateForce(ticks % 60), force);
         }
+    }
+
+    @Test
+    public void throwVelocityIsCapped() {
+        Vector direction = new Vector(0, 0, 1);
+
+        Assertions.assertEquals(
+                2.0, ThrowBarHandler.throwVelocity(direction, 1.0, 2.0).length(), 1.0E-9);
+        Assertions.assertEquals(
+                ThrowBarHandler.MAX_THROW_VELOCITY,
+                ThrowBarHandler.throwVelocity(direction, 1.0, 10_000).length(),
+                1.0E-9);
+        Assertions.assertEquals(
+                0.0, ThrowBarHandler.throwVelocity(direction, 0.0, 2.0).length(), 1.0E-9);
+        Assertions.assertEquals(new Vector(0, 0, 1), direction);
     }
 }

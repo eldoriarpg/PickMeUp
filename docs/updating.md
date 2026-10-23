@@ -5,7 +5,7 @@ sidebar_position: 6
 
 # Updating from 1.x
 
-Pick Me Up 2.0 needs **Paper 1.21.11 or newer** and **Java 25**. Check both before you update.
+Pick Me Up 2.0 needs **Paper 1.21.11 or newer** (Folia works too) and **Java 25**. Check both before you update.
 
 To update, stop the server, replace the old jar in the `plugins` folder with the new one, and start the server again.
 You do not have to change anything by hand.

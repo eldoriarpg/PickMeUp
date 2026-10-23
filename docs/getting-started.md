@@ -9,7 +9,7 @@ This page takes you from an empty plugin folder to your first thrown pig.
 
 ## Install the plugin
 
-1. Check that your server runs **Paper 1.21.11 or newer** on **Java 25 or newer**. Paper 26.x works as well.
+1. Check that your server runs **Paper 1.21.11 or newer** on **Java 25 or newer**. Paper 26.x and Folia work as well.
 2. Download the Pick Me Up jar from [Hangar](https://hangar.papermc.io/eldoriarpg/PickMeUp) or
    [Lyna](https://lyna.eldoria.de/products/5) and put it into the `plugins` folder.
 3. Restart the server. Do not use `/reload`.

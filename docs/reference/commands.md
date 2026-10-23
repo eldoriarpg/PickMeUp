@@ -47,12 +47,13 @@ The permission `eldoutilitites.debug` is spelled with three "t"s at the end of "
 ```
 
 This command belongs to the update offer in chat, which admins with `pickmeup.updates` get when
-`generalSettings.updates.askForAutoUpdate` is on. You normally use it by choosing an option in that offer.
+`generalSettings.updates.askForAutoUpdate` is on. You normally use it by choosing an option in that offer. Only the console, operators and players with
+`pickmeup.updates` can use it.
 
 | Argument | What it does |
 |---|---|
 | `download` | Downloads the new version. It is applied on the next restart. |
-| `enable-auto` | Turns on `autoUpdate`, so new versions are downloaded from now on. |
+| `enable-auto` | Turns on `autoUpdate`. A waiting update within the same major version is downloaded right away, and later ones too. |
 | `later` | Asks again later. |
 | `never` | Stops asking. This sets `askForAutoUpdate` to `false`. |
 
